@@ -1,0 +1,56 @@
+[build-system]
+requires = ["uv_build>=0.13.1,<0.14.0"]
+build-backend = "uv_build"
+
+[project]
+name = "credit-risk-observability"
+version = "0.1.0"
+description = "Projeto Pos-tech ML credit-risk-observability"
+readme = "README.md"
+authors = [
+    { name = "Akira", email = "vitorucha96@gmail.com" }
+]
+license = { file = "LICENSE" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License"
+]
+dependencies = [
+    "ipython",
+    "jupyterlab",
+    "matplotlib",
+    "mkdocs",
+    "notebook",
+    "numpy",
+    "pandas",
+    "pip",
+    "pytest",
+    "python-dotenv",
+    "ruff",
+    "scikit-learn",
+]
+requires-python = "~=3.12.0"
+[project.scripts]
+credit-risk-observability = "credit_risk_observability:main"
+
+
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.17.1",
+]
+
+
+[tool.ruff]
+line-length = 99
+src = ["credit_risk_observability"]
+include = ["pyproject.toml", "credit_risk_observability/**/*.py"]
+
+[tool.ruff.lint]
+extend-select = ["I"]  # Add import sorting
+
+[tool.ruff.lint.isort]
+known-first-party = ["credit_risk_observability"]
+force-sort-within-sections = true
+
