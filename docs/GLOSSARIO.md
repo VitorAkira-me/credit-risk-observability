@@ -82,3 +82,9 @@ validação entre 0,714 e 0,732. Qualquer "piora" menor que isso não prova nada
 **O que é:** a ferramenta diz "ok" porque não olhou nada. Vimos três vezes: o Airflow da Fase 3,
 o ruff que só lia o `pyproject.toml` e o contrato que aprovaria um lote vazio.
 **Defesa:** sempre perguntar *o que* foi verificado, além do veredito.
+
+## Exit code (código de saída)
+**O que é:** o número que um programa devolve ao terminar. 0 = deu certo; diferente de 0 = falhou.
+**Por que importa:** é a linguagem dos orquestradores. `validar && treinar` só treina se a validação
+devolver 0. Um script que imprime "ERRO" mas sai com 0 engana toda a automação.
+**Pergunta para pensar:** se o `run_validation.py` desse `print` do erro e terminasse normalmente, o que o Airflow faria?

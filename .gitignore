@@ -195,3 +195,6 @@ mlartifacts/
 
 # Modelos serializados (regeráveis por scripts/train_baseline.py)
 models/*.joblib
+
+# Logs de execução do pipeline (evidência entra via reports/)
+logs/

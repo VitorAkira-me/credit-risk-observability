@@ -1,0 +1,161 @@
+schema_context,column,check,check_number,failure_case,index
+Column,ID,field_uniqueness,,22856.0,36
+Column,ID,field_uniqueness,,9515.0,38
+Column,ID,field_uniqueness,,2080.0,116
+Column,ID,field_uniqueness,,22344.0,142
+Column,ID,field_uniqueness,,12434.0,152
+Column,ID,field_uniqueness,,1464.0,166
+Column,ID,field_uniqueness,,13351.0,180
+Column,ID,field_uniqueness,,5328.0,390
+Column,ID,field_uniqueness,,23751.0,426
+Column,ID,field_uniqueness,,25690.0,434
+Column,ID,field_uniqueness,,14559.0,545
+Column,ID,field_uniqueness,,12381.0,558
+Column,ID,field_uniqueness,,22446.0,660
+Column,ID,field_uniqueness,,13621.0,710
+Column,ID,field_uniqueness,,21327.0,751
+Column,ID,field_uniqueness,,24380.0,789
+Column,ID,field_uniqueness,,13247.0,797
+Column,ID,field_uniqueness,,3199.0,931
+Column,ID,field_uniqueness,,24027.0,946
+Column,ID,field_uniqueness,,21803.0,995
+Column,ID,field_uniqueness,,3199.0,1000
+Column,ID,field_uniqueness,,23751.0,1001
+Column,ID,field_uniqueness,,22446.0,1002
+Column,ID,field_uniqueness,,21803.0,1003
+Column,ID,field_uniqueness,,22856.0,1004
+Column,ID,field_uniqueness,,14559.0,1005
+Column,ID,field_uniqueness,,2080.0,1006
+Column,ID,field_uniqueness,,25690.0,1007
+Column,ID,field_uniqueness,,5328.0,1008
+Column,ID,field_uniqueness,,21327.0,1009
+Column,ID,field_uniqueness,,13247.0,1010
+Column,ID,field_uniqueness,,13351.0,1011
+Column,ID,field_uniqueness,,12434.0,1012
+Column,ID,field_uniqueness,,9515.0,1013
+Column,ID,field_uniqueness,,24027.0,1014
+Column,ID,field_uniqueness,,13621.0,1015
+Column,ID,field_uniqueness,,24380.0,1016
+Column,ID,field_uniqueness,,12381.0,1017
+Column,ID,field_uniqueness,,22344.0,1018
+Column,ID,field_uniqueness,,1464.0,1019
+Column,LIMIT_BAL,not_nullable,,,151
+Column,LIMIT_BAL,not_nullable,,,171
+Column,LIMIT_BAL,not_nullable,,,238
+Column,LIMIT_BAL,not_nullable,,,239
+Column,LIMIT_BAL,not_nullable,,,250
+Column,LIMIT_BAL,not_nullable,,,252
+Column,LIMIT_BAL,not_nullable,,,324
+Column,LIMIT_BAL,not_nullable,,,343
+Column,LIMIT_BAL,not_nullable,,,408
+Column,LIMIT_BAL,not_nullable,,,427
+Column,LIMIT_BAL,not_nullable,,,439
+Column,LIMIT_BAL,not_nullable,,,454
+Column,LIMIT_BAL,not_nullable,,,457
+Column,LIMIT_BAL,not_nullable,,,468
+Column,LIMIT_BAL,not_nullable,,,498
+Column,LIMIT_BAL,not_nullable,,,514
+Column,LIMIT_BAL,not_nullable,,,592
+Column,LIMIT_BAL,not_nullable,,,623
+Column,LIMIT_BAL,not_nullable,,,629
+Column,LIMIT_BAL,not_nullable,,,650
+Column,LIMIT_BAL,not_nullable,,,652
+Column,LIMIT_BAL,not_nullable,,,662
+Column,LIMIT_BAL,not_nullable,,,664
+Column,LIMIT_BAL,not_nullable,,,671
+Column,LIMIT_BAL,not_nullable,,,701
+Column,LIMIT_BAL,not_nullable,,,756
+Column,LIMIT_BAL,not_nullable,,,806
+Column,LIMIT_BAL,not_nullable,,,904
+Column,LIMIT_BAL,not_nullable,,,980
+Column,LIMIT_BAL,not_nullable,,,993
+Column,LIMIT_BAL,dtype('int64'),,,151
+Column,LIMIT_BAL,dtype('int64'),,,171
+Column,LIMIT_BAL,dtype('int64'),,,238
+Column,LIMIT_BAL,dtype('int64'),,,239
+Column,LIMIT_BAL,dtype('int64'),,,250
+Column,LIMIT_BAL,dtype('int64'),,,252
+Column,LIMIT_BAL,dtype('int64'),,,324
+Column,LIMIT_BAL,dtype('int64'),,,343
+Column,LIMIT_BAL,dtype('int64'),,,408
+Column,LIMIT_BAL,dtype('int64'),,,427
+Column,LIMIT_BAL,dtype('int64'),,,439
+Column,LIMIT_BAL,dtype('int64'),,,454
+Column,LIMIT_BAL,dtype('int64'),,,457
+Column,LIMIT_BAL,dtype('int64'),,,468
+Column,LIMIT_BAL,dtype('int64'),,,498
+Column,LIMIT_BAL,dtype('int64'),,,514
+Column,LIMIT_BAL,dtype('int64'),,,592
+Column,LIMIT_BAL,dtype('int64'),,,623
+Column,LIMIT_BAL,dtype('int64'),,,629
+Column,LIMIT_BAL,dtype('int64'),,,650
+Column,LIMIT_BAL,dtype('int64'),,,652
+Column,LIMIT_BAL,dtype('int64'),,,662
+Column,LIMIT_BAL,dtype('int64'),,,664
+Column,LIMIT_BAL,dtype('int64'),,,671
+Column,LIMIT_BAL,dtype('int64'),,,701
+Column,LIMIT_BAL,dtype('int64'),,,756
+Column,LIMIT_BAL,dtype('int64'),,,806
+Column,LIMIT_BAL,dtype('int64'),,,904
+Column,LIMIT_BAL,dtype('int64'),,,980
+Column,LIMIT_BAL,dtype('int64'),,,993
+Column,SEX,"isin([1, 2])",0,3.0,135
+Column,SEX,"isin([1, 2])",0,3.0,232
+Column,SEX,"isin([1, 2])",0,3.0,346
+Column,SEX,"isin([1, 2])",0,3.0,381
+Column,SEX,"isin([1, 2])",0,3.0,493
+Column,SEX,"isin([1, 2])",0,3.0,513
+Column,SEX,"isin([1, 2])",0,3.0,563
+Column,SEX,"isin([1, 2])",0,3.0,708
+Column,SEX,"isin([1, 2])",0,3.0,781
+Column,SEX,"isin([1, 2])",0,3.0,857
+Column,AGE,"in_range(18, 100)",0,15.0,2
+Column,AGE,"in_range(18, 100)",0,15.0,7
+Column,AGE,"in_range(18, 100)",0,15.0,25
+Column,AGE,"in_range(18, 100)",0,15.0,45
+Column,AGE,"in_range(18, 100)",0,15.0,51
+Column,AGE,"in_range(18, 100)",0,15.0,55
+Column,AGE,"in_range(18, 100)",0,15.0,61
+Column,AGE,"in_range(18, 100)",0,15.0,82
+Column,AGE,"in_range(18, 100)",0,15.0,98
+Column,AGE,"in_range(18, 100)",0,15.0,100
+Column,AGE,"in_range(18, 100)",0,15.0,127
+Column,AGE,"in_range(18, 100)",0,15.0,128
+Column,AGE,"in_range(18, 100)",0,15.0,136
+Column,AGE,"in_range(18, 100)",0,15.0,147
+Column,AGE,"in_range(18, 100)",0,15.0,260
+Column,AGE,"in_range(18, 100)",0,15.0,276
+Column,AGE,"in_range(18, 100)",0,15.0,285
+Column,AGE,"in_range(18, 100)",0,15.0,310
+Column,AGE,"in_range(18, 100)",0,15.0,425
+Column,AGE,"in_range(18, 100)",0,15.0,467
+Column,AGE,"in_range(18, 100)",0,15.0,470
+Column,AGE,"in_range(18, 100)",0,15.0,554
+Column,AGE,"in_range(18, 100)",0,15.0,557
+Column,AGE,"in_range(18, 100)",0,15.0,593
+Column,AGE,"in_range(18, 100)",0,15.0,595
+Column,AGE,"in_range(18, 100)",0,15.0,605
+Column,AGE,"in_range(18, 100)",0,15.0,608
+Column,AGE,"in_range(18, 100)",0,15.0,613
+Column,AGE,"in_range(18, 100)",0,15.0,620
+Column,AGE,"in_range(18, 100)",0,15.0,626
+Column,AGE,"in_range(18, 100)",0,15.0,635
+Column,AGE,"in_range(18, 100)",0,15.0,753
+Column,AGE,"in_range(18, 100)",0,15.0,758
+Column,AGE,"in_range(18, 100)",0,15.0,773
+Column,AGE,"in_range(18, 100)",0,15.0,787
+Column,AGE,"in_range(18, 100)",0,15.0,810
+Column,AGE,"in_range(18, 100)",0,15.0,839
+Column,AGE,"in_range(18, 100)",0,15.0,848
+Column,AGE,"in_range(18, 100)",0,15.0,856
+Column,AGE,"in_range(18, 100)",0,15.0,859
+Column,AGE,"in_range(18, 100)",0,15.0,903
+Column,AGE,"in_range(18, 100)",0,15.0,916
+Column,AGE,"in_range(18, 100)",0,15.0,921
+Column,AGE,"in_range(18, 100)",0,15.0,933
+Column,AGE,"in_range(18, 100)",0,15.0,941
+Column,AGE,"in_range(18, 100)",0,15.0,945
+Column,AGE,"in_range(18, 100)",0,15.0,972
+Column,AGE,"in_range(18, 100)",0,15.0,976
+Column,AGE,"in_range(18, 100)",0,15.0,978
+Column,AGE,"in_range(18, 100)",0,15.0,994

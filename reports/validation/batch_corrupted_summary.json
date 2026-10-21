@@ -1,0 +1,13 @@
+{
+  "batch": "batch_corrupted.parquet",
+  "schema": "credit_default_input_v1",
+  "rows": 1020,
+  "duration_ms": 112.5,
+  "failures_by_rule": {
+    "AGE:in_range(18, 100)": 50,
+    "ID:field_uniqueness": 40,
+    "LIMIT_BAL:dtype('int64')": 30,
+    "LIMIT_BAL:not_nullable": 30,
+    "SEX:isin([1, 2])": 10
+  }
+}
