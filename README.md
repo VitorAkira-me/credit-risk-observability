@@ -1,61 +1,59 @@
 # credit-risk-observability
 
-<a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
-    <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
-</a>
+Camada de sustentação de um modelo de **Credit Scoring** em produção: contratos de qualidade de
+dados, simulação e detecção de drift, observabilidade do pipeline e governança (LGPD).
+Tech Challenge Fase 4 (Pós-tech ML).
 
-Projeto Pos-tech ML credit-risk-observability
+> Status: em construção. Etapas concluídas: preparação de dados e modelo baseline.
+> Andamento em [`docs/STATUS.md`](docs/STATUS.md) e [`docs/KANBAN.md`](docs/KANBAN.md).
 
-## Project Organization
+## Dataset
+[Default of Credit Card Clients (UCI, Taiwan)](https://archive.ics.uci.edu/dataset/350):
+30.000 clientes, alvo binário `default` (22,12% de inadimplência). Baixado sem login via
+`ucimlrepo`. Escolha justificada em [ADR-001](docs/decisions/ADR-001-dataset.md).
+
+## Como rodar
+Pré-requisito: [uv](https://docs.astral.sh/uv/). O uv instala o Python 3.12 se precisar.
+Os comandos funcionam iguais no PowerShell e no Git Bash.
 
 ```
-├── LICENSE            <- Open-source license if one is chosen
-├── Makefile           <- Makefile with convenience commands like `make data` or `make train`
-├── README.md          <- The top-level README for developers using this project.
-├── data
-│   ├── external       <- Data from third party sources.
-│   ├── interim        <- Intermediate data that has been transformed.
-│   ├── processed      <- The final, canonical data sets for modeling.
-│   └── raw            <- The original, immutable data dump.
-│
-├── docs               <- A default mkdocs project; see www.mkdocs.org for details
-│
-├── models             <- Trained and serialized models, model predictions, or model summaries
-│
-├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-│                         the creator's initials, and a short `-` delimited description, e.g.
-│                         `1.0-jqp-initial-data-exploration`.
-│
-├── pyproject.toml     <- Project configuration file with package metadata for 
-│                         credit_risk_observability and configuration for tools like black
-│
-├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-│
-├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-│   └── figures        <- Generated graphics and figures to be used in reporting
-│
-├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-│                         generated with `pip freeze > requirements.txt`
-│
-├── setup.cfg          <- Configuration file for flake8
-│
-└── credit_risk_observability   <- Source code for use in this project.
-    │
-    ├── __init__.py             <- Makes credit_risk_observability a Python module
-    │
-    ├── config.py               <- Store useful variables and configuration
-    │
-    ├── dataset.py              <- Scripts to download or generate data
-    │
-    ├── features.py             <- Code to create features for modeling
-    │
-    ├── modeling                
-    │   ├── __init__.py 
-    │   ├── predict.py          <- Code to run model inference with trained models          
-    │   └── train.py            <- Code to train models
-    │
-    └── plots.py                <- Code to create visualizations
+uv sync                                   # ambiente com versões fixadas pelo uv.lock
+uv run python scripts/prepare_data.py     # download, EDA e split Referência / Produção
+uv run python scripts/train_baseline.py   # treina o baseline e salva métricas
+uv run pytest -q                          # testes
+uv run ruff check . ; uv run ruff format --check .
 ```
 
---------
+## Referência vs Produção
+| Conjunto | Arquivo | Linhas | Uso |
+|---|---|---|---|
+| Referência | `data/reference/reference.parquet` | 21.000 | treino e validação do modelo |
+| Produção | `data/production/production_base.parquet` | 9.000 | nunca entra no treino; base para os lotes com drift |
 
+Split estratificado (seed 42), 0 clientes em comum. Detalhes em [DATA-001](docs/specs/DATA-001.md);
+EDA em [`reports/eda/eda_summary.md`](reports/eda/eda_summary.md).
+
+## Modelo baseline
+LogisticRegression balanceada. `SEX` e `MARRIAGE` ficam fora das features
+([ADR-004](docs/decisions/ADR-004-features-sensiveis.md)).
+
+| Conjunto | AUC | KS | Recall default |
+|---|---|---|---|
+| Validação | 0,732 | 0,384 | 0,657 |
+| Produção sem drift | 0,715 | 0,365 | 0,640 |
+
+Métricas completas em [`models/baseline_metrics.json`](models/baseline_metrics.json) e [ML-001](docs/specs/ML-001.md).
+
+## Estrutura
+```
+src/credit_risk_observability/   # pacote: config, data/, model/ (contracts/, drift/, monitoring/ a seguir)
+scripts/                         # pontos de entrada do pipeline
+tests/                           # pytest
+reports/                         # evidências versionadas (EDA, relatórios de drift)
+models/                          # métricas versionadas; modelo .joblib regerável
+docs/                            # STATUS, KANBAN, GLOSSARIO, specs/ e decisions/ (ADRs)
+data/                            # fora do git (regerável pelos scripts)
+```
+
+## Governança (LGPD, vieses, análise causal)
+Será escrita no card GOV-001.
