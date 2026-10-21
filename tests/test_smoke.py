@@ -1,8 +1,4 @@
-
 from pathlib import Path
-
-import pytest
-
 
 # Raiz do projeto: dois níveis acima deste arquivo,
 # considerando que ele está em tests/test_smoke.py.
@@ -19,26 +15,18 @@ def test_project_structure():
     ]
 
     missing_paths = [
-        str(path.relative_to(PROJECT_ROOT))
-        for path in required_paths
-        if not path.exists()
+        str(path.relative_to(PROJECT_ROOT)) for path in required_paths if not path.exists()
     ]
 
-    assert not missing_paths, (
-        f"Arquivos ou diretórios ausentes: {missing_paths}"
-    )
+    assert not missing_paths, f"Arquivos ou diretórios ausentes: {missing_paths}"
 
 
 def test_source_package_exists():
     """Confirma que o pacote principal foi criado."""
     package_dir = PROJECT_ROOT / "src" / "credit_risk_observability"
 
-    assert package_dir.is_dir(), (
-        f"Pacote não encontrado: {package_dir}"
-    )
-    assert (package_dir / "__init__.py").is_file(), (
-        "O pacote não possui __init__.py"
-    )
+    assert package_dir.is_dir(), f"Pacote não encontrado: {package_dir}"
+    assert (package_dir / "__init__.py").is_file(), "O pacote não possui __init__.py"
 
 
 def test_core_dependencies_are_available():

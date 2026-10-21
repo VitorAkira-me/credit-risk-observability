@@ -1,7 +1,7 @@
 # SETUP-001 · Estrutura inicial do projeto
 
 - Etapa: 0 (fundação)
-- Status: rascunho
+- Status: concluída
 - Data: 15/10/2026
 
 ## Objetivo
@@ -15,12 +15,12 @@ Um projeto reprodutível é como uma receita com as marcas e quantidades exatas 
 qualquer pessoa (ou o avaliador) obtém o mesmo bolo. O `pyproject.toml` diz *quais* bibliotecas
 queremos; o `uv.lock` grava *exatamente quais versões* foram instaladas. Sem o lock, "funciona na
 minha máquina" vira loteria. O layout `src/` obriga o código a ser instalado como pacote, então os
-testes importam `credit_obs` do mesmo jeito que um usuário importaria, e não por acaso do diretório atual.
+testes importam `credit_risk_observability` do mesmo jeito que um usuário importaria, e não por acaso do diretório atual.
 
 ## Escopo
 - Dentro:
   - `git init` com branch `main`; trabalho na branch `chore/SETUP-001-estrutura`.
-  - `uv init` com layout de pacote (`src/credit_obs/`), Python fixado em 3.12 (`.python-version`).
+  - `uv init` com layout de pacote (`src/credit_risk_observability/`), Python fixado em 3.12 (`.python-version`).
   - Dependências de dev: `pytest`, `ruff`. Só isso agora.
   - Pastas do CLAUDE.md §6 (vazias com `.gitkeep` onde preciso).
   - `.gitignore`: `.venv/`, `__pycache__/`, `data/raw/`, `mlruns/`, caches.
@@ -63,3 +63,16 @@ Rodar também no PowerShell (lição da Fase 3).
   versionar ou não? Proposta: **não** versionar parquet (regerável e pesado), só `reports/`.
 
 ## Resultado (preencher ao concluir)
+Concluído em 21/10/2026.
+- Estrutura gerada pelo template cookiecutter-data-science (trouxe também `models/`, `notebooks/`,
+  `references/`, `Makefile`). Pacote ficou `credit_risk_observability` (CLAUDE.md ajustado).
+- Python 3.12.10 via uv; `uv.lock` versionado; `/data/` inteiro e `.env` ignorados.
+- **Sucesso vazio pego:** o `ruff check` dizia "All checks passed!" mas só analisava o `pyproject.toml`
+  (`include` apontava para `credit_risk_observability/`, fora do `src/`). Corrigido com
+  `src = ["src", "tests"]`; ao olhar de verdade, achou 2 erros no `test_smoke.py` (import sem uso,
+  ordem de imports).
+- Teste do template com `assert False` removido. Final: `3 passed`, exit 0; ruff check e format limpos.
+- Ferramentas (jupyterlab, notebook, mkdocs, ipython, pip) movidas para o grupo `dev`.
+- Desvio da spec: pandas, numpy, scikit-learn, matplotlib já entraram nas deps (sem versão fixa no
+  pyproject; o lock fixa). Pandera, Evidently e MLflow entram nos seus cards.
+- Branch `main` criada no GitHub a partir do commit inicial; correções entram via PR.

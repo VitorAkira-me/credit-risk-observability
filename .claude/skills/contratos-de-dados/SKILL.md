@@ -15,7 +15,7 @@ o pipeline para com erro explícito e nada chega ao modelo. "Lixo entra, lixo sa
 - Demonstrar um lote com erros **falhando e sendo bloqueado**.
 
 ## Receita (Pandera)
-- Schema em `src/credit_obs/contracts/schema.py` usando `pandera.pandas.DataFrameSchema`
+- Schema em `src/credit_risk_observability/contracts/schema.py` usando `pandera.pandas.DataFrameSchema`
   (ou `DataFrameModel` se preferir estilo classe). Confira a versão instalada antes: a API
   de import mudou entre versões (`import pandera.pandas as pa` nas mais novas).
 - Use `strict=True` para rejeitar colunas inesperadas e `coerce=False` para não "consertar" tipos escondido.

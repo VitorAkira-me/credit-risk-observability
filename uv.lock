@@ -277,44 +277,40 @@ name = "credit-risk-observability"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "ipython" },
-    { name = "jupyterlab" },
     { name = "matplotlib" },
-    { name = "mkdocs" },
-    { name = "notebook" },
     { name = "numpy" },
     { name = "pandas" },
-    { name = "pip" },
-    { name = "pytest" },
     { name = "python-dotenv" },
-    { name = "ruff" },
     { name = "scikit-learn" },
 ]
 
 [package.dev-dependencies]
 dev = [
+    { name = "ipython" },
+    { name = "jupyterlab" },
+    { name = "mkdocs" },
+    { name = "notebook" },
+    { name = "pip" },
     { name = "pytest" },
     { name = "ruff" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "ipython" },
-    { name = "jupyterlab" },
     { name = "matplotlib" },
-    { name = "mkdocs" },
-    { name = "notebook" },
     { name = "numpy" },
     { name = "pandas" },
-    { name = "pip" },
-    { name = "pytest" },
     { name = "python-dotenv" },
-    { name = "ruff" },
     { name = "scikit-learn" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "ipython" },
+    { name = "jupyterlab" },
+    { name = "mkdocs" },
+    { name = "notebook" },
+    { name = "pip" },
     { name = "pytest", specifier = ">=9.1.1" },
     { name = "ruff", specifier = ">=0.17.1" },
 ]

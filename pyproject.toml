@@ -16,17 +16,10 @@ classifiers = [
     "License :: OSI Approved :: MIT License"
 ]
 dependencies = [
-    "ipython",
-    "jupyterlab",
     "matplotlib",
-    "mkdocs",
-    "notebook",
     "numpy",
     "pandas",
-    "pip",
-    "pytest",
     "python-dotenv",
-    "ruff",
     "scikit-learn",
 ]
 requires-python = "~=3.12.0"
@@ -39,13 +32,17 @@ credit-risk-observability = "credit_risk_observability:main"
 dev = [
     "pytest>=9.1.1",
     "ruff>=0.17.1",
+    "jupyterlab",
+    "notebook",
+    "mkdocs",
+    "ipython",
+    "pip",
 ]
 
 
 [tool.ruff]
 line-length = 99
-src = ["credit_risk_observability"]
-include = ["pyproject.toml", "credit_risk_observability/**/*.py"]
+src = ["src", "tests"]
 
 [tool.ruff.lint]
 extend-select = ["I"]  # Add import sorting
