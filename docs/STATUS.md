@@ -1,17 +1,21 @@
-# STATUS · atualizado em 13/10/2026
+# STATUS · atualizado em 21/10/2026
 
 > Arquivo curto de "onde paramos". Atualize ao fim de toda sessão. Máximo ~40 linhas.
 
 ## Onde estamos
-- Contexto do projeto criado: `CLAUDE.md`, skills, Kanban, glossário e templates.
+- SETUP-001 concluído: uv + Python 3.12.10, pacote `src/credit_risk_observability/`, `uv.lock`,
+  pytest (3 passed) e ruff (check + format) limpos. Detalhes em `docs/specs/SETUP-001.md`.
+- Repo no GitHub: `VitorAkira-me/credit-risk-observability`, `main` criada, trabalho via PR por card.
 - Decisões aceitas: ADR-001 (dataset UCI Taiwan), ADR-002 (Pandera), ADR-003 (MLflow local).
-- Diretriz: começar simples e melhorar depois. Claude atua como sênior e par de programação (CLAUDE.md §2).
-- Nenhum código ainda. Repositório ainda não criado no GitHub.
+- Lição da sessão: `ruff --show-files` revelou lint vazio (só checava o pyproject). Sempre confira
+  *o que* a ferramenta analisou, não só o veredito.
+
+## Pendências manuais (Akira)
+- Proteger a `main` no GitHub (Settings > Branches) e definir `main` como branch padrão, se ainda não estiver.
 
 ## Próximo passo
-SETUP-001: criar repo `credit-risk-observability`, `pyproject.toml` com `uv`, estrutura de pastas,
-`.gitignore`, um teste trivial passando, primeiro commit `chore(setup): estrutura inicial do projeto`.
-Modo de pilotagem sugerido: Claude pilota (é boilerplate), Akira revisa cada arquivo.
+DATA-001: download via `ucimlrepo`, EDA curta, split Referência / Produção em parquet.
+Modo: Akira pediu que Claude pilote por causa do prazo; manter explicações curtas.
 
 ## Prazo
-Entrega 17/11/2026. Semana atual: 1 de 5 (setup + dados + baseline).
+Entrega 17/11/2026. Semana atual: 2 de 5 (atrasado ~1 semana: DATA-001 e ML-001 eram da semana 1).

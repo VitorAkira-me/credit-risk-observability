@@ -95,7 +95,7 @@ credit-risk-observability/
 │   ├── raw/                  # download original (fora do git)
 │   ├── reference/            # dataset de Referência (treino)
 │   └── production/           # lotes simulados (drift e lote corrompido)
-├── src/credit_obs/
+├── src/credit_risk_observability/
 │   ├── data/                 # download, split referência/produção
 │   ├── contracts/            # schemas Pandera
 │   ├── model/                # treino e predição
