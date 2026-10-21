@@ -71,3 +71,14 @@ que o Evidently usa para drift, mas aplicado a outra pergunta (bons vs maus, e n
 **O que é:** a métrica muda só porque a amostra mudou. Trocar a seed do split moveu a AUC de
 validação entre 0,714 e 0,732. Qualquer "piora" menor que isso não prova nada.
 **Lição:** antes de afirmar que o drift degradou o modelo, saiba o tamanho do ruído (intervalo de confiança).
+
+## Contrato vs Drift (quem barra o quê)
+**Contrato:** barra o *impossível ou ilegível* (idade 15, limite nulo, ID repetido, coluna a mais).
+**Drift:** sinaliza o *diferente mas possível* (clientes mais jovens, faturas maiores).
+**Analogia:** o segurança barra quem não está na lista; o gerente percebe que o público da casa mudou.
+**Pergunta para pensar:** se amanhã chegar um lote com `EDUCATION = 7`, é contrato ou drift?
+
+## Sucesso vazio
+**O que é:** a ferramenta diz "ok" porque não olhou nada. Vimos três vezes: o Airflow da Fase 3,
+o ruff que só lia o `pyproject.toml` e o contrato que aprovaria um lote vazio.
+**Defesa:** sempre perguntar *o que* foi verificado, além do veredito.

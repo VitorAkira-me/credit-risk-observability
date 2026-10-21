@@ -10,8 +10,8 @@
 | DATA-001 | Download + EDA curta + split Referência / Produção (salvos em parquet) | 1 | SETUP-001, ADR-001 | DONE |
 | ML-001 | Modelo baseline treinado na Referência, métricas salvas em JSON | 1 | DATA-001 | DONE |
 | ADR-002 | Pandera vs Great Expectations | 1 | | DONE |
-| DQ-001 | Contrato de dados com ≥3 regras rígidas + testes | 1 | DATA-001, ADR-002 | TO-DO |
-| DQ-002 | Lote corrompido injetado e ingestão bloqueada (prova com log e exit code) | 1 | DQ-001 | BACKLOG |
+| DQ-001 | Contrato de dados com ≥3 regras rígidas + testes | 1 | DATA-001, ADR-002 | DONE |
+| DQ-002 | Lote corrompido injetado e ingestão bloqueada (prova com log e exit code) | 1 | DQ-001 | DOING |
 | DRIFT-001 | Gerar Dataset de Produção com data drift (≥2 features) e concept drift | 2 | ML-001 | BACKLOG |
 | DRIFT-002 | Relatório Evidently (PSI/KS) em `reports/` + predições na produção | 2 | DRIFT-001 | BACKLOG |
 | ADR-003 | MLflow vs Prometheus/Grafana | 3 | | DONE |
