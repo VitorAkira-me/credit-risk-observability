@@ -55,3 +55,19 @@ antes de separar treino e teste, isso é vazamento?
 default nos dois lados).
 **Por que importa:** sem isso, uma diferença na taxa de default entre Referência e Produção seria
 confundida com drift.
+
+## AUC (ROC AUC)
+**O que é:** probabilidade de o modelo dar nota de risco maior a um cliente que deu default do que
+a um que pagou, escolhidos ao acaso. 0,5 = moeda; 1,0 = perfeito. Não depende do limiar.
+**Nosso baseline:** ~0,715 na Produção-base.
+
+## KS (em crédito)
+**O que é:** maior distância entre as curvas acumuladas de notas dos bons e dos maus pagadores.
+Quanto maior, melhor o modelo separa os dois grupos. Atenção: é o mesmo teste de Kolmogorov-Smirnov
+que o Evidently usa para drift, mas aplicado a outra pergunta (bons vs maus, e não referência vs produção).
+**Pergunta para pensar:** por que o mesmo teste serve para medir "o modelo separa bem" e "a distribuição mudou"?
+
+## Ruído de avaliação
+**O que é:** a métrica muda só porque a amostra mudou. Trocar a seed do split moveu a AUC de
+validação entre 0,714 e 0,732. Qualquer "piora" menor que isso não prova nada.
+**Lição:** antes de afirmar que o drift degradou o modelo, saiba o tamanho do ruído (intervalo de confiança).

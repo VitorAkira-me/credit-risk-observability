@@ -26,24 +26,33 @@ clean:
 	find . -type d -name "__pycache__" -delete
 
 
+## Run tests
+.PHONY: test
+test:
+	uv run pytest -q
+
+## Download, EDA e split Referencia/Producao
+.PHONY: data
+data:
+	uv run python scripts/prepare_data.py
+
+## Treina o baseline
+.PHONY: train
+train: data
+	uv run python scripts/train_baseline.py
+
 ## Lint using ruff (use `make format` to do formatting)
 .PHONY: lint
 lint:
-	ruff format --check
-	ruff check
+	uv run ruff format --check .
+	uv run ruff check .
 
 ## Format source code with ruff
 .PHONY: format
 format:
-	ruff check --fix
-	ruff format
+	uv run ruff check --fix .
+	uv run ruff format .
 
-
-
-## Run tests
-.PHONY: test
-test:
-	python -m pytest tests
 
 
 ## Set up Python interpreter environment

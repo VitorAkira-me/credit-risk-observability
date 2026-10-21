@@ -36,6 +36,17 @@ FEATURE_COLUMNS = [
     *PAY_AMOUNT_COLUMNS,
 ]
 
+# ADR-004: atributos sensíveis ficam nos dados (para auditar viés), mas fora do modelo.
+SENSITIVE_EXCLUDED = ["SEX", "MARRIAGE"]
+MODEL_FEATURES = [c for c in FEATURE_COLUMNS if c not in SENSITIVE_EXCLUDED]
+MODEL_CATEGORICAL = [c for c in CATEGORICAL_COLUMNS if c not in SENSITIVE_EXCLUDED]
+MODEL_NUMERIC = [c for c in MODEL_FEATURES if c not in MODEL_CATEGORICAL]
+
+VALIDATION_SIZE = 0.20
+DECISION_THRESHOLD = 0.5
+MODEL_PATH = MODELS_DIR / "baseline_logreg.joblib"
+METRICS_PATH = MODELS_DIR / "baseline_metrics.json"
+
 # Códigos documentados pelo UCI. Valores fora daqui aparecem nos dados reais e
 # são investigados na EDA (insumo para o contrato de dados do DQ-001).
 DOCUMENTED_CODES = {

@@ -192,3 +192,6 @@ cython_debug/
 # MLflow (tracking local)
 mlruns/
 mlartifacts/
+
+# Modelos serializados (regeráveis por scripts/train_baseline.py)
+models/*.joblib

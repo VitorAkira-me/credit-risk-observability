@@ -1,0 +1,86 @@
+{
+  "model": "LogisticRegression(class_weight=balanced)",
+  "features": [
+    "LIMIT_BAL",
+    "EDUCATION",
+    "AGE",
+    "PAY_0",
+    "PAY_2",
+    "PAY_3",
+    "PAY_4",
+    "PAY_5",
+    "PAY_6",
+    "BILL_AMT1",
+    "BILL_AMT2",
+    "BILL_AMT3",
+    "BILL_AMT4",
+    "BILL_AMT5",
+    "BILL_AMT6",
+    "PAY_AMT1",
+    "PAY_AMT2",
+    "PAY_AMT3",
+    "PAY_AMT4",
+    "PAY_AMT5",
+    "PAY_AMT6"
+  ],
+  "excluded_sensitive": [
+    "SEX",
+    "MARRIAGE"
+  ],
+  "threshold": 0.5,
+  "seed": 42,
+  "versions": {
+    "python": "3.12.10",
+    "scikit-learn": "1.9.1"
+  },
+  "data": {
+    "raw_sha256": "1d3c191c9a77fa04d3ddba33f0983c12e91eeff3227c7b621c57d074f13b4ff5",
+    "seed": 42,
+    "production_size": 0.3,
+    "rows": {
+      "reference": 21000,
+      "production_base": 9000,
+      "total": 30000
+    },
+    "default_rate": {
+      "reference": 0.2212,
+      "production_base": 0.2212
+    },
+    "shared_ids": 0
+  },
+  "metrics": {
+    "train": {
+      "rows": 16800,
+      "default_rate": 0.2212,
+      "roc_auc": 0.7277,
+      "ks": 0.3827,
+      "recall_default": 0.6499,
+      "precision_default": 0.3798,
+      "f1_default": 0.4795,
+      "brier": 0.2055,
+      "predicted_default_rate": 0.3785
+    },
+    "validation": {
+      "rows": 4200,
+      "default_rate": 0.2212,
+      "roc_auc": 0.7318,
+      "ks": 0.3844,
+      "recall_default": 0.6566,
+      "precision_default": 0.3841,
+      "f1_default": 0.4847,
+      "brier": 0.2049,
+      "predicted_default_rate": 0.3781
+    },
+    "production_base": {
+      "rows": 9000,
+      "default_rate": 0.2212,
+      "roc_auc": 0.7149,
+      "ks": 0.3653,
+      "recall_default": 0.6404,
+      "precision_default": 0.3683,
+      "f1_default": 0.4676,
+      "brier": 0.2085,
+      "predicted_default_rate": 0.3847
+    }
+  }
+}
