@@ -7,8 +7,8 @@
 |---|---|---|---|---|
 | SETUP-001 | Repo, `uv`, estrutura de pastas, `.gitignore`, pytest rodando | 0 | | DONE |
 | ADR-001 | Escolha do dataset | 0 | | DONE |
-| DATA-001 | Download + EDA curta + split Referência / Produção (salvos em parquet) | 1 | SETUP-001, ADR-001 | TO-DO |
-| ML-001 | Modelo baseline treinado na Referência, métricas salvas em JSON | 1 | DATA-001 | BACKLOG |
+| DATA-001 | Download + EDA curta + split Referência / Produção (salvos em parquet) | 1 | SETUP-001, ADR-001 | DONE |
+| ML-001 | Modelo baseline treinado na Referência, métricas salvas em JSON | 1 | DATA-001 | DOING |
 | ADR-002 | Pandera vs Great Expectations | 1 | | DONE |
 | DQ-001 | Contrato de dados com ≥3 regras rígidas + testes | 1 | DATA-001, ADR-002 | BACKLOG |
 | DQ-002 | Lote corrompido injetado e ingestão bloqueada (prova com log e exit code) | 1 | DQ-001 | BACKLOG |
