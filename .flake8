@@ -1,0 +1,6 @@
+# O linter oficial do projeto é o ruff (pyproject.toml). Este arquivo só alinha o flake8
+# que a extensão do VS Code usa, para a IDE não acusar o que o ruff aceita.
+[flake8]
+max-line-length = 99
+extend-ignore = E203
+exclude = .venv,.git,__pycache__

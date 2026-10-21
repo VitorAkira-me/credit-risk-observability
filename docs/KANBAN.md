@@ -11,8 +11,8 @@
 | ML-001 | Modelo baseline treinado na Referência, métricas salvas em JSON | 1 | DATA-001 | DONE |
 | ADR-002 | Pandera vs Great Expectations | 1 | | DONE |
 | DQ-001 | Contrato de dados com ≥3 regras rígidas + testes | 1 | DATA-001, ADR-002 | DONE |
-| DQ-002 | Lote corrompido injetado e ingestão bloqueada (prova com log e exit code) | 1 | DQ-001 | DOING |
-| DRIFT-001 | Gerar Dataset de Produção com data drift (≥2 features) e concept drift | 2 | ML-001 | BACKLOG |
+| DQ-002 | Lote corrompido injetado e ingestão bloqueada (prova com log e exit code) | 1 | DQ-001 | DONE |
+| DRIFT-001 | Gerar Dataset de Produção com data drift (≥2 features) e concept drift | 2 | ML-001 | TO-DO |
 | DRIFT-002 | Relatório Evidently (PSI/KS) em `reports/` + predições na produção | 2 | DRIFT-001 | BACKLOG |
 | ADR-003 | MLflow vs Prometheus/Grafana | 3 | | DONE |
 | ADR-004 | Atributos sensíveis fora das features do modelo | 1 | | DONE |
@@ -28,3 +28,4 @@
 | IMP-002 | Exportar métricas de drift para Prometheus e painel no Grafana da Fase 3 |
 | IMP-003 | DAG no Airflow rodando validação + drift em lotes semanais simulados |
 | IMP-004 | Gatilho de retreino quando o drift passar de um limiar |
+| IMP-QUARENTENA | Quarentena: linhas ruins separadas, resto do lote segue | melhoria | DQ-002 | BACKLOG |
