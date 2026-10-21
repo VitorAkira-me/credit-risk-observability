@@ -41,3 +41,17 @@ pioram. Monitorar infraestrutura não basta, é preciso monitorar dados e predi�
 **O que é:** todo tratamento de dado pessoal precisa de uma justificativa prevista no art. 7º.
 Em crédito, as candidatas típicas são execução de contrato e **proteção do crédito** (inciso X).
 **Pergunta para pensar:** por que "consentimento" costuma ser uma base fraca para concessão de crédito?
+
+## Data Leakage (vazamento de dados)
+**O que é:** informação que o modelo não teria no mundo real entra no treino. Ex.: linhas da
+Produção (o "futuro") usadas para treinar. As métricas ficam lindas e mentirosas.
+**Analogia:** o aluno que viu a prova antes. Tira 10, mas não aprendeu.
+**Como evitamos:** split feito uma vez, com `seed` fixa, salvo em disco e checado (0 IDs em comum).
+**Pergunta para pensar:** se padronizarmos (`StandardScaler`) usando a média do dataset inteiro
+antes de separar treino e teste, isso é vazamento?
+
+## Split estratificado
+**O que é:** separar os dados mantendo a mesma proporção do alvo em cada parte (aqui, 22,12% de
+default nos dois lados).
+**Por que importa:** sem isso, uma diferença na taxa de default entre Referência e Produção seria
+confundida com drift.
