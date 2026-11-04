@@ -63,7 +63,7 @@ As contagens batem exatamente com os defeitos injetados ([DQ-002](docs/specs/DQ-
 
 ## Estrutura
 ```
-src/credit_risk_observability/   # pacote: config, data/, model/ (contracts/, drift/, monitoring/ a seguir)
+src/credit_risk_observability/   # pacote: config, data/, model/, contracts/, monitoring/ (drift/ a seguir)
 scripts/                         # pontos de entrada do pipeline
 tests/                           # pytest
 reports/                         # evidências versionadas (EDA, relatórios de drift)
