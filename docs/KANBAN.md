@@ -1,31 +1,29 @@
 # KANBAN · Fase 4
 
-> Fonte de verdade das tarefas. Status: BACKLOG, TO-DO, DOING, REVIEW, DONE.
+> O dia a dia das tarefas acontece no Jira, a fonte de verdade: [projeto PMF4](https://akiravkax.atlassian.net/issues?jql=project%20%3D%20PMF4%20ORDER%20BY%20key%20ASC).
+> Melhorias `IMP-*` e prazos ficam só lá. Como nem todo leitor tem acesso ao Jira, esta tabela mostra o
+> andamento no próprio repositório: a coluna Status é atualizada ao fechar cada card.
 > Cada card vira uma spec em `docs/specs/<ID>.md` antes de começar.
 
-| ID | Card | Etapa | Depende de | Status |
-|---|---|---|---|---|
-| SETUP-001 | Repo, `uv`, estrutura de pastas, `.gitignore`, pytest rodando | 0 | | DONE |
-| ADR-001 | Escolha do dataset | 0 | | DONE |
-| DATA-001 | Download + EDA curta + split Referência / Produção (salvos em parquet) | 1 | SETUP-001, ADR-001 | DONE |
-| ML-001 | Modelo baseline treinado na Referência, métricas salvas em JSON | 1 | DATA-001 | DONE |
-| ADR-002 | Pandera vs Great Expectations | 1 | | DONE |
-| DQ-001 | Contrato de dados com ≥3 regras rígidas + testes | 1 | DATA-001, ADR-002 | DONE |
-| DQ-002 | Lote corrompido injetado e ingestão bloqueada (prova com log e exit code) | 1 | DQ-001 | DONE |
-| DRIFT-001 | Gerar Dataset de Produção com data drift (≥2 features) e concept drift | 2 | ML-001 | TO-DO |
-| DRIFT-002 | Relatório Evidently (PSI/KS) em `reports/` + predições na produção | 2 | DRIFT-001 | BACKLOG |
-| ADR-003 | MLflow vs Prometheus/Grafana | 3 | | DONE |
-| ADR-004 | Atributos sensíveis fora das features do modelo | 1 | | DONE |
-| OBS-001 | Logging estruturado do pipeline (sucesso, falha, volume, latência) | 3 | DQ-002 | BACKLOG |
-| OBS-002 | Rastreamento (MLflow) de métricas de saúde e alertas de drift | 3 | OBS-001, DRIFT-002, ADR-003 | BACKLOG |
-| GOV-001 | README: LGPD, base legal, retenção, vieses, análise causal | 4 | DRIFT-002 | BACKLOG |
-| VID-001 | Roteiro STAR e gravação (≤5 min) | 4 | tudo | BACKLOG |
-
-## Melhorias (só depois do essencial)
-| ID | Ideia |
-|---|---|
-| IMP-001 | GitHub Actions rodando contratos e testes em todo PR |
-| IMP-002 | Exportar métricas de drift para Prometheus e painel no Grafana da Fase 3 |
-| IMP-003 | DAG no Airflow rodando validação + drift em lotes semanais simulados |
-| IMP-004 | Gatilho de retreino quando o drift passar de um limiar |
-| IMP-QUARENTENA | Quarentena: linhas ruins separadas, resto do lote segue | melhoria | DQ-002 | BACKLOG |
+| Card | Jira | Status |
+|---|---|---|
+| SETUP-001 | [PMF4-11](https://akiravkax.atlassian.net/browse/PMF4-11) | Done |
+| DATA-001 | [PMF4-12](https://akiravkax.atlassian.net/browse/PMF4-12) | Done |
+| ML-001 | [PMF4-13](https://akiravkax.atlassian.net/browse/PMF4-13) | Done |
+| DQ-001 | [PMF4-14](https://akiravkax.atlassian.net/browse/PMF4-14) | Done |
+| DQ-002 | [PMF4-15](https://akiravkax.atlassian.net/browse/PMF4-15) | Done |
+| DRIFT-001 | [PMF4-16](https://akiravkax.atlassian.net/browse/PMF4-16) | To Do |
+| DRIFT-003 | [PMF4-17](https://akiravkax.atlassian.net/browse/PMF4-17) | To Do |
+| DRIFT-002 | [PMF4-18](https://akiravkax.atlassian.net/browse/PMF4-18) | To Do |
+| OBS-001 | [PMF4-19](https://akiravkax.atlassian.net/browse/PMF4-19) | To Do |
+| OBS-002 | [PMF4-20](https://akiravkax.atlassian.net/browse/PMF4-20) | To Do |
+| OBS-003 | [PMF4-21](https://akiravkax.atlassian.net/browse/PMF4-21) | To Do |
+| GOV-001 | [PMF4-22](https://akiravkax.atlassian.net/browse/PMF4-22) | To Do |
+| GOV-002 | [PMF4-23](https://akiravkax.atlassian.net/browse/PMF4-23) | To Do |
+| GOV-003 | [PMF4-24](https://akiravkax.atlassian.net/browse/PMF4-24) | To Do |
+| GOV-004 | [PMF4-25](https://akiravkax.atlassian.net/browse/PMF4-25) | To Do |
+| DOC-001 | [PMF4-26](https://akiravkax.atlassian.net/browse/PMF4-26) | To Do |
+| VID-001 | [PMF4-27](https://akiravkax.atlassian.net/browse/PMF4-27) | To Do |
+| VID-002 | [PMF4-28](https://akiravkax.atlassian.net/browse/PMF4-28) | To Do |
+| ENTREGA-001 | [PMF4-29](https://akiravkax.atlassian.net/browse/PMF4-29) | To Do |
+| ADR-004 | [PMF4-35](https://akiravkax.atlassian.net/browse/PMF4-35) | To Do |

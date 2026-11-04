@@ -120,16 +120,9 @@ credit-risk-observability/
 | `governanca-lgpd` | Etapa 4: PII, base legal, retenção, vieses, análise causal |
 | `resumo-didatico` | Fim de toda sessão: explicar o que foi feito e por quê |
 
-## 8. Cronograma (5 semanas)
+## 8. Prazos e plano de corte
 
-| Semana | Foco | Cards |
-|---|---|---|
-| 13 a 19/10 | Setup + dados + baseline | SETUP-001, ADR-001, DATA-001, ML-001 |
-| 20 a 26/10 | Etapa 1 completa | DQ-001, DQ-002 |
-| 27/10 a 02/11 | Etapa 2 completa | DRIFT-001, DRIFT-002 |
-| 03 a 09/11 | Etapa 3 completa | OBS-001, OBS-002 |
-| 10 a 14/11 | Etapa 4 + vídeo | GOV-001, VID-001 |
-| 15 a 17/11 | Folga para imprevistos e revisão final | |
+Cards e prazos estão no [Jira, projeto PMF4](https://akiravkax.atlassian.net/issues?jql=project%20%3D%20PMF4%20ORDER%20BY%20key%20ASC), a referência de prazo do projeto.
 
 **Plano de corte** (se apertar): proteger Etapas 1 e 2 (50% da nota). Observabilidade pode cair para
 "relatórios HTML + log estruturado" sem MLflow. Melhorias `IMP-*` são as primeiras a sair.

@@ -1,12 +1,12 @@
 ---
 name: fluxo-spec-driven
-description: Use ao iniciar ou continuar qualquer card do Kanban da Fase 4. Conduz spec, aprovação, implementação, validação real, commit semântico e atualização de STATUS.
+description: Use ao iniciar ou continuar qualquer card da Fase 4. Conduz spec, aprovação, implementação, validação real, commit semântico e atualização de STATUS.
 ---
 
 # Fluxo Spec-Driven (um card por vez)
 
 ## Antes de tudo
-1. Leia `docs/STATUS.md` e a linha do card em `docs/KANBAN.md`. Não leia mais nada sem motivo.
+1. Leia `docs/STATUS.md` e o card no Jira (chave em `docs/KANBAN.md`). Não leia mais nada sem motivo.
 2. Confirme com o Akira qual card será feito.
 
 ## Ciclo
@@ -20,7 +20,8 @@ description: Use ao iniciar ou continuar qualquer card do Kanban da Fase 4. Cond
    exit codes). Desconfie de "sucesso vazio": confirme que o artefato foi de fato gerado ou reescrito.
 6. **Testes:** `uv run pytest -q`.
 7. **Commit em português:** `tipo(escopo): descrição curta`. Um commit por passo lógico.
-8. **Feche:** preencha "Resultado" na spec, mova o card no `KANBAN.md`, atualize `STATUS.md`.
+8. **Feche:** preencha "Resultado" na spec, mova o card no Jira (sem acesso, peça ao Akira para mover),
+   atualize a coluna Status do `KANBAN.md` com o mesmo status e atualize `STATUS.md`.
 9. **Rode a skill `resumo-didatico`.**
 
 ## Quando surgir decisão com trade-off
@@ -28,4 +29,4 @@ Crie `docs/decisions/ADR-<NNN>-<slug>.md` a partir do template, apresente 2 ou 3
 prós e contras e uma recomendação. A decisão é do Akira.
 
 ## Quando surgir ideia boa fora do escopo
-Não implemente. Registre como `IMP-*` no Kanban e siga.
+Não implemente. Registre como `IMP-*` no Jira (sem acesso, peça ao Akira) e siga.
