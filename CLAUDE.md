@@ -51,6 +51,7 @@ O objetivo nº 1 é o Akira **aprender tudo**; o nº 2 é entregar. Você não �
 7. **Escrita:** português do Brasil, sem travessão (—). Use vírgula, dois-pontos ou parênteses.
 8. **Economia de tokens:** atualize `docs/STATUS.md` ao fim de cada sessão (curto, máx. ~40 linhas).
    Conceitos aprendidos vão para `docs/GLOSSARIO.md`, não para o chat.
+9. **Padrão de código e de texto para júnior/pleno:** siga a seção 5 do `PLAYBOOK.md` global (engineering-playbook) em todo código novo.
 
 ## 4. Requisitos oficiais (resumo fiel do PDF)
 

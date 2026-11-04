@@ -22,6 +22,8 @@ uv run python scripts/prepare_data.py     # download, EDA e split Referência / 
 uv run python scripts/train_baseline.py   # treina o baseline e salva métricas
 uv run python scripts/make_corrupted_batch.py                            # lote com defeitos conhecidos
 uv run python scripts/run_validation.py data/production/batch_corrupted.parquet   # exit 1: bloqueado
+uv run python scripts/make_drift_batch.py --scenario data_drift --intensity 1      # lote com data drift
+uv run python scripts/make_drift_batch.py --scenario concept_drift --intensity 1   # lote com concept drift
 uv run pytest -q                          # testes
 uv run ruff check . ; uv run ruff format --check .
 ```
@@ -63,7 +65,7 @@ As contagens batem exatamente com os defeitos injetados ([DQ-002](docs/specs/DQ-
 
 ## Estrutura
 ```
-src/credit_risk_observability/   # pacote: config, data/, model/, contracts/, monitoring/ (drift/ a seguir)
+src/credit_risk_observability/   # pacote: config, data/, model/, contracts/, drift/, monitoring/
 scripts/                         # pontos de entrada do pipeline
 tests/                           # pytest
 reports/                         # evidências versionadas (EDA, relatórios de drift)

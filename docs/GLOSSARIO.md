@@ -88,3 +88,8 @@ o ruff que só lia o `pyproject.toml` e o contrato que aprovaria um lote vazio.
 **Por que importa:** é a linguagem dos orquestradores. `validar && treinar` só treina se a validação
 devolver 0. Um script que imprime "ERRO" mas sai com 0 engana toda a automação.
 **Pergunta para pensar:** se o `run_validation.py` desse `print` do erro e terminasse normalmente, o que o Airflow faria?
+
+## Intensidade de drift
+**O que é:** um número de 0 a 1 que regula o tamanho da mudança simulada: 0 não muda nada, 1 aplica a mudança cheia.
+**Analogia:** o botão de volume. A música é a mesma, só muda o quanto ela aparece.
+**Pergunta para pensar:** a partir de qual intensidade o alarme deveria tocar?
