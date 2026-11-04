@@ -16,6 +16,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License"
 ]
 dependencies = [
+    "evidently==0.7.23",
     "joblib==1.6.0",
     "matplotlib==3.11.2",
     "numpy==2.5.4",
@@ -24,6 +25,7 @@ dependencies = [
     "pyarrow==26.0.0",
     "python-dotenv==1.2.4",
     "scikit-learn==1.9.1",
+    "scipy==1.18.1",
     "ucimlrepo==0.0.7",
 ]
 requires-python = "~=3.12.0"
