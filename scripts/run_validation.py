@@ -21,7 +21,7 @@ import pandas as pd
 from credit_risk_observability.config import VALIDATION_REPORTS_DIR
 from credit_risk_observability.contracts.schema import SCHEMA
 from credit_risk_observability.contracts.validate import validate_batch
-from credit_risk_observability.monitoring.events import log_event
+from credit_risk_observability.monitoring.events import log_event, new_run_id
 
 logger = logging.getLogger("run_validation")
 
@@ -34,6 +34,7 @@ def main(argv: list[str] | None = None, reports_dir: Path = VALIDATION_REPORTS_D
     start = time.perf_counter()
     result = validate_batch(pd.read_parquet(args.batch))
     fields = {
+        "run_id": new_run_id(),
         "batch": args.batch.name,
         "schema": SCHEMA.name,
         "rows": result.rows,

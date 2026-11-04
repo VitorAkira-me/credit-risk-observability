@@ -8,10 +8,22 @@ from datetime import UTC, datetime
 import json
 import logging
 from pathlib import Path
+import uuid
 
 from credit_risk_observability.config import PROJECT_ROOT
 
 PIPELINE_LOG_PATH = PROJECT_ROOT / "logs" / "pipeline.jsonl"
+
+
+def new_run_id() -> str:
+    """Cria a identificação de uma execução.
+
+    Recebe: nada.
+    Faz: sorteia um identificador único. Todos os eventos de uma mesma execução carregam o mesmo,
+        o que permite ao OBS-001 reconstruir o que aconteceu naquela rodada.
+    Devolve: um texto de 32 caracteres, como "3f2a...".
+    """
+    return uuid.uuid4().hex
 
 
 def log_event(logger: logging.Logger, event: str, level: int = logging.INFO, **fields) -> dict:
