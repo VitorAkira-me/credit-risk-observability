@@ -1,3 +1,10 @@
+"""Testes de fumaça: conferem se o projeto está de pé antes de testar qualquer regra.
+
+O que faz: verifica pastas, o pacote e as dependências principais.
+Por que existe: quando o ambiente está quebrado, este teste mostra isso primeiro e de forma clara.
+Onde entra no fluxo: roda no pytest, com os demais testes.
+"""
+
 from pathlib import Path
 
 # Raiz do projeto: dois níveis acima deste arquivo,

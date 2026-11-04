@@ -1,16 +1,16 @@
 """DRIFT-001: gera um lote de Produção com drift, valida no contrato e registra um manifesto.
 
 O que faz: lê a Produção-base, aplica um cenário (data_drift ou concept_drift), confere o lote no
-contrato de dados e salva o lote e o manifesto.
-Por que existe: o detector de drift (DRIFT-002) precisa de lotes em que a "resposta certa" é conhecida.
+contrato de dados e salva o lote e o manifesto (o registro de como o lote foi gerado).
+Por que existe: o detector de drift (DRIFT-002) precisa de lotes com "resposta certa" conhecida.
 Onde entra no fluxo: depois de prepare_data.py e antes do relatório de drift.
 
 Uso:
     uv run python scripts/make_drift_batch.py --scenario data_drift --intensity 1
     uv run python scripts/make_drift_batch.py --scenario concept_drift --intensity 0.5
 
-Exit code (o número que o programa devolve ao terminar): 0 = lote salvo; 1 = lote reprovado no contrato
-e nada gravado, porque drift deve ser "diferente mas possível", nunca dado sujo.
+Exit code (o número que o programa devolve ao terminar): 0 = lote salvo; 1 = lote reprovado no
+contrato e nada gravado, porque drift deve ser "diferente mas possível", nunca dado sujo.
 """
 
 import argparse
@@ -81,6 +81,7 @@ def build_manifest(
         "intensity": args.intensity,
         "seed": args.seed,
         "rows": rows,
+        # ** abre o dicionário aqui dentro: cada detalhe do cenário vira um campo do manifesto.
         **details,
         "contract": SCHEMA.name,
         # Só o nome do arquivo: um caminho completo publicaria detalhes da máquina no repositório.

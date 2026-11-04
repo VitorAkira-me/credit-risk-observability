@@ -2,6 +2,10 @@
 
 JSON em vez de texto livre porque máquina lê sem regex: dá para contar `validation_failed`
 por dia ou somar `rows` sem adivinhar formato. Base para o OBS-001.
+
+O que faz: grava cada evento do pipeline no console e em logs/pipeline.jsonl.
+Por que existe: sem registro, não dá para saber depois quantos lotes passaram ou falharam.
+Onde entra no fluxo: scripts/run_validation.py e scripts/make_drift_batch.py chamam log_event.
 """
 
 from datetime import UTC, datetime
@@ -27,8 +31,14 @@ def new_run_id() -> str:
 
 
 def log_event(logger: logging.Logger, event: str, level: int = logging.INFO, **fields) -> dict:
-    """Emite o evento no logger (console) e acrescenta a mesma linha em logs/pipeline.jsonl."""
+    """Emite o evento no logger (console) e acrescenta a mesma linha em logs/pipeline.jsonl.
+
+    Recebe: o logger, o nome do evento, a gravidade e os campos do evento.
+    Faz: acrescenta o horário em UTC, transforma tudo em uma linha JSON e grava nos dois lugares.
+    Devolve: o evento como dicionário. Exemplo: {"ts": "...", "event": "validation_passed"}.
+    """
     record = {"ts": datetime.now(UTC).isoformat(timespec="milliseconds"), "event": event, **fields}
+    # default=str: um valor que o JSON não conhece vira texto, em vez de derrubar o pipeline.
     line = json.dumps(record, ensure_ascii=False, default=str)
     logger.log(level, line)
     _append(PIPELINE_LOG_PATH, line)
@@ -36,6 +46,12 @@ def log_event(logger: logging.Logger, event: str, level: int = logging.INFO, **f
 
 
 def _append(path: Path, line: str) -> None:
+    """Acrescenta uma linha no fim do arquivo.
+
+    Recebe: o caminho e a linha.
+    Faz: cria a pasta, se faltar, e abre em modo "a" (append), que mantém o que já existe.
+    Devolve: nada.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as fh:
         fh.write(line + "\n")

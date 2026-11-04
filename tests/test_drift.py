@@ -1,7 +1,10 @@
 """Testes do DRIFT-001: provam que os lotes com drift mudam exatamente o que foi decidido.
 
+O que faz: aplica os cenários em dados sintéticos e roda scripts/make_drift_batch.py.
 Por que existe: a simulação só serve como "resposta certa" para o detector se soubermos, com
-certeza, o que foi alterado. Usa dados sintéticos pequenos, então não depende de data/ nem de rede.
+certeza, o que foi alterado.
+Onde entra no fluxo: roda no pytest, com pastas e log temporários, sem depender de data/ nem de
+rede.
 """
 
 import importlib.util
@@ -33,7 +36,12 @@ SEED = 42
 
 
 def load_script(name: str):
-    """Importa um arquivo de scripts/, que não faz parte do pacote instalado."""
+    """Importa um arquivo de scripts/, que não faz parte do pacote instalado.
+
+    Recebe: o nome do script, sem a extensão.
+    Faz: carrega o arquivo como um módulo Python.
+    Devolve: o módulo. Exemplo: load_script("make_drift_batch").main.
+    """
     spec = importlib.util.spec_from_file_location(name, ROOT / "scripts" / f"{name}.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -42,7 +50,7 @@ def load_script(name: str):
 
 @pytest.fixture
 def base() -> pd.DataFrame:
-    """Produção-base sintética, válida no contrato, com faturas negativas e faixas de fatura variadas."""
+    """Produção-base sintética, válida no contrato, com faturas negativas e faixas variadas."""
     rng = np.random.default_rng(1)
     n = 1_000
     df = pd.DataFrame({ID_COLUMN: np.arange(1, n + 1)})
@@ -277,7 +285,12 @@ def test_scenarios_do_not_modify_the_base(base):
 
 
 def run_script(base_df: pd.DataFrame, tmp_path: Path, *args: str) -> int:
-    """Roda o script com caminhos temporários e devolve o exit code."""
+    """Roda o script com caminhos temporários e devolve o exit code.
+
+    Recebe: a base sintética, a pasta temporária e os argumentos da linha de comando.
+    Faz: grava a base em parquet e chama main apontando para pastas temporárias.
+    Devolve: o exit code. Exemplo: 0 quando o lote é salvo.
+    """
     base_path = tmp_path / "base.parquet"
     base_df.to_parquet(base_path, index=False)
     return load_script("make_drift_batch").main(

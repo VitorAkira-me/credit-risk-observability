@@ -2,6 +2,10 @@
 
 Cada defeito cai em linhas **diferentes** das outras: assim a contagem esperada por regra é
 exata e, se a validação reportar outro número, o bug está no contrato ou neste gerador.
+
+Por que existe: para provar que o contrato bloqueia, é preciso saber a resposta antes de validar.
+Onde entra no fluxo: scripts/make_corrupted_batch.py chama inject_defects; depois, o lote passa
+pelo portão scripts/run_validation.py.
 """
 
 import numpy as np
@@ -20,10 +24,17 @@ DEFECTS = {
 def inject_defects(
     df: pd.DataFrame, batch_size: int, seed: int
 ) -> tuple[pd.DataFrame, dict[str, int]]:
-    """Amostra `batch_size` linhas e injeta DEFECTS. Devolve o lote e as contagens esperadas."""
+    """Amostra `batch_size` linhas e injeta DEFECTS. Devolve o lote e as contagens esperadas.
+
+    Recebe: a Produção-base, o tamanho do lote e a seed (número que fixa o sorteio).
+    Faz: separa um grupo de linhas para cada defeito, aplica os defeitos e acrescenta as cópias.
+    Devolve: o lote e as falhas esperadas por regra. Exemplo: 1.000 linhas viram 1.020, com 160
+        falhas esperadas: 50 de idade, 60 de limite, 10 de sexo e 40 de ID repetido.
+    """
     rng = np.random.default_rng(seed)
     batch = df.sample(n=batch_size, random_state=seed).reset_index(drop=True)
 
+    # Embaralha as posições e fatia em sequência: assim, nenhum defeito cai na linha de outro.
     positions = rng.permutation(batch_size)
     groups, start = {}, 0
     for name, n in DEFECTS.items():

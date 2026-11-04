@@ -1,10 +1,18 @@
-"""Caminhos e constantes do projeto, num lugar só."""
+"""Caminhos e constantes do projeto, num lugar só.
+
+O que faz: define onde cada arquivo fica e os números e nomes de colunas usados no pipeline.
+Por que existe: se um caminho ou uma coluna mudar, o ajuste é feito só aqui.
+Onde entra no fluxo: não executa nada sozinho; os módulos e scripts importam daqui.
+"""
 
 from pathlib import Path
 
 # src/credit_risk_observability/config.py -> parents[2] é a raiz do repositório
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
+# Dados: a pasta data/ fica fora do git, porque os arquivos são pesados e têm atributos pessoais.
+# Referência: os dados de treino. Produção: os dados "do futuro", onde o drift é simulado.
+# Parquet: formato de arquivo para tabelas, que guarda o tipo de cada coluna.
 DATA_DIR = PROJECT_ROOT / "data"
 RAW_PATH = DATA_DIR / "raw" / "credit_default.parquet"
 REFERENCE_PATH = DATA_DIR / "reference" / "reference.parquet"
@@ -14,6 +22,7 @@ SPLIT_METADATA_PATH = DATA_DIR / "split_metadata.json"
 CORRUPTED_BATCH_PATH = DATA_DIR / "production" / "batch_corrupted.parquet"
 CORRUPTED_EXPECTED_PATH = DATA_DIR / "production" / "batch_corrupted_expected.json"
 
+# Relatórios: a evidência da entrega, versionada no git.
 REPORTS_DIR = PROJECT_ROOT / "reports"
 EDA_REPORT_PATH = REPORTS_DIR / "eda" / "eda_summary.md"
 VALIDATION_REPORTS_DIR = REPORTS_DIR / "validation"
@@ -22,12 +31,16 @@ DRIFT_REPORTS_DIR = REPORTS_DIR / "drift"
 MODELS_DIR = PROJECT_ROOT / "models"
 
 UCI_DATASET_ID = 350  # Default of Credit Card Clients (Taiwan)
+# Seed: número que fixa os sorteios. Com ela, cada execução sorteia exatamente a mesma coisa.
 SEED = 42
-PRODUCTION_SIZE = 0.30
+PRODUCTION_SIZE = 0.30  # 30% dos clientes vão para a Produção: 9.000 de 30.000
 
 ID_COLUMN = "ID"
+# Alvo (y): o que o modelo tenta prever. 1 se o cliente deu default (calote) no mês seguinte.
 TARGET = "default"
 
+# Grupos de colunas. Feature é uma coluna de entrada do modelo (o X).
+# PAY_*: situação do pagamento em cada mês. BILL_AMT*: valor da fatura. PAY_AMT*: valor pago.
 PAY_STATUS_COLUMNS = ["PAY_0", "PAY_2", "PAY_3", "PAY_4", "PAY_5", "PAY_6"]
 BILL_COLUMNS = [f"BILL_AMT{i}" for i in range(1, 7)]
 PAY_AMOUNT_COLUMNS = [f"PAY_AMT{i}" for i in range(1, 7)]
@@ -47,7 +60,8 @@ MODEL_FEATURES = [c for c in FEATURE_COLUMNS if c not in SENSITIVE_EXCLUDED]
 MODEL_CATEGORICAL = [c for c in CATEGORICAL_COLUMNS if c not in SENSITIVE_EXCLUDED]
 MODEL_NUMERIC = [c for c in MODEL_FEATURES if c not in MODEL_CATEGORICAL]
 
-VALIDATION_SIZE = 0.20
+VALIDATION_SIZE = 0.20  # 20% da Referência ficam fora do treino, para medir o modelo
+# Probabilidade a partir da qual o modelo classifica o cliente como default.
 DECISION_THRESHOLD = 0.5
 MODEL_PATH = MODELS_DIR / "baseline_logreg.joblib"
 METRICS_PATH = MODELS_DIR / "baseline_metrics.json"

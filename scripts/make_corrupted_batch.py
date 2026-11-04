@@ -1,5 +1,9 @@
 """DQ-002: gera data/production/batch_corrupted.parquet a partir da Produção-base.
 
+O que faz: cria um lote com defeitos conhecidos e contados.
+Por que existe: para provar que o portão de validação bloqueia dado sujo.
+Onde entra no fluxo: depois de prepare_data.py e antes de run_validation.py.
+
 Uso:
     uv run python scripts/make_corrupted_batch.py
 
@@ -20,12 +24,18 @@ from credit_risk_observability.config import (
 )
 from credit_risk_observability.contracts.corrupt import DEFECTS, inject_defects
 
-BATCH_SIZE = 1_000
+BATCH_SIZE = 1_000  # linhas sorteadas da Produção-base, antes de acrescentar as duplicadas
 
 logger = logging.getLogger("make_corrupted_batch")
 
 
 def main() -> None:
+    """Gera o lote corrompido e o gabarito.
+
+    Recebe: nada; lê a Produção-base de config.py.
+    Faz: injeta os defeitos e grava o lote e as contagens esperadas por regra.
+    Devolve: nada. Exemplo: as 1.000 linhas viram 1.020, com 160 falhas esperadas.
+    """
     production = pd.read_parquet(PRODUCTION_BASE_PATH)
     batch, expected = inject_defects(production, batch_size=BATCH_SIZE, seed=SEED)
 
@@ -38,6 +48,10 @@ def main() -> None:
     )
     logger.info("Lote corrompido: %s (%d linhas)", CORRUPTED_BATCH_PATH, len(batch))
     logger.info("Falhas esperadas: %s", expected)
+    print(
+        f"Lote corrompido gravado: {len(batch)} linhas, {sum(expected.values())} falhas esperadas "
+        "no contrato. O próximo passo, run_validation.py, precisa bloquear este lote."
+    )
 
 
 if __name__ == "__main__":

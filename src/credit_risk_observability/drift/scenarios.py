@@ -15,6 +15,7 @@ salva. Estas funções não leem nem gravam arquivo, o que permite testá-las co
 Rótulo é o valor da coluna default de um cliente: 1 se deu calote, 0 se não deu.
 Intensidade é um número de 0 a 1: 0 não muda nada e 1 aplica a mudança cheia. O OBS-002 vai usá-la
 para gerar várias "semanas" com drift crescente, sem reescrever código.
+Quantil 0,75 é o valor que deixa 75% dos clientes abaixo. Quartil mais alto: os 25% acima dele.
 """
 
 from dataclasses import dataclass
@@ -29,6 +30,7 @@ LIMIT_COLUMN = "LIMIT_BAL"
 SUBGROUP_COLUMN = "BILL_AMT1"  # fatura mais recente: define quem é o "cliente de fatura alta"
 
 
+# frozen=True: depois de criados, estes objetos não mudam, e a decisão não se altera no caminho.
 @dataclass(frozen=True)
 class DataDriftParams:
     """Fatores do data drift quando a intensidade é 1. Decisão registrada na spec do DRIFT-001."""
@@ -68,7 +70,8 @@ def validate_intensity(intensity: float) -> None:
     Faz: levanta ValueError se ela não estiver entre 0 e 1 (NaN também é recusado).
     Devolve: nada.
     """
-    # Sem o isnan, NaN passaria: qualquer comparação com NaN dá falso, e o lote sairia cheio de NaN.
+    # isnan deixa explícito que NaN é recusado. A faixa também o recusaria, pois comparar com
+    # NaN dá sempre falso. Sem essa recusa, o lote sairia cheio de NaN.
     if math.isnan(intensity) or not 0 <= intensity <= 1:
         raise ValueError(f"A intensidade precisa estar entre 0 e 1; recebi {intensity}")
 
@@ -124,8 +127,8 @@ def plan_concept_drift(
     """Calcula quantos rótulos trocar para dobrar a taxa de default do subgrupo.
 
     Recebe: a Produção-base e o quantil que define o subgrupo.
-    Faz: com N clientes no subgrupo e D com default, a taxa é D / N. Para chegar a 2D / N, é preciso
-        trocar exatamente D rótulos, entre os N - D clientes sem default.
+    Faz: com N clientes no subgrupo e D com default, a taxa é D / N. Para chegar a 2D / N,
+        é preciso trocar exatamente D rótulos, entre os N - D clientes sem default.
     Devolve: o plano. Exemplo: N = 4 e D = 1 dão taxa de 25%, fração de 1/3 e 1 rótulo a trocar,
         e a taxa sobe para 2/4 = 50%.
     """
@@ -163,7 +166,7 @@ def apply_concept_drift(
 ) -> tuple[pd.DataFrame, dict]:
     """Gera o lote de concept drift: as entradas ficam iguais, e alguns rótulos passam a default.
 
-    Recebe: a Produção-base, a intensidade (0 a 1), a seed (número que fixa o sorteio) e o subgrupo.
+    Recebe: a Produção-base, a intensidade (0 a 1), a seed (fixa o sorteio) e o subgrupo.
     Faz: embaralha uma única vez os clientes do subgrupo sem default e troca os primeiros da lista.
         Como a ordem depende só da seed, quem muda em 0,3 continua mudando em 0,6, e a evolução
         entre "semanas" mostra o drift, não a sorte do sorteio.
@@ -181,6 +184,7 @@ def apply_concept_drift(
     chosen_positions = shuffled_positions[:labels_to_flip]
 
     batch = base.copy()
+    # iloc trabalha por posição: nas linhas escolhidas, a coluna default passa a valer 1.
     batch.iloc[chosen_positions, batch.columns.get_loc(TARGET)] = 1
 
     details = {
