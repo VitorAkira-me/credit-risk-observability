@@ -8,6 +8,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = PROJECT_ROOT / "data"
 RAW_PATH = DATA_DIR / "raw" / "credit_default.parquet"
 REFERENCE_PATH = DATA_DIR / "reference" / "reference.parquet"
+PRODUCTION_DIR = DATA_DIR / "production"
 PRODUCTION_BASE_PATH = DATA_DIR / "production" / "production_base.parquet"
 SPLIT_METADATA_PATH = DATA_DIR / "split_metadata.json"
 CORRUPTED_BATCH_PATH = DATA_DIR / "production" / "batch_corrupted.parquet"
@@ -16,6 +17,7 @@ CORRUPTED_EXPECTED_PATH = DATA_DIR / "production" / "batch_corrupted_expected.js
 REPORTS_DIR = PROJECT_ROOT / "reports"
 EDA_REPORT_PATH = REPORTS_DIR / "eda" / "eda_summary.md"
 VALIDATION_REPORTS_DIR = REPORTS_DIR / "validation"
+DRIFT_REPORTS_DIR = REPORTS_DIR / "drift"
 
 MODELS_DIR = PROJECT_ROOT / "models"
 

@@ -1,0 +1,21 @@
+{
+  "run_id": "9c889aafaea94a098533a173fddc47eb",
+  "created_at": "2026-11-04T12:41:19+00:00",
+  "scenario": "data_drift",
+  "intensity": 1.0,
+  "seed": 42,
+  "rows": 9000,
+  "bill_factor": 1.25,
+  "limit_factor": 0.75,
+  "labels_flipped": 0,
+  "contract": "credit_default_input_v1",
+  "base_file": "production_base.parquet",
+  "base_sha256": "2a7537e89b2f7968146fb03b3fe282094b2d587d44a77b3c0d22f76022a0d60b",
+  "batch_file": "batch_data_drift_i100.parquet",
+  "batch_sha256": "597115813c50529d79fb10cd4318eb860a1bce6022e23ac0763c097109ac0157",
+  "versions": {
+    "python": "3.12.10",
+    "pandas": "3.0.6",
+    "numpy": "2.5.4"
+  }
+}
