@@ -60,3 +60,88 @@
 - **Descartado:** `PAY_*` como categóricas, que perderiam o KS e a noção de que mais atraso é pior.
 - **Esperávamos e aconteceu:** as 23 colunas rodaram, e essa configuração foi a usada na medição do DRIFT-001.
 - **Pergunta para o Akira:** `PAY_*` usa -2 e -1 como rótulos, não como quantidade. O que isso limita na leitura do KS?
+
+## Mapa do código
+
+### O caminho de um lote, do download até o portão
+
+Hoje os scripts rodam à mão, nesta ordem: nenhum orquestrador os encadeia ainda.
+
+1. `scripts/prepare_data.py` baixa os dados (`data/download.py`), resume (`data/eda.py`) e separa Referência e Produção-base (`data/split.py`).
+2. `scripts/train_baseline.py` treina o modelo na Referência (`model/train.py`) e mede o AUC na Produção-base (`model/predict.py`): é a régua para saber depois se o modelo piorou.
+3. `scripts/make_corrupted_batch.py` (`contracts/corrupt.py`) ou `scripts/make_drift_batch.py` (`drift/scenarios.py`) criam um lote a partir da Produção-base.
+4. `scripts/run_validation.py` aplica o contrato (`contracts/validate.py` e `contracts/schema.py`), registra o resultado (`monitoring/events.py`) e devolve o exit code: 0 deixa o lote seguir, 1 o bloqueia.
+
+O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote reprovado nem chega ao disco. Depois do portão, o caminho ainda termina: pontuar o lote aprovado e medir o drift é o DRIFT-002.
+
+### Cada arquivo em uma frase
+
+**Config**
+- `src/credit_risk_observability/__init__.py`: marca a pasta como pacote Python e guarda o `main()` de exemplo, sem papel no pipeline.
+- `config.py`: guarda num lugar só os caminhos, a seed e os nomes de colunas que todo o projeto usa.
+
+**Data**
+- `data/__init__.py`: marca a pasta de dados como parte do pacote.
+- `data/download.py`: baixa os 30.000 clientes do UCI, dá às colunas os nomes oficiais e guarda a cópia local.
+- `data/eda.py`: resume os dados no relatório que embasou as regras do contrato e a escolha de métricas.
+- `data/split.py`: separa Referência e Produção-base sem cliente em comum e registra como isso foi feito.
+
+**Model**
+- `model/__init__.py`: marca a pasta do modelo como parte do pacote.
+- `model/train.py`: monta o baseline (o modelo simples que serve de régua) e calcula as métricas de qualidade.
+- `model/predict.py`: carrega um modelo salvo e calcula a probabilidade de default de cada cliente.
+
+**Contracts**
+- `contracts/__init__.py`: marca a pasta do contrato como parte do pacote.
+- `contracts/schema.py`: declara o que é um lote válido: colunas, tipos e valores permitidos.
+- `contracts/validate.py`: aplica o contrato a um lote e devolve se passou e quais regras falharam.
+- `contracts/corrupt.py`: estraga um lote de propósito, com defeitos contados, para provar que o contrato bloqueia.
+
+**Monitoring**
+- `monitoring/__init__.py`: marca a pasta de monitoramento como parte do pacote.
+- `monitoring/events.py`: grava cada evento do pipeline como uma linha JSON em `logs/pipeline.jsonl`, com o `run_id` da execução.
+
+**Drift**
+- `drift/__init__.py`: marca a pasta de drift como parte do pacote.
+- `drift/scenarios.py`: altera a Produção-base de forma controlada, gerando data drift (as entradas mudam) ou concept drift (o resultado muda).
+
+**Scripts** (os pontos de entrada, que você roda no terminal)
+- `scripts/prepare_data.py`: passo 1, produz a Referência e a Produção-base a partir do download.
+- `scripts/train_baseline.py`: passo 2, treina o modelo e salva modelo e métricas.
+- `scripts/make_corrupted_batch.py`: passo 3, gera o lote corrompido e o gabarito de falhas esperadas.
+- `scripts/make_drift_batch.py`: passo 3, gera um lote com drift, confere no contrato e grava o manifesto (o registro de como o lote foi gerado).
+- `scripts/run_validation.py`: passo 4, o portão: decide pelo exit code se o lote segue ou para.
+
+**Tests** (rodam com `uv run pytest`, sem depender de `data/` nem de rede)
+- `tests/test_smoke.py`: confere se as pastas, o pacote e as dependências estão de pé.
+- `tests/test_split.py`: prova que o split separa os clientes sem vazamento e é repetível.
+- `tests/test_model.py`: prova que o modelo aprende, é medido certo e não usa `SEX` nem `MARRIAGE`.
+- `tests/test_contract.py`: prova que cada regra do contrato bloqueia o defeito que promete bloquear.
+- `tests/test_ingestion_gate.py`: prova que o portão devolve o exit code certo e encontra exatamente os defeitos injetados.
+- `tests/test_drift.py`: prova que os lotes com drift mudam exatamente o que foi decidido.
+
+## Padrão júnior/pleno no código existente (04/11/2026)
+
+### 8. O que contou como "só comentário" (decisão do Claude)
+- **O que:** 28 arquivos receberam docstrings e comentários, e 4 scripts ganharam 5 `print` com um resumo em português: `prepare_data.py`, `train_baseline.py`, `make_corrupted_batch.py` e `run_validation.py` (aprovado e bloqueado). Log JSON, mensagens de erro e textos do `argparse` ficaram iguais.
+- **Por quê:** o playbook pede que scripts imprimam um resumo para humano, e você incluiu mensagens impressas no escopo. Os `print` só leem valores que já existiam.
+- **Descartado:** reescrever as mensagens de `logger.info`, porque log é registro de máquina e não fazia parte do pedido.
+- **Esperávamos:** mesma lógica, mesmos artefatos e os mesmos 59 testes.
+- **Aconteceu:** árvore de sintaxe igual nos 28 arquivos, sem contar docstrings e `print`; 16 artefatos e 8 eventos de log iguais aos da main.
+- **Pergunta para o Akira:** o `print` vai para o stdout, e o log do `logging` vai para o stderr. Por que isso importa se alguém usar `run_validation.py > saida.txt`?
+
+### 9. Testes com docstring de uma linha (proposta do Claude, aprovada pelo Akira e agora regra do playbook)
+- **O que:** funções de teste e fixtures dizem em uma linha o que provam; "Recebe / Faz / Devolve" ficou para o código e para os ajudantes dos testes.
+- **Por quê:** em teste, o que interessa é o comportamento provado. As três partes repetiriam `base` e `None` 62 vezes.
+- **Descartado:** aplicar as três partes em todas as 101 funções, como o playbook dizia ao pé da letra na época.
+- **Esperávamos e aconteceu:** 39 funções com as três partes e 62 com uma linha.
+- **Pergunta para o Akira:** se um teste precisa de mais de uma linha para explicar o que prova, o que isso sugere sobre o próprio teste?
+
+### 10. O que apareceu ao ler o código, sem corrigir porque lógica estava fora do escopo (decisão do Claude)
+- **O que:** um comentário antigo meu estava errado e foi corrigido: dizia que, sem o `isnan`, NaN passaria em `validate_intensity`. Passaria não: `not 0 <= nan <= 1` já dá `True`, então o `isnan` é redundante. Ficaram sem mexer:
+  - `load_model` ainda não tem quem chame (vai ser usado no DRIFT-002);
+  - `prepare_data.py` grava os arquivos antes de checar o vazamento, então uma falha deixaria os arquivos no disco (débito no Jira PMF4-39, prioridade baixa);
+  - `inject_defects` não confere se os defeitos cabem no lote: com um lote pequeno demais, os grupos ficariam menores que o gabarito (débito no Jira PMF4-39, prioridade baixa).
+- **Por quê:** o pedido era não mudar comportamento; misturar correção aqui estragaria a prova.
+- **Descartado:** corrigir tudo no mesmo PR.
+- **Pergunta para o Akira:** um comentário errado passou pela revisão do DRIFT-001, e os testes não o pegaram. Que tipo de erro nenhum teste automático consegue encontrar?

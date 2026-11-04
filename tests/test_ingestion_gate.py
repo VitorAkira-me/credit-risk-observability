@@ -1,3 +1,10 @@
+"""Testes do portão de ingestão: o lote corrompido é bloqueado, e o lote limpo passa.
+
+O que faz: roda scripts/run_validation.py de verdade, com arquivos e log temporários.
+Por que existe: o orquestrador decide pelo exit code, então é ele que precisa estar certo.
+Onde entra no fluxo: roda no pytest; não toca em data/, reports/ nem logs/ do projeto.
+"""
+
 import importlib.util
 import json
 from pathlib import Path
@@ -15,6 +22,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def load_script(name: str):
+    """Importa um arquivo de scripts/, que não faz parte do pacote instalado.
+
+    Recebe: o nome do script, sem a extensão.
+    Faz: carrega o arquivo como um módulo Python.
+    Devolve: o módulo. Exemplo: load_script("run_validation").main.
+    """
     spec = importlib.util.spec_from_file_location(name, ROOT / "scripts" / f"{name}.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -23,6 +36,7 @@ def load_script(name: str):
 
 @pytest.fixture
 def clean_population() -> pd.DataFrame:
+    """População sintética de 500 clientes válidos, de onde sai o lote corrompido."""
     rng = np.random.default_rng(1)
     n = 500
     df = pd.DataFrame({ID_COLUMN: np.arange(1, n + 1)})
@@ -39,10 +53,12 @@ def clean_population() -> pd.DataFrame:
 
 @pytest.fixture(autouse=True)
 def isolated_log(tmp_path, monkeypatch):
+    """Evita que os testes escrevam no log real do pipeline."""
     monkeypatch.setattr(events, "PIPELINE_LOG_PATH", tmp_path / "pipeline.jsonl")
 
 
 def test_validation_finds_exactly_the_injected_defects(clean_population):
+    """O contrato acha exatamente os defeitos injetados: nem mais, nem menos."""
     batch, expected = inject_defects(clean_population, batch_size=200, seed=42)
 
     result = validate_batch(batch)
@@ -53,6 +69,7 @@ def test_validation_finds_exactly_the_injected_defects(clean_population):
 
 
 def test_gate_returns_0_and_logs_pass(clean_population, tmp_path):
+    """Lote limpo: exit 0, evento de aprovação e nenhum relatório criado."""
     path = tmp_path / "clean.parquet"
     clean_population.to_parquet(path)
 
@@ -66,6 +83,7 @@ def test_gate_returns_0_and_logs_pass(clean_population, tmp_path):
 
 
 def test_gate_returns_1_logs_failure_and_saves_cases(clean_population, tmp_path):
+    """Lote sujo: exit 1, evento de falha e um CSV com todos os casos."""
     batch, expected = inject_defects(clean_population, batch_size=200, seed=42)
     path = tmp_path / "bad.parquet"
     batch.to_parquet(path)

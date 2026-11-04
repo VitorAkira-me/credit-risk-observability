@@ -6,6 +6,9 @@ errado, nulo, ID repetido, valor fora do domínio. Ele **não** barra mudança d
 
 Códigos legados que já existem na Referência (EDUCATION 0/5/6, MARRIAGE 0, PAY_* -2/0) são
 aceitos: barrá-los rejeitaria clientes reais que o modelo foi treinado para atender.
+
+Por que existe: um dado sujo que entra no modelo vira uma predição errada sem nenhum aviso.
+Onde entra no fluxo: contracts/validate.py aplica este contrato em cada lote.
 """
 
 import pandera.pandas as pa
@@ -18,6 +21,7 @@ from credit_risk_observability.config import (
     TARGET,
 )
 
+# Domínio: o conjunto de valores que uma coluna pode ter.
 MIN_AGE, MAX_AGE = 18, 100
 SEX_CODES = [1, 2]
 EDUCATION_CODES = list(range(7))  # 1 a 4 documentados; 0, 5, 6 legados vistos na EDA
@@ -27,11 +31,19 @@ PAY_STATUS_CODES = list(range(-2, 10))
 
 
 def build_schema() -> pa.DataFrameSchema:
+    """Monta o contrato de dados.
+
+    Recebe: nada.
+    Faz: declara o tipo e as regras de cada coluna. Pandera recusa nulos por padrão, então toda
+        coluna daqui é obrigatoriamente preenchida.
+    Devolve: o schema (a descrição do que é um lote válido). Exemplo: AGE = 15 é reprovado.
+    """
     columns = {
         # Regra: ID único (um cliente por linha no lote)
         ID_COLUMN: pa.Column(int, pa.Check.gt(0), unique=True),
         # Regra: limite de crédito obrigatório e positivo
         "LIMIT_BAL": pa.Column(int, pa.Check.gt(0)),
+        # Regra: códigos dentro do domínio, para o modelo não receber categoria desconhecida
         "SEX": pa.Column(int, pa.Check.isin(SEX_CODES)),
         "EDUCATION": pa.Column(int, pa.Check.isin(EDUCATION_CODES)),
         "MARRIAGE": pa.Column(int, pa.Check.isin(MARRIAGE_CODES)),

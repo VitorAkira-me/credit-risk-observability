@@ -1,4 +1,10 @@
-"""EDA curta: só o que alimenta decisões (contrato de dados, modelo, viés)."""
+"""EDA curta: só o que alimenta decisões (contrato de dados, modelo, viés).
+
+O que faz: resume os dados e escreve o relatório reports/eda/eda_summary.md.
+Por que existe: as regras do contrato e a escolha de métricas partem do que os dados mostram.
+    EDA (análise exploratória de dados) é olhar os dados antes de decidir o que fazer com eles.
+Onde entra no fluxo: scripts/prepare_data.py chama estas funções logo depois do download.
+"""
 
 import pandas as pd
 
@@ -12,7 +18,12 @@ from credit_risk_observability.config import (
 
 
 def undocumented_codes(df: pd.DataFrame) -> dict[str, dict[int, int]]:
-    """Para cada coluna codificada, conta os valores que o dicionário do UCI não explica."""
+    """Para cada coluna codificada, conta os valores que o dicionário do UCI não explica.
+
+    Recebe: a tabela de clientes.
+    Faz: compara cada coluna com DOCUMENTED_CODES e conta o que ficou de fora.
+    Devolve: um dicionário. Exemplo: {"EDUCATION": {0: 14}} significa 14 clientes com código 0.
+    """
     result = {}
     for col, allowed in DOCUMENTED_CODES.items():
         counts = df.loc[~df[col].isin(allowed), col].value_counts().sort_index()
@@ -22,6 +33,12 @@ def undocumented_codes(df: pd.DataFrame) -> dict[str, dict[int, int]]:
 
 
 def summarize(df: pd.DataFrame) -> dict:
+    """Calcula os números que aparecem no relatório.
+
+    Recebe: a tabela de clientes.
+    Faz: conta linhas, nulos, duplicados e códigos desconhecidos, e mede a taxa de default.
+    Devolve: um dicionário com esses números, pronto para render_markdown.
+    """
     return {
         "rows": len(df),
         "columns": df.shape[1],
@@ -31,6 +48,7 @@ def summarize(df: pd.DataFrame) -> dict:
         "default_rate": float(df[TARGET].mean()),
         "age_range": (int(df["AGE"].min()), int(df["AGE"].max())),
         "limit_bal_range": (int(df["LIMIT_BAL"].min()), int(df["LIMIT_BAL"].max())),
+        # any(axis=1): o cliente conta uma vez, mesmo com várias faturas negativas.
         "negative_bills": int((df[BILL_COLUMNS] < 0).any(axis=1).sum()),
         "undocumented_codes": undocumented_codes(df),
         "default_rate_by_group": {
@@ -41,6 +59,12 @@ def summarize(df: pd.DataFrame) -> dict:
 
 
 def render_markdown(s: dict) -> str:
+    """Escreve o relatório da EDA em Markdown.
+
+    Recebe: o dicionário de summarize.
+    Faz: monta as tabelas e as implicações, linha a linha.
+    Devolve: o texto completo do relatório.
+    """
     lines = [
         "# EDA curta · Default of Credit Card Clients (UCI)",
         "",

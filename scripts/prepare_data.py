@@ -1,5 +1,9 @@
 """DATA-001: baixa o raw, gera a EDA curta e separa Referência / Produção.
 
+O que faz: transforma o download do UCI nos dois arquivos que o resto do projeto usa.
+Por que existe: o modelo treina na Referência, e os lotes de drift partem da Produção-base.
+Onde entra no fluxo: é o primeiro script; train_baseline.py e os geradores de lote vêm depois.
+
 Uso:
     uv run python scripts/prepare_data.py            # reaproveita o raw se já existir
     uv run python scripts/prepare_data.py --refresh  # força novo download
@@ -26,6 +30,12 @@ logger = logging.getLogger("prepare_data")
 
 
 def main() -> None:
+    """Prepara os dados do projeto.
+
+    Recebe: nada; só a opção --refresh, pela linha de comando.
+    Faz: obtém o raw, grava a EDA, separa os dois grupos e registra como isso foi feito.
+    Devolve: nada. Encerra com erro se algum cliente estiver nos dois grupos.
+    """
     parser = argparse.ArgumentParser(description="Prepara Referência e Produção (DATA-001)")
     parser.add_argument("--refresh", action="store_true", help="baixa o raw de novo")
     args = parser.parse_args()
@@ -46,8 +56,14 @@ def main() -> None:
     SPLIT_METADATA_PATH.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
     logger.info("Metadata: %s", json.dumps(metadata))
 
+    # Vazamento: o modelo veria na Produção clientes que já viu no treino e pareceria melhor.
     if metadata["shared_ids"] != 0:
         raise SystemExit("Vazamento: Referência e Produção compartilham IDs")
+
+    print(
+        f"Dados prontos: {len(reference)} clientes na Referência (treino) e "
+        f"{len(production)} na Produção-base, sem nenhum cliente em comum."
+    )
 
 
 if __name__ == "__main__":

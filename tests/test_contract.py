@@ -1,3 +1,10 @@
+"""Testes de contracts/: cada regra do contrato bloqueia o defeito que ela promete bloquear.
+
+O que faz: parte de um lote válido, estraga uma coisa por vez e confere a regra que reclamou.
+Por que existe: um contrato que deixa dado sujo passar dá uma falsa sensação de segurança.
+Onde entra no fluxo: roda no pytest, com dados sintéticos pequenos.
+"""
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -25,12 +32,19 @@ def clean_batch() -> pd.DataFrame:
 
 
 def assert_blocked_by(df: pd.DataFrame, rule: str, count: int = 1) -> None:
+    """Confere se o lote foi bloqueado pela regra certa.
+
+    Recebe: o lote, o nome da regra e quantas falhas ela deve apontar.
+    Faz: valida e compara. Se falhar, o pytest mostra todas as regras que reclamaram.
+    Devolve: nada. Exemplo: rule="AGE:in_range(18, 100)", count=1.
+    """
     result = validate_batch(df)
     assert not result.passed
     assert result.failures_by_rule.get(rule) == count, result.failures_by_rule
 
 
 def test_clean_batch_passes(clean_batch):
+    """Um lote válido passa, inclusive com os códigos legados aceitos."""
     result = validate_batch(clean_batch)
 
     assert result.passed, result.failures_by_rule
@@ -38,22 +52,26 @@ def test_clean_batch_passes(clean_batch):
 
 
 def test_batch_without_target_passes(clean_batch):
+    """Lote de escoragem chega sem o default: o alvo é opcional."""
     assert validate_batch(clean_batch.drop(columns=TARGET)).passed
 
 
 def test_underage_is_blocked(clean_batch):
+    """AGE 17 está abaixo da idade mínima legal de 18."""
     clean_batch.loc[0, "AGE"] = 17
 
     assert_blocked_by(clean_batch, "AGE:in_range(18, 100)")
 
 
 def test_non_positive_limit_is_blocked(clean_batch):
+    """Limite zero e limite negativo são barrados: 2 falhas."""
     clean_batch.loc[[0, 1], "LIMIT_BAL"] = [0, -10]
 
     assert_blocked_by(clean_batch, "LIMIT_BAL:greater_than(0)", count=2)
 
 
 def test_null_limit_is_blocked(clean_batch):
+    """Coluna de inteiros não guarda nulo: vira float, e falham o nulo e o tipo."""
     clean_batch["LIMIT_BAL"] = clean_batch["LIMIT_BAL"].astype(float)
     clean_batch.loc[0, "LIMIT_BAL"] = np.nan
 
@@ -65,50 +83,59 @@ def test_null_limit_is_blocked(clean_batch):
 
 
 def test_duplicated_id_is_blocked(clean_batch):
+    """O original e a cópia contam: 1 par de IDs repetidos dá 2 falhas."""
     clean_batch.loc[1, ID_COLUMN] = clean_batch.loc[0, ID_COLUMN]
 
     assert_blocked_by(clean_batch, "ID:field_uniqueness", count=2)
 
 
 def test_unknown_sex_code_is_blocked(clean_batch):
+    """SEX 3 está fora do domínio do contrato."""
     clean_batch.loc[0, "SEX"] = 3
 
     assert_blocked_by(clean_batch, "SEX:isin([1, 2])")
 
 
 def test_pay_status_out_of_domain_is_blocked(clean_batch):
+    """PAY_0 vai até 9 meses de atraso: 10 é barrado."""
     clean_batch.loc[0, "PAY_0"] = 10
 
     assert_blocked_by(clean_batch, "PAY_0:isin([-2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9])")
 
 
 def test_negative_payment_is_blocked(clean_batch):
+    """Valor pago não pode ser negativo."""
     clean_batch.loc[0, "PAY_AMT1"] = -1
 
     assert_blocked_by(clean_batch, "PAY_AMT1:greater_than_or_equal_to(0)")
 
 
 def test_non_binary_target_is_blocked(clean_batch):
+    """O default só pode ser 0 ou 1."""
     clean_batch.loc[0, TARGET] = 2
 
     assert_blocked_by(clean_batch, "default:isin([0, 1])")
 
 
 def test_unexpected_column_is_blocked(clean_batch):
+    """strict=True: uma coluna a mais, como um CPF, é erro, e não é ignorada."""
     clean_batch["CPF"] = "000.000.000-00"
 
     assert_blocked_by(clean_batch, "<lote>:column_in_schema")
 
 
 def test_missing_column_is_blocked(clean_batch):
+    """Sem uma coluna obrigatória, o lote inteiro é barrado."""
     assert_blocked_by(clean_batch.drop(columns="AGE"), "<lote>:column_in_dataframe")
 
 
 def test_empty_batch_is_blocked(clean_batch):
+    """Lote vazio passaria nas regras de coluna: é o sucesso vazio barrado na porta."""
     assert_blocked_by(clean_batch.iloc[0:0], "<lote>:lote_nao_vazio")
 
 
 def test_all_errors_are_reported_at_once(clean_batch):
+    """lazy=True: os 3 defeitos aparecem juntos, e não um por vez."""
     clean_batch.loc[0, "AGE"] = 15
     clean_batch.loc[1, "LIMIT_BAL"] = 0
     clean_batch.loc[2, "SEX"] = 9
