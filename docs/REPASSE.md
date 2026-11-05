@@ -145,3 +145,68 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **Por quê:** o pedido era não mudar comportamento; misturar correção aqui estragaria a prova.
 - **Descartado:** corrigir tudo no mesmo PR.
 - **Pergunta para o Akira:** um comentário errado passou pela revisão do DRIFT-001, e os testes não o pegaram. Que tipo de erro nenhum teste automático consegue encontrar?
+
+## DRIFT-002 · Relatório de drift (04/11/2026)
+
+### 11. Régua dos quatro quadrantes (decisão do Akira)
+- **O que:** cada lote responde a duas perguntas: as features mudaram (PSI acima de 0,25 ou KS, um teste que devolve p-valor, abaixo de 0,05)? A performance caiu (AUC, a medida de ordenação dos clientes, abaixo de 0,701)? O cruzamento dá quatro diagnósticos.
+- **Por quê:** o DRIFT-001 mostrou que o concept drift não aparece nas colunas. Um relatório só de features o chamaria de "tudo certo".
+- **Descartado:** relatório só de features, ou um veredito de alerta já neste card (fica para o OBS-002).
+- **Esperávamos:** controle "sem drift relevante", data drift "sem impacto" e concept drift "suspeita de concept drift", com 60% de confiança no controle.
+- **Aconteceu:** os três como previsto. AUC de 0,7149, 0,7144 e 0,6647.
+- **Pergunta para o Akira:** o quadrante diz "suspeita", e não "concept drift". O que você precisaria ver, além da queda de AUC, para trocar a suspeita por certeza?
+
+### 12. A régua do KS dá alarme falso em 31% das divisões (achado do Claude, regra mantida)
+- **O que:** "alguma feature com p-valor abaixo de 0,05" são 20 testes por lote. Refiz a divisão Referência/Produção 200 vezes, sem nenhum drift: 62 deram ao menos um alarme, com até 14 colunas de uma vez.
+- **Por quê importa:** a nossa seed caiu nos outros 69%, com menor p-valor de 0,183. Em outra divisão, o controle sairia "data drift sem impacto", e o concept drift, "data drift com impacto": a história do vídeo mudaria por sorte.
+- **Descartado:** ajustar a regra para o resultado ficar seguro. Você pediu para não ajustar, e o veredito é do OBS-002.
+- **Esperávamos:** chance de 30% a 50%. **Aconteceu:** 31%.
+- **Pergunta para o Akira:** se fossem 20 testes independentes, seriam 64%. Por que deu menos? E o que você mudaria na régua no OBS-002?
+
+### 13. Limiares explícitos no Evidently, até no drift do conjunto (decisão do Claude)
+- **O que:** PSI 0,25, KS 0,05 e `drift_share = 1/23` no relatório.
+- **Por quê:** os padrões dele são PSI 0,1 e 50% das colunas. O HTML do lote de data drift dizia "Dataset Drift is NOT detected" logo abaixo do nosso "data drift", porque só 1 de 23 colunas (PSI) e 7 de 23 (KS) mudaram.
+- **Descartado:** deixar o padrão e explicar a diferença no texto, o que faria o avaliador ler uma contradição.
+- **Esperávamos e aconteceu:** "NOT detected" no controle e no concept drift; "detected" no data drift, conferido abrindo a página no navegador.
+- **Pergunta para o Akira:** um limite de 50% das colunas faz sentido para quem? Em que tipo de sistema ele seria uma boa régua, e por que não no nosso?
+
+### 14. Performance no resumo, e não nas métricas do Evidently (decisão do Claude)
+- **O que:** AUC, recall e precisão vêm do `evaluate` do projeto e aparecem num resumo em português no topo do HTML.
+- **Por quê:** na tabela do Evidently, a comparação seria com a Referência; a sua decisão compara com a Produção-base. Usar o `evaluate` também garante o mesmo cálculo do ML-001.
+- **Descartado:** `ClassificationPreset` do Evidently. Daria gráficos prontos, mas contra o conjunto errado.
+- **Esperávamos e aconteceu:** Produção-base com 0,7149, igual a `baseline_metrics.json`, conferido por teste.
+- **Pergunta para o Akira:** o limite de 0,701 veio de um lote de 9.000 linhas. O que acontece com ele num lote semanal de 1.000 linhas, no OBS-002?
+
+### 15. As 23 features entram na régua, e o lote reprovado não gera relatório (decisão do Claude)
+- **O que:** `SEX` e `MARRIAGE` são medidas mesmo fora do modelo; categóricas só têm PSI, então são 23 colunas no PSI e 20 no KS. Lote reprovado no contrato dá exit 1 e nenhum relatório.
+- **Por quê:** mudança no público atendido importa para o viés (GOV-003), mesmo sem entrar no modelo. E dado sujo não é drift.
+- **Descartado:** medir só as 21 features do modelo; o KS com categóricas, que dá erro.
+- **Esperávamos e aconteceu:** coberto por testes; os 3 lotes reais passam no contrato.
+- **Pergunta para o Akira:** se `SEX` mudar muito e o modelo nem a usa, o diagnóstico "data drift sem impacto no modelo" conta a história inteira?
+
+### 16. Telemetria e o que ela realmente garante (decisão do Akira, com ressalva do Claude)
+- **O que:** `DO_NOT_TRACK=1` no `detect.py`, antes do import do Evidently.
+- **Ressalva:** a sua decisão citava reprodutibilidade, mas telemetria não muda nenhum número. Na versão 0.7.23, o envio só é chamado pelos serviços de UI e coletor, não pelo `Report`. Vale como garantia de privacidade; não medi o tráfego de rede.
+- **Esperávamos e aconteceu:** `event_logger.enabled()` dá falso, conferido por teste. Reproduzir o JSON dá números idênticos; o HTML muda em identificadores internos.
+- **Pergunta para o Akira:** para a banca, como você provaria que nenhum dado saiu da máquina?
+
+### 17. Erro de processo: relatórios contaminados por mutação (erro do Claude)
+- **O que:** rodei a regeneração dos relatórios ao mesmo tempo que a mutação, que altera o código de propósito. Um relatório saiu com limite 0,65, em vez de 0,701.
+- **Como foi pego:** a saída impressa do script mostrou o limite. Apaguei os relatórios, conferi o código e os hashes dos lotes (intactos), e gerei de novo sozinho.
+- **Lição:** nada que grava evidência roda em paralelo com algo que altera o código.
+- **Pergunta para o Akira:** esse erro seria pego se o script não imprimisse o limite usado? O que no JSON ajudaria a detectá-lo depois?
+
+### 18. Lote com uma classe só e lotes pequenos (achados da revisão do Claude)
+- **O que:** um lote só com `default = 0` dava AUC `nan` e diagnóstico "sem drift relevante", porque NaN nunca é "abaixo de 0,701". Agora ele é recusado com erro claro. Além disso, o limite de 0,701 vale para lotes de cerca de 9.000 linhas: amostras sem drift nenhum ficaram abaixo dele em 5 de 40 vezes com 1.000 linhas, e em 14 de 40 com 500.
+- **Por quê:** a primeira é sucesso vazio, e foi corrigida. A segunda afeta o OBS-002, que vai gerar "semanas", e fica registrada, porque a regra é sua.
+- **Descartado:** tratar NaN como "caiu", que chamaria de concept drift um lote que nem pôde ser medido.
+- **Esperávamos:** lote recusado. **Aconteceu:** o teste falhou antes da correção (`AUC: nan`) e passou depois; os três relatórios reais não mudaram.
+- **Pergunta para o Akira:** como o limite de queda deveria mudar conforme o tamanho do lote?
+
+### 19. Política de HTML e destino dos achados (decisão do Akira)
+- **O que:** os 3 relatórios do DRIFT-002 ficam versionados como evidência da Etapa 2 e não devem ser regerados em PRs futuros. Daqui em diante, relatórios de execuções do pipeline vão para uma pasta fora do git e, no OBS-002, para os artefatos do MLflow.
+- **Por quê:** cada HTML tem 6,3 MB, quase todo de JavaScript repetido, e muda a cada geração mesmo com os mesmos números. Regerar os três soma cerca de 4,7 MB ao histórico do git.
+- **Descartado:** regerar a cada execução, o que incharia o histórico sem acrescentar informação.
+- **Pendente:** `scripts/run_drift_report.py` ainda grava em `reports/drift/` por padrão, então rodá-lo sobrescreve a evidência. O README avisa; a mudança de destino é do OBS-002.
+- **Destino dos achados médios:** KS, limite de AUC por tamanho de lote e PSI do alvo estão no comentário do PMF4-20. O PSI fora da faixa fica para o repasse do PMF4-17: com fatura × 1,1 em dados sintéticos, os valores saem da faixa da Referência, caem em faixas vazias e o preenchimento de zeros do Evidently leva o PSI acima de 0,25.
+- **Pergunta para o Akira:** se o PSI explode quando um valor sai da faixa da Referência, o que seu cálculo à mão no DRIFT-003 deveria fazer com esses valores?

@@ -8,19 +8,22 @@
 Decisões em `docs/REPASSE.md`, revisadas com o Akira antes do vídeo (PMF4-38).
 
 ## Onde estamos
-- Etapa 1 concluída. Evidently 0.7.23 confirmado com pandas 3.0.6 (SPIKE-001). ADR-005 será implementado no GOV-001 (PMF4-22).
+- Etapa 1 concluída. ADR-005 será implementado no GOV-001 (PMF4-22).
 - DRIFT-001 concluído, com 2 lotes aprovados no contrato e manifesto em `reports/drift/`.
-  - Data drift (faturas × 1,25, limite × 0,75): PSI do limite 0,27; PSI das faturas de 0,025 a 0,046; AUC 0,7144.
-  - Concept drift (459 rótulos, nenhuma entrada mudou): AUC 0,6647, contra 0,7149 da Produção-base.
-- 59 testes passando; ruff limpo.
+- DRIFT-002 concluído: um HTML e um JSON por lote em `reports/drift/`, versionados como evidência e não regerados.
+  - Produção-base: sem drift relevante (AUC 0,7149).
+  - Data drift: `LIMIT_BAL` pelo PSI, `LIMIT_BAL` e as 6 faturas pelo KS; sem impacto no modelo (AUC 0,7144).
+  - Concept drift: nenhuma feature mudou; suspeita de concept drift (AUC 0,6647).
+- 90 testes passando; ruff limpo.
 
 ## Pendências (Akira)
 - ADR-004: PMF4-35 está To Do no Jira, e o arquivo diz "aguardando revisão".
 - Citar o ADR-005 no card PMF4-22, para a decisão não se perder.
+- Débitos de `prepare_data.py` e `inject_defects`: PMF4-39, prioridade baixa.
 
 ## Próximo passo
-DRIFT-002: `detect.py`, relatório Evidently e predições, usando o `DataDefinition` proposto no REPASSE (entrada 7).
-DRIFT-003 (PSI à mão): a referência é a regra de bins documentada no SPIKE-001.
+DRIFT-003 (PSI à mão): a referência é a regra de bins do SPIKE-001 e o preenchimento de zeros de `get_binned_data`.
+OBS-002 (PMF4-20): corrigir as réguas herdadas (comentário no Jira) e levar os relatórios para fora do git.
 
 ## Prazo
 A referência é o Jira. Entrega em 17/11/2026. Plano de corte no CLAUDE.md §8.

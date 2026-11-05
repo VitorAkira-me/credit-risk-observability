@@ -4,3 +4,6 @@
 max-line-length = 99
 extend-ignore = E203
 exclude = .venv,.git,__pycache__
+# detect.py desliga a telemetria do Evidently antes de importá-lo, de propósito.
+per-file-ignores =
+    src/credit_risk_observability/drift/detect.py: E402

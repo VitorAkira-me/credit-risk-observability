@@ -14,7 +14,7 @@
 | DQ-002 | [PMF4-15](https://akiravkax.atlassian.net/browse/PMF4-15) | Done |
 | DRIFT-001 | [PMF4-16](https://akiravkax.atlassian.net/browse/PMF4-16) | Done |
 | DRIFT-003 | [PMF4-17](https://akiravkax.atlassian.net/browse/PMF4-17) | To Do |
-| DRIFT-002 | [PMF4-18](https://akiravkax.atlassian.net/browse/PMF4-18) | To Do |
+| DRIFT-002 | [PMF4-18](https://akiravkax.atlassian.net/browse/PMF4-18) | In Progress |
 | OBS-001 | [PMF4-19](https://akiravkax.atlassian.net/browse/PMF4-19) | To Do |
 | OBS-002 | [PMF4-20](https://akiravkax.atlassian.net/browse/PMF4-20) | To Do |
 | OBS-003 | [PMF4-21](https://akiravkax.atlassian.net/browse/PMF4-21) | To Do |
