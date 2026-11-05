@@ -24,6 +24,9 @@ uv run python scripts/make_corrupted_batch.py                            # lote 
 uv run python scripts/run_validation.py data/production/batch_corrupted.parquet   # exit 1: bloqueado
 uv run python scripts/make_drift_batch.py --scenario data_drift --intensity 1      # lote com data drift
 uv run python scripts/make_drift_batch.py --scenario concept_drift --intensity 1   # lote com concept drift
+uv run python scripts/run_drift_report.py data/production/production_base.parquet          # controle
+uv run python scripts/run_drift_report.py data/production/batch_data_drift_i100.parquet    # relatório de data drift
+uv run python scripts/run_drift_report.py data/production/batch_concept_drift_i100.parquet # relatório de concept drift
 uv run pytest -q                          # testes
 uv run ruff check . ; uv run ruff format --check .
 ```
@@ -62,6 +65,15 @@ com **exit 1**, log `validation_failed` e falhas em `reports/validation/`.
 | Corrompido | 1.020 | **bloqueado (exit 1)** | AGE 50, ID duplicado 40, LIMIT_BAL nulo 30 (+30 de tipo), SEX 10 |
 
 As contagens batem exatamente com os defeitos injetados ([DQ-002](docs/specs/DQ-002.md)).
+
+## Relatórios de drift: o que fica no git
+Os 3 relatórios de `reports/drift/drift_report_*` são a evidência da Etapa 2: ficam versionados e não
+devem ser regerados em PRs futuros, porque cada regeneração soma cerca de 4,7 MB ao histórico.
+Daqui em diante, relatórios de execuções do pipeline vão para uma pasta fora do git e, no OBS-002, para
+os artefatos do MLflow.
+
+**Atenção:** até o OBS-002 mudar o destino, `scripts/run_drift_report.py` ainda grava em `reports/drift/`.
+Rodá-lo sobrescreve a evidência; se isso acontecer, desfaça com `git restore reports/drift`.
 
 ## Estrutura
 ```

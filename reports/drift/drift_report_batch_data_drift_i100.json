@@ -1,0 +1,158 @@
+{
+  "run_id": "dd2a4217fade447892cd85590992c7f9",
+  "created_at": "2026-11-05T00:27:34+00:00",
+  "batch": "batch_data_drift_i100",
+  "rows": {
+    "batch": 9000,
+    "reference": 21000
+  },
+  "provenance": {
+    "batch_file": "batch_data_drift_i100.parquet",
+    "batch_sha256": "597115813c50529d79fb10cd4318eb860a1bce6022e23ac0763c097109ac0157",
+    "reference_file": "reference.parquet",
+    "reference_sha256": "d904ff2a879d8bca282dbb74f962f9a19bf010f8addd2f910ac1c7ac83adc1c6",
+    "model_file": "baseline_logreg.joblib",
+    "model_sha256": "80424ccad3c4612390dc50ebb53a7c29237965de837ff5f08352c62528937714",
+    "versions": {
+      "python": "3.12.10",
+      "evidently": "0.7.23",
+      "pandas": "3.0.6",
+      "scikit-learn": "1.9.1"
+    }
+  },
+  "feature_drift": {
+    "psi_limit": 0.25,
+    "ks_p_value_limit": 0.05,
+    "reference": "Referência",
+    "features": {
+      "LIMIT_BAL": {
+        "psi": 0.27146836154041076,
+        "ks_p_value": 6.299941133056816e-145
+      },
+      "SEX": {
+        "psi": 1.2175442793292612e-06,
+        "ks_p_value": null
+      },
+      "EDUCATION": {
+        "psi": 0.0010965446680888836,
+        "ks_p_value": null
+      },
+      "MARRIAGE": {
+        "psi": 0.00019182596585599286,
+        "ks_p_value": null
+      },
+      "AGE": {
+        "psi": 0.0015014149180764414,
+        "ks_p_value": 0.5489086573602029
+      },
+      "PAY_0": {
+        "psi": 0.0023836442734546273,
+        "ks_p_value": 0.9722687974068913
+      },
+      "PAY_2": {
+        "psi": 0.0016516502670572415,
+        "ks_p_value": 0.9999999997755699
+      },
+      "PAY_3": {
+        "psi": 0.0006447468772599458,
+        "ks_p_value": 1.0
+      },
+      "PAY_4": {
+        "psi": 0.0018956541649104155,
+        "ks_p_value": 0.9999108371056002
+      },
+      "PAY_5": {
+        "psi": 0.0019364426888276497,
+        "ks_p_value": 0.9996566856184698
+      },
+      "PAY_6": {
+        "psi": 0.0023712046033207163,
+        "ks_p_value": 0.9998442741437442
+      },
+      "BILL_AMT1": {
+        "psi": 0.03546578869550931,
+        "ks_p_value": 5.903291679758951e-37
+      },
+      "BILL_AMT2": {
+        "psi": 0.03316806519371143,
+        "ks_p_value": 3.261319836581908e-31
+      },
+      "BILL_AMT3": {
+        "psi": 0.03374511129423134,
+        "ks_p_value": 1.0248956844282526e-27
+      },
+      "BILL_AMT4": {
+        "psi": 0.02492533583383138,
+        "ks_p_value": 3.3785625367379526e-29
+      },
+      "BILL_AMT5": {
+        "psi": 0.029385968373900326,
+        "ks_p_value": 8.449603652892751e-33
+      },
+      "BILL_AMT6": {
+        "psi": 0.04559500913740498,
+        "ks_p_value": 5.115638443265948e-31
+      },
+      "PAY_AMT1": {
+        "psi": 0.009673681942422541,
+        "ks_p_value": 0.5183851677393856
+      },
+      "PAY_AMT2": {
+        "psi": 0.015217057139189315,
+        "ks_p_value": 0.4710918456216042
+      },
+      "PAY_AMT3": {
+        "psi": 0.009616820330848697,
+        "ks_p_value": 0.18311979794877264
+      },
+      "PAY_AMT4": {
+        "psi": 0.006968852427862707,
+        "ks_p_value": 0.24529422287120628
+      },
+      "PAY_AMT5": {
+        "psi": 0.007918174533833276,
+        "ks_p_value": 0.7027281096392173
+      },
+      "PAY_AMT6": {
+        "psi": 0.004590190804516389,
+        "ks_p_value": 0.7647450734414789
+      }
+    },
+    "changed_by_psi": [
+      "LIMIT_BAL"
+    ],
+    "changed_by_ks": [
+      "LIMIT_BAL",
+      "BILL_AMT1",
+      "BILL_AMT2",
+      "BILL_AMT3",
+      "BILL_AMT4",
+      "BILL_AMT5",
+      "BILL_AMT6"
+    ]
+  },
+  "target_and_score": {
+    "default_rate_batch": 0.2212222222222222,
+    "default_rate_reference": 0.2211904761904762,
+    "default_psi": 5.850040902123206e-09,
+    "score_mean_batch": 0.4583918725213272,
+    "score_mean_reference": 0.4560582469109049,
+    "score_psi": 0.00531291321942752,
+    "score_ks_p_value": 0.12121416399088492
+  },
+  "performance": {
+    "roc_auc": 0.7144,
+    "recall_default": 0.6444,
+    "precision_default": 0.3679,
+    "compared_with": "Produção-base",
+    "control_auc": 0.7149,
+    "control_ci_low": 0.701,
+    "control_ci_high": 0.728,
+    "dropped": false
+  },
+  "diagnosis": {
+    "text": "data drift sem impacto no modelo",
+    "features_changed": true,
+    "performance_dropped": false
+  }
+}

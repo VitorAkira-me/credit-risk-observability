@@ -93,3 +93,9 @@ devolver 0. Um script que imprime "ERRO" mas sai com 0 engana toda a automação
 **O que é:** um número de 0 a 1 que regula o tamanho da mudança simulada: 0 não muda nada, 1 aplica a mudança cheia.
 **Analogia:** o botão de volume. A música é a mesma, só muda o quanto ela aparece.
 **Pergunta para pensar:** a partir de qual intensidade o alarme deveria tocar?
+
+## Comparações múltiplas
+**O que é:** quanto mais testes estatísticos você faz, maior a chance de um deles dar "significativo" só por acaso. Com limite de 5%, cada teste erra 1 em 20 vezes quando nada mudou.
+**Analogia:** comprar 20 bilhetes de rifa. Cada um tem pouca chance, mas a chance de um deles sair já é bem maior.
+**No projeto:** 20 testes de KS por lote deram alarme falso em 31% das divisões sem drift.
+**Pergunta para pensar:** se o alarme é "alguma feature mudou", o que acontece com o número de alarmes falsos quando o modelo ganha 100 colunas?

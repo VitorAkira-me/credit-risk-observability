@@ -1,0 +1,148 @@
+{
+  "run_id": "ecc7e3c8bef3456f8d765045e5e87d2b",
+  "created_at": "2026-11-05T00:27:24+00:00",
+  "batch": "production_base",
+  "rows": {
+    "batch": 9000,
+    "reference": 21000
+  },
+  "provenance": {
+    "batch_file": "production_base.parquet",
+    "batch_sha256": "2a7537e89b2f7968146fb03b3fe282094b2d587d44a77b3c0d22f76022a0d60b",
+    "reference_file": "reference.parquet",
+    "reference_sha256": "d904ff2a879d8bca282dbb74f962f9a19bf010f8addd2f910ac1c7ac83adc1c6",
+    "model_file": "baseline_logreg.joblib",
+    "model_sha256": "80424ccad3c4612390dc50ebb53a7c29237965de837ff5f08352c62528937714",
+    "versions": {
+      "python": "3.12.10",
+      "evidently": "0.7.23",
+      "pandas": "3.0.6",
+      "scikit-learn": "1.9.1"
+    }
+  },
+  "feature_drift": {
+    "psi_limit": 0.25,
+    "ks_p_value_limit": 0.05,
+    "reference": "Referência",
+    "features": {
+      "LIMIT_BAL": {
+        "psi": 0.005876328727068796,
+        "ks_p_value": 0.9467591690492041
+      },
+      "SEX": {
+        "psi": 1.2175442793292612e-06,
+        "ks_p_value": null
+      },
+      "EDUCATION": {
+        "psi": 0.0010965446680888836,
+        "ks_p_value": null
+      },
+      "MARRIAGE": {
+        "psi": 0.00019182596585599286,
+        "ks_p_value": null
+      },
+      "AGE": {
+        "psi": 0.0015014149180764414,
+        "ks_p_value": 0.5489086573602029
+      },
+      "PAY_0": {
+        "psi": 0.0023836442734546273,
+        "ks_p_value": 0.9722687974068913
+      },
+      "PAY_2": {
+        "psi": 0.0016516502670572415,
+        "ks_p_value": 0.9999999997755699
+      },
+      "PAY_3": {
+        "psi": 0.0006447468772599458,
+        "ks_p_value": 1.0
+      },
+      "PAY_4": {
+        "psi": 0.0018956541649104155,
+        "ks_p_value": 0.9999108371056002
+      },
+      "PAY_5": {
+        "psi": 0.0019364426888276497,
+        "ks_p_value": 0.9996566856184698
+      },
+      "PAY_6": {
+        "psi": 0.0023712046033207163,
+        "ks_p_value": 0.9998442741437442
+      },
+      "BILL_AMT1": {
+        "psi": 0.0067248696800472525,
+        "ks_p_value": 0.9930545634963411
+      },
+      "BILL_AMT2": {
+        "psi": 0.005432087128362285,
+        "ks_p_value": 0.7132302037466862
+      },
+      "BILL_AMT3": {
+        "psi": 0.011275211636710605,
+        "ks_p_value": 0.8551166043615368
+      },
+      "BILL_AMT4": {
+        "psi": 0.006231285925665349,
+        "ks_p_value": 0.8906786016408935
+      },
+      "BILL_AMT5": {
+        "psi": 0.005090119520918268,
+        "ks_p_value": 0.9300822580075904
+      },
+      "BILL_AMT6": {
+        "psi": 0.00848307088674847,
+        "ks_p_value": 0.8860976957749883
+      },
+      "PAY_AMT1": {
+        "psi": 0.009673681942422541,
+        "ks_p_value": 0.5183851677393856
+      },
+      "PAY_AMT2": {
+        "psi": 0.015217057139189315,
+        "ks_p_value": 0.4710918456216042
+      },
+      "PAY_AMT3": {
+        "psi": 0.009616820330848697,
+        "ks_p_value": 0.18311979794877264
+      },
+      "PAY_AMT4": {
+        "psi": 0.006968852427862707,
+        "ks_p_value": 0.24529422287120628
+      },
+      "PAY_AMT5": {
+        "psi": 0.007918174533833276,
+        "ks_p_value": 0.7027281096392173
+      },
+      "PAY_AMT6": {
+        "psi": 0.004590190804516389,
+        "ks_p_value": 0.7647450734414789
+      }
+    },
+    "changed_by_psi": [],
+    "changed_by_ks": []
+  },
+  "target_and_score": {
+    "default_rate_batch": 0.2212222222222222,
+    "default_rate_reference": 0.2211904761904762,
+    "default_psi": 5.850040902123206e-09,
+    "score_mean_batch": 0.45647363765214594,
+    "score_mean_reference": 0.4560582469109049,
+    "score_psi": 0.0015302143290721168,
+    "score_ks_p_value": 0.8602230338978735
+  },
+  "performance": {
+    "roc_auc": 0.7149,
+    "recall_default": 0.6404,
+    "precision_default": 0.3683,
+    "compared_with": "Produção-base",
+    "control_auc": 0.7149,
+    "control_ci_low": 0.701,
+    "control_ci_high": 0.728,
+    "dropped": false
+  },
+  "diagnosis": {
+    "text": "sem drift relevante",
+    "features_changed": false,
+    "performance_dropped": false
+  }
+}
