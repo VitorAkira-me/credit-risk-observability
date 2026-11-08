@@ -1,10 +1,14 @@
 # credit-risk-observability
 
+[![CI](https://github.com/VitorAkira-me/credit-risk-observability/actions/workflows/ci.yml/badge.svg)](https://github.com/VitorAkira-me/credit-risk-observability/actions/workflows/ci.yml)
+[![Pipeline de monitoramento](https://github.com/VitorAkira-me/credit-risk-observability/actions/workflows/pipeline.yml/badge.svg)](https://github.com/VitorAkira-me/credit-risk-observability/actions/workflows/pipeline.yml)
+
 Camada de sustentação de um modelo de **Credit Scoring** em produção: contratos de qualidade de
 dados, simulação e detecção de drift, observabilidade do pipeline e governança (LGPD).
 Tech Challenge Fase 4 (Pós-tech ML).
 
-> Status: em construção. Concluído: dados, baseline e Etapa 1 (contrato de dados).
+> Status: em construção. Concluído: dados, baseline, Etapa 1 (contrato), Etapa 2 (drift) e o
+> monitoramento da Etapa 3 (log estruturado e MLflow).
 > Andamento em [`docs/STATUS.md`](docs/STATUS.md) e [`docs/KANBAN.md`](docs/KANBAN.md).
 
 ## Dataset
@@ -126,6 +130,15 @@ drift), métricas no eixo "semana" (latência por etapa, linhas de entrada e rej
 default, PSI por feature, nº de features com alerta) e artefatos (HTML do Evidently, eventos do
 log e, na semana barrada, as falhas do contrato). `mlflow.db`, `mlartifacts/` e `outputs/` ficam
 fora do git; a evidência versionada é o painel e os limites calibrados.
+
+## CI/CD no GitHub Actions (IMP-001)
+| Workflow | Quando roda | O que garante |
+|---|---|---|
+| [`ci.yml`](.github/workflows/ci.yml) | todo PR para a `main` e todo merge | **Qualidade:** `uv sync --locked`, ruff e pytest. **Contrato:** com os dados reais do UCI, a Produção-base passa, o lote corrompido é barrado com as falhas exatas e os lotes regerados batem com os hashes da evidência em `reports/drift/` (`scripts/check_evidence.py`). |
+| [`pipeline.yml`](.github/workflows/pipeline.yml) | todo merge na `main` e manual | Roda o pipeline de monitoramento inteiro, confere que os limites calibrados não mudaram sem decisão e publica como artefato da execução: relatórios das semanas, `mlflow.db`, `mlartifacts/`, log e painel (sem o `failure_cases.csv`, que tem valores de linha). |
+
+Um PR que afrouxa o contrato fica vermelho mesmo quando o lote corrompido continua barrado por
+outras regras: o portão compara as falhas regra a regra, e não só o exit code.
 
 ## Estrutura
 ```

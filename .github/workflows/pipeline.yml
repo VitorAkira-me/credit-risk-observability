@@ -1,0 +1,51 @@
+# CD (IMP-001): a cada merge na main, roda o pipeline de monitoramento inteiro com os dados reais
+# e publica os resultados como artefatos da execução (relatórios, banco do MLflow, painel, log).
+# Também pode ser disparado à mão pela aba Actions (workflow_dispatch).
+name: Pipeline de monitoramento
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pipeline-${{ github.ref }}
+  cancel-in-progress: false  # uma execução de pipeline nunca é interrompida no meio
+
+permissions:
+  contents: read
+
+jobs:
+  monitoramento:
+    name: Semanas simuladas no MLflow
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run python scripts/prepare_data.py
+      - run: uv run python scripts/train_baseline.py
+      - run: uv run python scripts/calibrate_alerts.py
+      # Os limites recalculados precisam bater com os versionados: se mudarem, a régua do painel
+      # mudou sem ninguém decidir, e o PR que causou isso precisa explicar por quê.
+      - name: Limites calibrados iguais aos versionados
+        run: git diff --exit-code reports/monitoring/alert_thresholds.json
+      - run: uv run python scripts/run_weekly_pipeline.py
+      - run: uv run python scripts/plot_weekly_panel.py
+      # failure_cases.csv fica de fora: traz valores de linha (ADR-005, minimização).
+      - uses: actions/upload-artifact@v4
+        with:
+          name: monitoramento-${{ github.sha }}
+          retention-days: 30
+          path: |
+            outputs/weekly/
+            mlflow.db
+            mlartifacts/
+            logs/pipeline.jsonl
+            reports/figures/painel_semanas.png
+            reports/monitoring/alert_thresholds.json
+            !**/failure_cases.csv

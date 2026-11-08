@@ -258,3 +258,20 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **Reprodutibilidade:** nesta sessão os dados foram baixados de novo do UCI e os lotes saíram com os mesmos hashes da evidência do DRIFT-002. O arquivo do modelo muda nos bytes (Python 3.12.3 aqui, 3.12.10 no seu), mas a AUC repete 0,7149.
 - **Armadilha achada:** `run_validation.py` e `make_drift_batch.py` ainda gravam resumo e manifesto em `reports/` e sobrescrevem a evidência quando rodados de novo. Restaurei com `git restore`. O pipeline semanal já grava em `outputs/`; mudar o padrão dos dois fica como candidato a `IMP-*`.
 
+## IMP-001 · CI/CD no GitHub Actions (08/11/2026)
+
+### 28. Dois workflows: CI em todo PR e merge, CD de monitoramento em todo merge (decisão do Claude, pedido do Akira)
+- **O que:** `ci.yml` com dois jobs (qualidade: ruff e pytest; contrato: dados reais e `check_evidence.py`). `pipeline.yml` roda o pipeline semanal e publica os resultados como artefatos por 30 dias.
+- **Por quê:** o CI protege a `main` antes do merge; o CD prova, a cada merge, que o pipeline inteiro ainda roda do zero com os dados reais, e entrega o painel sem ninguém rodar nada na mão.
+- **Descartado:** rodar o pipeline completo em todo PR (lento, e o PR não precisa do MLflow para ser revisado); publicar os artefatos no repositório (incharia o git, decisão 19).
+- **Pergunta para o Akira:** o CD hoje "entrega" artefatos. Numa fintech de verdade, o que mais um merge na `main` deveria disparar?
+
+### 29. O portão compara as falhas regra a regra, não só o exit code (achado do Claude)
+- **O que:** `check_evidence.py` exige que a Produção-base passe, que o lote corrompido seja barrado com exatamente as falhas esperadas e que os lotes regerados batam com os hashes da evidência.
+- **Previsão:** afrouxar a regra de idade (18 para 10) deixaria o portão vermelho. **Aconteceu:** ficou, mas só por causa da comparação regra a regra. O lote corrompido continuou barrado pelas outras 4 regras (exit 1), então um portão que olhasse só o exit code teria aprovado o PR.
+- **Pergunta para o Akira:** que outra mudança no contrato passaria despercebida por um teste que só olha "passou ou não passou"?
+
+### 30. Limites calibrados conferidos no CD e artefato sem `failure_cases.csv` (decisão do Claude)
+- **O que:** o CD recalibra e roda `git diff --exit-code` no `alert_thresholds.json`; rodando de novo aqui, os limites saíram idênticos. O upload exclui o `failure_cases.csv`.
+- **Por quê:** régua que muda sem decisão é régua que ninguém revisou. E artefato do Actions fica acessível a quem lê o repositório: valores de linha não vão para lá (ADR-005).
+
