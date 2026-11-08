@@ -21,7 +21,8 @@ Decisões em `docs/REPASSE.md`, revisadas com o Akira antes do vídeo (PMF4-38).
   contra os mais velhos. Mitigação proposta no ADR-006 (tirar `AGE` no retreino), aguardando decisão.
 - GOV-004 concluído (PR #18): dose-resposta prova que o concept drift causa a queda (AUC 0,715 a 0,665) e o
   data drift não (0,7149 a 0,7144); calotes aprovados +56%. Diagrama causal e plano de ação no README.
-- GOV-002 em revisão: base legal (proteção do crédito e contrato), art. 20, retenção por código.
+- GOV-002 concluído (PR #19): base legal, art. 20 e retenção por código. **Etapa 4 fechada.**
+- DRIFT-003 em andamento (Akira pilota): esqueleto, 5 testes e script de comparação prontos; falta `psi()`.
 - 113 testes passando; ruff limpo.
 
 ## Pendências (Akira)
@@ -33,7 +34,7 @@ Decisões em `docs/REPASSE.md`, revisadas com o Akira antes do vídeo (PMF4-38).
 - Débitos: PMF4-39; e `run_validation.py`/`make_drift_batch.py` ainda gravam em `reports/` (REPASSE 27).
 
 ## Próximo passo
-DRIFT-003 (Akira pilota, PSI à mão), DOC-001 (README final), REPASSE-001 e o vídeo (VID-001/002). DRIFT-003 (PSI à mão) segue em paralelo, prazo 13/11. Depois GOV-001 a GOV-004 (11 a 13/11) e DRIFT-003 (13/11).
+Akira implementa `psi()` (DRIFT-003). Depois REPASSE-001, DOC-001 (README final) e o vídeo (VID-001/002). DRIFT-003 (PSI à mão) segue em paralelo, prazo 13/11. Depois GOV-001 a GOV-004 (11 a 13/11) e DRIFT-003 (13/11).
 
 ## Prazo
 A referência é o Jira. Entrega em 17/11/2026. Plano de corte no CLAUDE.md §8.
