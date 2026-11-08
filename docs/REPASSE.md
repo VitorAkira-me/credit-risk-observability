@@ -328,3 +328,17 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **Por quê:** um plano sem critério de saída deixa o alerta aberto para sempre (fadiga de alerta).
 - **Pergunta para o Akira:** quem decide o rollback numa fintech: o time de dados, o de risco ou os dois? O que o art. 20 da LGPD tem a ver com isso?
 
+## GOV-002 · Base legal e retenção (08/11/2026)
+
+### 40. Proteção do crédito e execução de contrato, não consentimento (decisão do Claude, a revisar)
+- **Por quê:** consentimento na concessão de crédito não é livre (sem ele não há crédito) e a revogação deixaria o inadimplente apagar o próprio histórico.
+- **Pergunta para o Akira (a do card):** se o cliente revoga o consentimento, a empresa precisa apagar o histórico de inadimplência? Como a resposta muda com a base legal?
+
+### 41. Retenção aplicada por código, com simulação por padrão (decisão do Claude)
+- **O que:** `scripts/apply_retention.py` lista o vencido; `--aplicar` apaga. Detalhe das falhas: 30 dias; saídas: 90; log: 180.
+- **Por quê:** prazo só escrito não protege ninguém; e apagar é irreversível, então o padrão é olhar antes.
+
+### 42. Explicabilidade conferida no modelo, não de memória (achado do Claude)
+- **O que aconteceu:** o rascunho do art. 20 dizia que "uso do limite" pesava; não é nem feature. Os coeficientes reais mostram `PAY_0` e a escolaridade no topo.
+- **Pergunta para o Akira:** se a escolaridade é um dos maiores pesos e tem risco discriminatório, o ADR-006 deveria tratar dela também?
+
