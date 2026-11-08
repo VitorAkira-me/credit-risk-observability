@@ -408,7 +408,7 @@ comparando a performance por segmento e retreinando numa janela nova para ver se
 |---|---|
 | [`docs/specs/`](docs/specs/) | uma spec por card, com critérios de aceite e o resultado medido |
 | [`docs/decisions/`](docs/decisions/) | ADRs: dataset, Pandera, MLflow, atributos sensíveis, minimização, viés por idade |
-| [`docs/REPASSE.md`](docs/REPASSE.md) | 42 decisões com o porquê, a alternativa descartada e uma pergunta |
+| [`docs/REPASSE.md`](docs/REPASSE.md) | 44 decisões com o porquê, a alternativa descartada e uma pergunta |
 | [`docs/GLOSSARIO.md`](docs/GLOSSARIO.md) | conceitos da fase em linguagem simples |
 | [Jira PMF4](https://akiravkax.atlassian.net/issues?jql=project%20%3D%20PMF4%20ORDER%20BY%20key%20ASC) | cards, prazos e status |
 
