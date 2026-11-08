@@ -17,7 +17,7 @@ Decisões em `docs/REPASSE.md`, revisadas com o Akira antes do vídeo (PMF4-38).
 - IMP-001 concluído (PR #14): CI (ruff, pytest e portão de contrato com dados reais) em todo PR e merge. O CD rodou verde na `main` duas vezes, com os limites
   calibrados idênticos na máquina do GitHub, e publicou o artefato `monitoramento-<sha>` (12,7 MB, 30 dias).
 - GOV-001 concluído (PR #16): inventário de PII, Privacy by Design e ADR-005 implementado.
-- GOV-003 em revisão: viés por grupo. Sexo passa na regra dos 4/5 (0,920); idade reprova (0,663),
+- GOV-003 concluído (PR #17): viés por grupo. Sexo passa na regra dos 4/5 (0,920); idade reprova (0,663),
   contra os mais velhos. Mitigação proposta no ADR-006 (tirar `AGE` no retreino), aguardando decisão.
 - GOV-004 em revisão: dose-resposta prova que o concept drift causa a queda (AUC 0,715 a 0,665) e o
   data drift não (0,7149 a 0,7144); calotes aprovados +56%. Diagrama causal e plano de ação no README.
