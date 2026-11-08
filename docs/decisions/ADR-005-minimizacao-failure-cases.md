@@ -1,6 +1,6 @@
 # ADR-005 · Minimizar dados pessoais nos relatórios de validação
 
-- Status: aceita
+- Status: aceita e implementada no GOV-001 (08/11/2026)
 - Data: 03/11/2026
 
 ## Contexto

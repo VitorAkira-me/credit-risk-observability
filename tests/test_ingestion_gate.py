@@ -73,7 +73,9 @@ def test_gate_returns_0_and_logs_pass(clean_population, tmp_path):
     path = tmp_path / "clean.parquet"
     clean_population.to_parquet(path)
 
-    code = load_script("run_validation").main([str(path)], reports_dir=tmp_path / "reports")
+    code = load_script("run_validation").main(
+        [str(path)], reports_dir=tmp_path / "reports", detail_dir=tmp_path / "detalhe"
+    )
 
     assert code == 0
     event = json.loads(events.PIPELINE_LOG_PATH.read_text(encoding="utf-8").splitlines()[-1])
@@ -89,7 +91,9 @@ def test_gate_returns_1_logs_failure_and_saves_cases(clean_population, tmp_path)
     path = tmp_path / "bad.parquet"
     batch.to_parquet(path)
 
-    code = load_script("run_validation").main([str(path)], reports_dir=tmp_path / "reports")
+    code = load_script("run_validation").main(
+        [str(path)], reports_dir=tmp_path / "reports", detail_dir=tmp_path / "detalhe"
+    )
 
     assert code == 1
     event = json.loads(events.PIPELINE_LOG_PATH.read_text(encoding="utf-8").splitlines()[-1])
@@ -98,3 +102,38 @@ def test_gate_returns_1_logs_failure_and_saves_cases(clean_population, tmp_path)
     assert event["detalhe"]["falhas_por_regra"] == expected
     cases = pd.read_csv(tmp_path / "reports" / "bad_failure_cases.csv")
     assert len(cases) == sum(expected.values())
+
+
+def test_versioned_report_has_no_customer_values(clean_population, tmp_path):
+    """ADR-005: o CSV versionado tem só regra e posição; os valores ficam no detalhe local.
+
+    Usa IDs com uma marca fácil de procurar. Se ela aparecer no relatório versionado, um
+    identificador de cliente vazou para o git.
+    """
+    marked = clean_population.copy()
+    marked[ID_COLUMN] = marked[ID_COLUMN] + 987_650_000
+    batch, expected = inject_defects(marked, batch_size=200, seed=42)
+    path = tmp_path / "bad.parquet"
+    batch.to_parquet(path)
+
+    load_script("run_validation").main(
+        [str(path)], reports_dir=tmp_path / "reports", detail_dir=tmp_path / "detalhe"
+    )
+
+    versioned = (tmp_path / "reports" / "bad_failure_cases.csv").read_text(encoding="utf-8")
+    cases = pd.read_csv(tmp_path / "reports" / "bad_failure_cases.csv")
+    assert list(cases.columns) == ["regra", "posicao_linha"]
+    assert "98765" not in versioned  # nenhum ID marcado
+    assert ",15\n" not in versioned and ",15," not in versioned  # nenhuma idade barrada
+    assert cases["regra"].value_counts().to_dict() == expected
+    # O detalhe existe, mas só na pasta local, e é ele que guarda os valores.
+    detail = pd.read_csv(tmp_path / "detalhe" / "bad_detalhe.csv")
+    assert "failure_case" in detail.columns
+
+
+def test_versioned_validation_reports_in_git_have_no_customer_values():
+    """Varre reports/validation/ do repositório: nenhum CSV versionado traz valor de cliente."""
+    for csv in (ROOT / "reports" / "validation").glob("*.csv"):
+        cases = pd.read_csv(csv)
+        assert "failure_case" not in cases.columns, csv.name
+        assert ID_COLUMN not in cases.columns, csv.name

@@ -283,3 +283,19 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **Descartado:** limiar para a latência. Com 5 semanas não há histórico para calibrar; inventar um número seria uma régua sem base. Fica como referência.
 - **Pergunta para o Akira:** no caso 2 (data drift sem impacto), por quanto tempo você esperaria antes de agir? O que mudaria a sua resposta?
 
+## GOV-001 · Inventário de PII e ADR-005 (08/11/2026)
+
+### 32. ADR-005 implementado: relatório versionado só com regra e posição (decisão do Akira, código do Claude)
+- **O que:** `ValidationResult.minimized_failures` descarta o valor barrado. O CSV versionado tem `regra` e `posicao_linha`; o detalhe vai para `outputs/validation/`. O pipeline semanal manda ao MLflow só a versão minimizada.
+- **Esperávamos e aconteceu:** o teste que varre `reports/validation/` falhou antes da regeneração (achou os IDs do CSV antigo) e passou depois. As contagens do DQ-002 continuam iguais (160 falhas, 130 linhas).
+- **Pergunta para o Akira:** a posição da linha ainda deixa reidentificar o cliente por quem tem o arquivo do lote. Isso é problema? Quem tem o lote já tem os dados de qualquer jeito?
+
+### 33. `ID` descartado das saídas, não pseudonimizado (decisão do Claude)
+- **Por quê:** IDs sequenciais de 1 a 30.000 tornam um hash sem segredo reversível por tentativa. Nenhuma saída precisa do ID, então não gravá-lo é mais simples e mais seguro que protegê-lo.
+- **Descartado:** hash com sal fixo no código (o sal vazaria junto com o repositório).
+- **Em produção:** HMAC-SHA256 na ingestão, com a chave fora do código.
+
+### 34. Citações da LGPD não conferidas no texto oficial (limitação desta sessão)
+- **O que aconteceu:** liberei `www.planalto.gov.br` na rede do ambiente, mas o servidor encerra a conexão vinda da nuvem. O README parafraseia e cita só número de artigo; a lista de conferência está na spec do GOV-001.
+- **Pergunta para o Akira:** por que um plano de conformidade nunca deve citar artigo de memória? O que muda se o artigo tiver sido alterado por lei posterior?
+

@@ -32,6 +32,8 @@ DRIFT_REPORTS_DIR = REPORTS_DIR / "drift"
 # a cada geração). Só os relatórios de reports/drift/ são evidência versionada (REPASSE, decisão 19).
 OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 DRIFT_RUNS_DIR = OUTPUTS_DIR / "drift"
+# ADR-005: o detalhe das falhas (com os valores barrados) fica só local, fora do git.
+VALIDATION_DETAIL_DIR = OUTPUTS_DIR / "validation"
 
 # OBS-002: monitoramento semanal. Os limites calibrados são evidência (versionados); o banco do
 # MLflow e os artefatos de cada semana são regeráveis e ficam fora do git.

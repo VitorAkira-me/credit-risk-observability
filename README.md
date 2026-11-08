@@ -179,4 +179,43 @@ data/                            # fora do git (regerável pelos scripts)
 ```
 
 ## Governança (LGPD, vieses, análise causal)
-Será escrita no card GOV-001.
+> Plano técnico de conformidade, não parecer jurídico. As citações da Lei 13.709/2018 (LGPD) estão
+> parafraseadas e listadas para conferência no texto oficial em `docs/specs/GOV-001.md`.
+
+### Inventário de dados pessoais (GOV-001)
+Todo o dataset é **dado pessoal** (art. 5º, I): cada linha descreve uma pessoa e o `ID` a torna
+identificável. Nenhuma coluna é **dado pessoal sensível** no sentido do art. 5º, II (origem racial,
+religião, saúde, vida sexual, biometria e afins), mas quatro delas têm **risco discriminatório**,
+e é aí que mora o cuidado (princípio da não discriminação, art. 6º, IX).
+
+| Coluna | O que é | Risco discriminatório? | Entra no modelo? | Tratamento |
+|---|---|---|---|---|
+| `ID` | identificador do cliente | não, mas identifica a pessoa | não | só em `data/` (fora do git); nunca em relatório, log, MLflow ou artefato de CI (ADR-005) |
+| `SEX` | sexo | **sim** | **não** (ADR-004) | mantido apenas para auditar viés (GOV-003) |
+| `MARRIAGE` | estado civil | **sim** | **não** (ADR-004) | mantido apenas para auditar viés |
+| `EDUCATION` | escolaridade | **sim** (pode ser proxy de renda e sexo) | sim | monitorado no viés e no drift |
+| `AGE` | idade | **sim** (faixa etária) | sim | uso legítimo em crédito; monitorado no viés (GOV-003) |
+| `LIMIT_BAL` | limite de crédito | não | sim | |
+| `PAY_0`, `PAY_2` a `PAY_6` | meses de atraso no pagamento | não | sim | |
+| `BILL_AMT1` a `BILL_AMT6` | valor das faturas | não | sim | |
+| `PAY_AMT1` a `PAY_AMT6` | valor pago | não | sim | |
+| `default` | calote no mês seguinte (alvo) | não | é o alvo | usado só para treinar e medir |
+| score do modelo | probabilidade de calote | não | é a saída | só em memória; nunca gravado em disco |
+
+**Por que o `ID` é descartado das saídas, e não trocado por um hash:** os IDs do UCI são
+sequenciais (1 a 30.000). Um hash sem segredo se desfaz testando os 30.000 valores. Como nenhuma
+saída precisa identificar o cliente, a opção mais simples e segura é não gravá-lo. Num sistema real,
+a pseudonimização (art. 13, §4º) seria feita na ingestão com HMAC-SHA256 e uma chave guardada fora
+do código, e o dado continuaria sendo pessoal, porque quem tem a chave reidentifica.
+
+### Privacy by Design: o que o código já faz
+| Medida | Onde | Como é garantida |
+|---|---|---|
+| Minimização de colunas | modelo usa 21 de 23 features; `SEX` e `MARRIAGE` fora (ADR-004) | `MODEL_FEATURES` em `config.py`; teste do ML-001 |
+| Dados fora do git | `data/`, `outputs/`, `logs/`, `mlflow.db`, `mlartifacts/` no `.gitignore` | só agregados e relatórios minimizados são versionados |
+| Relatórios sem valores de cliente | `reports/validation/` tem só regra e posição da linha (ADR-005) | teste varre os CSV versionados e falha se achar valor ou `ID` |
+| Logs sem PII | `logs/pipeline.jsonl` guarda contagens, regras e nomes de arquivo | teste com IDs marcados; exceção grava só o tipo do erro |
+| MLflow só com agregados | métricas, tags e relatórios; o lote nunca é enviado | `tracking.py`; arquivo de falhas minimizado |
+| Nada sai da máquina | telemetria do Evidently e do MLflow desligada antes do import | teste do Evidently; variáveis em `tracking.py` |
+| Artefato de CI sem detalhe | `pipeline.yml` exclui o arquivo de detalhe das falhas | regra de exclusão no upload |
+| Acesso mínimo | projeto local; em produção, o detalhe das falhas ficaria restrito ao time de dados | a definir na retenção (GOV-002) |
