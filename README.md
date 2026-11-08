@@ -69,11 +69,24 @@ As contagens batem exatamente com os defeitos injetados ([DQ-002](docs/specs/DQ-
 ## Relatórios de drift: o que fica no git
 Os 3 relatórios de `reports/drift/drift_report_*` são a evidência da Etapa 2: ficam versionados e não
 devem ser regerados em PRs futuros, porque cada regeneração soma cerca de 4,7 MB ao histórico.
-Daqui em diante, relatórios de execuções do pipeline vão para uma pasta fora do git e, no OBS-002, para
-os artefatos do MLflow.
+Desde o OBS-001, `scripts/run_drift_report.py` grava por padrão em `outputs/drift/`, fora do git, e não
+toca na evidência. No OBS-002, esses relatórios viram artefatos do MLflow.
 
-**Atenção:** até o OBS-002 mudar o destino, `scripts/run_drift_report.py` ainda grava em `reports/drift/`.
-Rodá-lo sobrescreve a evidência; se isso acontecer, desfaça com `git restore reports/drift`.
+## Log estruturado do pipeline (OBS-001)
+Cada etapa (`validacao`, `geracao_lote_drift`, `relatorio_drift`) grava uma linha JSON em
+`logs/pipeline.jsonl`, sempre com os mesmos campos:
+
+| Campo | O que é |
+|---|---|
+| `timestamp` | fim da etapa, em UTC |
+| `run_id` | identifica a execução e liga o log ao manifesto e ao relatório |
+| `etapa` / `evento` | qual parte rodou e o que aconteceu (ex.: `validation_failed`) |
+| `status` | `sucesso` ou `falha`; exceção inesperada também vira `falha` |
+| `duracao_s` | latência da etapa, em segundos |
+| `linhas_entrada` / `linhas_rejeitadas` | volume que entrou e linhas com falha no contrato |
+| `detalhe` | lote, motivo, falhas por regra, diagnóstico de drift |
+
+O log guarda só contagens, nomes de regra e nomes de arquivo: nenhum ID nem valor de linha (Etapa 4).
 
 ## Estrutura
 ```

@@ -210,3 +210,22 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **Pendente:** `scripts/run_drift_report.py` ainda grava em `reports/drift/` por padrão, então rodá-lo sobrescreve a evidência. O README avisa; a mudança de destino é do OBS-002.
 - **Destino dos achados médios:** KS, limite de AUC por tamanho de lote e PSI do alvo estão no comentário do PMF4-20. O PSI fora da faixa fica para o repasse do PMF4-17: com fatura × 1,1 em dados sintéticos, os valores saem da faixa da Referência, caem em faixas vazias e o preenchimento de zeros do Evidently leva o PSI acima de 0,25.
 - **Pergunta para o Akira:** se o PSI explode quando um valor sai da faixa da Referência, o que seu cálculo à mão no DRIFT-003 deveria fazer com esses valores?
+
+## OBS-001 · Log estruturado (08/11/2026)
+
+### 20. Esquema fixo com 9 campos e `pipeline_step` (decisão do Claude)
+- **O que:** todo evento tem `timestamp, run_id, etapa, evento, status, duracao_s, linhas_entrada, linhas_rejeitadas, detalhe`. São os 8 campos do card mais `evento`, o nome estável da ocorrência. Um context manager (`with pipeline_step(...)`) mede o tempo e grava ao sair, inclusive quando o script quebra.
+- **Por quê:** se cada script inventa seus campos, o OBS-002 vira uma coleção de casos especiais. E o `with` garante que uma falha inesperada também deixa rastro, sem depender de o script lembrar de logar.
+- **Descartado:** um `log_event` por script (o formato antigo), em que a duração e o status dependiam de cada autor.
+- **Esperávamos e aconteceu:** lote corrompido sintético de 220 linhas deu `falha` com 130 linhas rejeitadas, que é exatamente a soma dos defeitos disjuntos (50 + 30 + 10 + 40).
+- **Pergunta para o Akira:** `linhas_rejeitadas` conta linhas com ao menos uma falha. Se o lote é bloqueado inteiro, qual número importa mais para a operação: as 130 linhas ruins ou as 220 que não seguiram?
+
+### 21. Erro inesperado grava só o tipo, nunca a mensagem (decisão do Claude)
+- **O que:** uma exceção vira `motivo: "erro inesperado: ValueError"`. A mensagem completa aparece no console, não no arquivo.
+- **Por quê:** mensagens de erro do pandas e do Pandera podem trazer valores de linha, e o arquivo de log é guardado. Teste prova que o texto da mensagem não chega ao log.
+- **Pergunta para o Akira:** sem a mensagem no arquivo, como você investigaria uma falha de madrugada? O que um log de console com retenção curta resolveria?
+
+### 22. Relatório de drift fora do git por padrão (pendência da decisão 19, resolvida)
+- **O que:** `run_drift_report.py` grava em `outputs/drift/` (no `.gitignore`); `--reports-dir` muda o destino.
+- **Limitação desta sessão:** o proxy da nuvem bloqueou o download do UCI, então a validação real foi com lotes sintéticos do mesmo `inject_defects`. Rode no seu ambiente o comando da spec com `production_base.parquet` e `batch_corrupted.parquet` para registrar os números reais.
+
