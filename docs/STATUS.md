@@ -9,20 +9,22 @@ Decisões em `docs/REPASSE.md`, revisadas com o Akira antes do vídeo (PMF4-38).
 
 ## Onde estamos
 - Etapas 1 e 2 (parte obrigatória) concluídas. Evidência de drift versionada em `reports/drift/`.
-- OBS-001 concluído (08/11): `logs/pipeline.jsonl` com esquema fixo de 9 campos, `pipeline_step`
-  mede latência e registra falha até em exceção; sem PII. Relatório de drift agora grava em `outputs/drift/`.
-- 99 testes passando; ruff limpo.
+- OBS-001 concluído e validado com os dados reais (9.000 aprovadas; corrompido com 130 linhas rejeitadas).
+- OBS-002 em revisão (PR #12): réguas recalibradas para lotes de 2.000 (`reports/monitoring/alert_thresholds.json`),
+  5 semanas no MLflow e painel em `reports/figures/painel_semanas.png`. O concept drift alarma na
+  semana 3, antes do PSI (semana 4).
+- 111 testes passando; ruff limpo.
 
 ## Pendências (Akira)
-- Rodar a validação real do OBS-001 (comando na spec) com os lotes reais: a sessão na nuvem não baixa o UCI.
-- ADR-004: PMF4-35 está To Do no Jira, e o arquivo diz "aguardando revisão".
+- Revisar e mergear o PR #12 (OBS-002, PMF4-20 em In Review no Jira).
+- Apagar a branch remota `claude/project-continuity-jira-51vtlk` (a sessão não tem permissão).
+- ADR-004: PMF4-35 está To Do, e o arquivo diz "aguardando revisão".
 - Citar o ADR-005 no card PMF4-22.
-- Débitos de `prepare_data.py` e `inject_defects`: PMF4-39, prioridade baixa.
+- Débitos: PMF4-39; e `run_validation.py`/`make_drift_batch.py` ainda gravam em `reports/` (REPASSE 27).
 
 ## Próximo passo
-OBS-002 (PMF4-20, prazo 10/11): MLflow lendo o `pipeline.jsonl` e os JSON de drift, mais as 3 réguas
-herdadas (comentário no Jira). Depois OBS-003 (10/11) e GOV-001 a GOV-004 (11 a 13/11).
-DRIFT-003 (PSI à mão) segue em paralelo, prazo 13/11.
+OBS-003 (PMF4-21, prazo 10/11): boa parte já está no README (tabela das réguas); falta a tabela de
+métricas de saúde do pipeline. Depois GOV-001 a GOV-004 (11 a 13/11) e DRIFT-003 (13/11).
 
 ## Prazo
 A referência é o Jira. Entrega em 17/11/2026. Plano de corte no CLAUDE.md §8.

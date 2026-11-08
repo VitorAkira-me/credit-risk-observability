@@ -33,6 +33,17 @@ DRIFT_REPORTS_DIR = REPORTS_DIR / "drift"
 OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 DRIFT_RUNS_DIR = OUTPUTS_DIR / "drift"
 
+# OBS-002: monitoramento semanal. Os limites calibrados são evidência (versionados); o banco do
+# MLflow e os artefatos de cada semana são regeráveis e ficam fora do git.
+MONITORING_REPORTS_DIR = REPORTS_DIR / "monitoring"
+ALERT_THRESHOLDS_PATH = MONITORING_REPORTS_DIR / "alert_thresholds.json"
+WEEKLY_RUNS_DIR = OUTPUTS_DIR / "weekly"
+WEEKLY_BATCH_SIZE = 2_000  # 4 semanas disjuntas cabem nos 9.000 clientes da Produção-base
+MLFLOW_DB_PATH = PROJECT_ROOT / "mlflow.db"
+MLFLOW_TRACKING_URI = f"sqlite:///{MLFLOW_DB_PATH.as_posix()}"
+MLFLOW_ARTIFACTS_DIR = PROJECT_ROOT / "mlartifacts"
+MLFLOW_EXPERIMENT = "credit-risk-monitoramento"
+
 MODELS_DIR = PROJECT_ROOT / "models"
 
 UCI_DATASET_ID = 350  # Default of Credit Card Clients (Taiwan)

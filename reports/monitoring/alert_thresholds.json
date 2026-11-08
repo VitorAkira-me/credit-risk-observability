@@ -1,0 +1,17 @@
+{
+  "batch_size": 2000,
+  "calibration_samples": 200,
+  "holdout_samples": 200,
+  "psi_limit": 0.25,
+  "ks_p_value_limit": 0.0025,
+  "ks_d_min": 0.0,
+  "auc_floor": 0.6871,
+  "default_rate_low": 0.206,
+  "default_rate_high": 0.236,
+  "holdout_false_alarm": {
+    "ks": 0.015,
+    "ks_regua_antiga": 0.245,
+    "auc": 0.035,
+    "taxa_default": 0.07
+  }
+}
