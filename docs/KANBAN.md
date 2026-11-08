@@ -20,7 +20,7 @@
 | OBS-002 | [PMF4-20](https://akiravkax.atlassian.net/browse/PMF4-20) | Done |
 | OBS-003 | [PMF4-21](https://akiravkax.atlassian.net/browse/PMF4-21) | Done |
 | GOV-001 | [PMF4-22](https://akiravkax.atlassian.net/browse/PMF4-22) | In Review |
-| GOV-002 | [PMF4-23](https://akiravkax.atlassian.net/browse/PMF4-23) | To Do |
+| GOV-002 | [PMF4-23](https://akiravkax.atlassian.net/browse/PMF4-23) | In Review |
 | GOV-003 | [PMF4-24](https://akiravkax.atlassian.net/browse/PMF4-24) | In Review |
 | GOV-004 | [PMF4-25](https://akiravkax.atlassian.net/browse/PMF4-25) | In Review |
 | DOC-001 | [PMF4-26](https://akiravkax.atlassian.net/browse/PMF4-26) | To Do |

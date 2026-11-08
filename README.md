@@ -36,6 +36,7 @@ uv run python scripts/run_weekly_pipeline.py   # 5 semanas simuladas, cada uma v
 uv run python scripts/plot_weekly_panel.py     # painel estático em reports/figures/
 uv run python scripts/run_fairness.py          # auditoria de viés por sexo e idade (Etapa 4)
 uv run python scripts/run_causal_analysis.py   # dose-resposta: qual drift causa a queda (Etapa 4)
+uv run python scripts/apply_retention.py       # retenção: lista o que venceu (--aplicar apaga)
 uv run mlflow ui --backend-store-uri sqlite:///mlflow.db   # painel vivo em http://localhost:5000
 uv run pytest -q                          # testes
 uv run ruff check . ; uv run ruff format --check .
@@ -220,7 +221,49 @@ do código, e o dado continuaria sendo pessoal, porque quem tem a chave reidenti
 | MLflow só com agregados | métricas, tags e relatórios; o lote nunca é enviado | `tracking.py`; arquivo de falhas minimizado |
 | Nada sai da máquina | telemetria do Evidently e do MLflow desligada antes do import | teste do Evidently; variáveis em `tracking.py` |
 | Artefato de CI sem detalhe | `pipeline.yml` exclui o arquivo de detalhe das falhas | regra de exclusão no upload |
-| Acesso mínimo | projeto local; em produção, o detalhe das falhas ficaria restrito ao time de dados | a definir na retenção (GOV-002) |
+| Acesso mínimo | projeto local; em produção, o detalhe das falhas ficaria restrito ao time de dados | prazos curtos para o detalhe (30 dias, GOV-002) e `scripts/apply_retention.py` |
+
+### Base legal, direito de revisão e retenção (GOV-002)
+**Base legal da decisão de crédito.** O tratamento se apoia na **proteção do crédito** (art. 7º, X)
+para a análise de risco, e na **execução de contrato** (art. 7º, V) para os dados que o próprio
+cliente fornece ao pedir o cartão e para gerir o contrato depois de aprovado.
+
+**Por que não consentimento (art. 7º, I).** Consentimento precisa ser livre, e pode ser revogado a
+qualquer momento. Na concessão de crédito ele não é livre de verdade (sem ele, não há crédito), e a
+revogação criaria um problema sem saída: o cliente inadimplente revogaria o consentimento para
+apagar o próprio histórico de calote, justamente o dado que protege os outros clientes e o banco.
+Com a proteção do crédito como base, a revogação não obriga a apagar o histórico enquanto houver
+finalidade legítima e prazo legal para guardá-lo (art. 16).
+
+**Direito de revisão de decisão automatizada (art. 20).** O cliente pode pedir revisão de decisão
+tomada só por tratamento automatizado que afete seus interesses, e tem direito a informação clara
+sobre os critérios usados, respeitado o segredo comercial. O que isso exige do projeto:
+- **Explicabilidade:** o modelo é uma regressão logística; o peso de cada feature é legível, e dá
+  para dizer ao cliente quais fatores mais pesaram. Os maiores pesos são o atraso no mês mais
+  recente (`PAY_0`), os valores pagos nos dois últimos meses (`PAY_AMT1` e `PAY_AMT2`, que reduzem o
+  risco) e a escolaridade. A escolaridade pesar tanto é um ponto de atenção: é feature com risco
+  discriminatório (inventário acima) e precisa entrar na auditoria de viés do próximo retreino.
+- **Critérios declaráveis:** `SEX` e `MARRIAGE` fora do modelo (ADR-004) tornam a explicação
+  defensável; a auditoria do GOV-003 mostra o que ainda pesa por grupo.
+- **Caminho humano:** o plano de ação (GOV-004) prevê revisão humana para as decisões limítrofes e
+  para os grupos com disparidade.
+- **Rastreabilidade:** cada decisão aponta para a versão do modelo (`modelo_sha256` no MLflow) e
+  para o lote (`run_id`), sem guardar dados do cliente fora da base de origem.
+
+**Retenção e descarte.** Prazo por tipo de dado, aplicado por código onde o dado é nosso:
+
+| Dado | Onde fica | Prazo | Por quê | Como é apagado |
+|---|---|---|---|---|
+| Base de clientes (Referência, Produção, lotes) | `data/`, fora do git | enquanto durar a relação e o prazo legal de guarda de registros de crédito; no projeto, até a entrega | é a fonte de treino e de auditoria de viés | apagar `data/`; regerável do UCI por `prepare_data.py` |
+| Detalhe das falhas do contrato (com valores) | `outputs/validation/` | **30 dias** | só serve para investigar um lote barrado | `scripts/apply_retention.py --aplicar` |
+| Saídas das semanas e relatórios regerados | `outputs/` | **90 dias** | comparar um trimestre de semanas | `scripts/apply_retention.py --aplicar` |
+| Log do pipeline (sem PII) | `logs/pipeline.jsonl` | **180 dias** | auditoria operacional | `scripts/apply_retention.py --aplicar` remove as linhas vencidas |
+| Runs do MLflow (só agregados) | `mlflow.db`, `mlartifacts/` | 1 ano | histórico de saúde do modelo entre retreinos | apagar os runs pela UI ou pela API do MLflow |
+| Artefatos do CD | GitHub Actions | **30 dias** | evidência de cada merge | expiram sozinhos (`retention-days: 30`) |
+| Relatórios agregados versionados | `reports/` | enquanto o modelo existir | evidência de conformidade e de drift; sem dado de cliente (ADR-005) | remoção por commit |
+
+O script roda em simulação por padrão (só lista o que apagaria); `--aplicar` apaga. Num ambiente
+real, ele rodaria num agendador semanal.
 
 ### Viés por grupo (GOV-003)
 Aprovar = o modelo prever que o cliente paga (score abaixo de 0,5). Duas métricas de justiça:

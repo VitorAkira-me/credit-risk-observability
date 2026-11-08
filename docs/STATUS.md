@@ -21,19 +21,19 @@ Decisões em `docs/REPASSE.md`, revisadas com o Akira antes do vídeo (PMF4-38).
   contra os mais velhos. Mitigação proposta no ADR-006 (tirar `AGE` no retreino), aguardando decisão.
 - GOV-004 em revisão: dose-resposta prova que o concept drift causa a queda (AUC 0,715 a 0,665) e o
   data drift não (0,7149 a 0,7144); calotes aprovados +56%. Diagrama causal e plano de ação no README.
+- GOV-002 em revisão: base legal (proteção do crédito e contrato), art. 20, retenção por código.
 - 113 testes passando; ruff limpo.
 
 ## Pendências (Akira)
 - Revisar os textos do OBS-003 e do GOV-001 no README (cards "Akira pilota", rascunhos do Claude).
-- Conferir as citações da LGPD no Planalto (lista na spec do GOV-001): o site recusa a nuvem.
+- Conferir as citações da LGPD no Planalto (listas nas specs do GOV-001 e do GOV-002): o site recusa a nuvem.
 - Exigir os checks do CI na regra de proteção da `main` (Settings > Branches), senão o CI só avisa.
 - Apagar a branch remota `claude/project-continuity-jira-51vtlk` (a sessão não tem permissão).
 - Decidir o ADR-006 (viés por idade) e revisar o ADR-004 (PMF4-35, "aguardando revisão").
 - Débitos: PMF4-39; e `run_validation.py`/`make_drift_batch.py` ainda gravam em `reports/` (REPASSE 27).
 
 ## Próximo passo
-GOV-002 (base legal, retenção e art. 20), prazo 12/11: depende da conferência da LGPD no Planalto.
-Depois DRIFT-003 (Akira pilota), DOC-001 (README final) e o vídeo (VID-001/002). DRIFT-003 (PSI à mão) segue em paralelo, prazo 13/11. Depois GOV-001 a GOV-004 (11 a 13/11) e DRIFT-003 (13/11).
+DRIFT-003 (Akira pilota, PSI à mão), DOC-001 (README final), REPASSE-001 e o vídeo (VID-001/002). DRIFT-003 (PSI à mão) segue em paralelo, prazo 13/11. Depois GOV-001 a GOV-004 (11 a 13/11) e DRIFT-003 (13/11).
 
 ## Prazo
 A referência é o Jira. Entrega em 17/11/2026. Plano de corte no CLAUDE.md §8.
