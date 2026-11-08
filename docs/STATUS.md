@@ -16,7 +16,9 @@ Decisões em `docs/REPASSE.md`, revisadas com o Akira antes do vídeo (PMF4-38).
 - OBS-003 concluído (PR #15): métricas de saúde, prints do MLflow e guia de retreino no README.
 - IMP-001 concluído (PR #14): CI (ruff, pytest e portão de contrato com dados reais) em todo PR e merge. O CD rodou verde na `main` duas vezes, com os limites
   calibrados idênticos na máquina do GitHub, e publicou o artefato `monitoramento-<sha>` (12,7 MB, 30 dias).
-- GOV-001 em revisão: inventário de PII, Privacy by Design e ADR-005 implementado.
+- GOV-001 em revisão (PR #16): inventário de PII, Privacy by Design e ADR-005 implementado.
+- GOV-003 em revisão: viés por grupo. Sexo passa na regra dos 4/5 (0,920); idade reprova (0,663),
+  contra os mais velhos. Mitigação proposta no ADR-006 (tirar `AGE` no retreino), aguardando decisão.
 - 113 testes passando; ruff limpo.
 
 ## Pendências (Akira)
@@ -24,11 +26,11 @@ Decisões em `docs/REPASSE.md`, revisadas com o Akira antes do vídeo (PMF4-38).
 - Conferir as citações da LGPD no Planalto (lista na spec do GOV-001): o site recusa a nuvem.
 - Exigir os checks do CI na regra de proteção da `main` (Settings > Branches), senão o CI só avisa.
 - Apagar a branch remota `claude/project-continuity-jira-51vtlk` (a sessão não tem permissão).
-- ADR-004: PMF4-35 está To Do, e o arquivo diz "aguardando revisão".
+- Decidir o ADR-006 (viés por idade) e revisar o ADR-004 (PMF4-35, "aguardando revisão").
 - Débitos: PMF4-39; e `run_validation.py`/`make_drift_batch.py` ainda gravam em `reports/` (REPASSE 27).
 
 ## Próximo passo
-GOV-003 (viés por grupo), GOV-002 (base legal e retenção) e GOV-004 (análise causal), prazos de 12 e 13/11. DRIFT-003 (PSI à mão) segue em paralelo, prazo 13/11. Depois GOV-001 a GOV-004 (11 a 13/11) e DRIFT-003 (13/11).
+GOV-004 (análise causal e plano de ação) e GOV-002 (base legal e retenção), prazos de 12 e 13/11. DRIFT-003 (PSI à mão) segue em paralelo, prazo 13/11. Depois GOV-001 a GOV-004 (11 a 13/11) e DRIFT-003 (13/11).
 
 ## Prazo
 A referência é o Jira. Entrega em 17/11/2026. Plano de corte no CLAUDE.md §8.

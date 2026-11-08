@@ -299,3 +299,19 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **O que aconteceu:** liberei `www.planalto.gov.br` na rede do ambiente, mas o servidor encerra a conexão vinda da nuvem. O README parafraseia e cita só número de artigo; a lista de conferência está na spec do GOV-001.
 - **Pergunta para o Akira:** por que um plano de conformidade nunca deve citar artigo de memória? O que muda se o artigo tiver sido alterado por lei posterior?
 
+## GOV-003 · Viés por grupo (08/11/2026)
+
+### 35. O viés está na idade, não no sexo (achado da auditoria)
+- **Previsão do Claude:** diferença pequena por sexo e viés contra os mais jovens. **Aconteceu:** sexo passa na regra dos 4/5 (0,920), mas idade reprova (0,663), e contra os **mais velhos**: 50 ou mais aprovados em 44,8%, de 30 a 39 em 67,6%.
+- **Por que a previsão errou:** a taxa real de default sobe com a idade neste dataset (19,8% de 30 a 39, 26,0% com 50 ou mais), e o modelo amplia essa diferença.
+- **Pergunta para o Akira:** se o grupo mais velho de fato atrasa mais, aprovar menos é injusto ou é só preciso? Qual das duas métricas (paridade ou oportunidade) responde melhor a isso?
+
+### 36. Contrafactuais em vez de opinião: "tirar a coluna resolve?" (decisão do Claude)
+- **O que:** o mesmo modelo, a mesma Referência, só mudando as colunas. Com `SEX` e `MARRIAGE`, a disparidade por sexo dobra (0,051 para 0,125). Sem `AGE`, a disparidade por idade cai (0,228 para 0,134) e a AUC perde 0,0012.
+- **Por quê:** é um experimento de intervenção: muda uma coisa e mede o efeito. É o mesmo raciocínio da análise causal do GOV-004.
+- **Pergunta para o Akira:** sem `AGE`, os menores de 29 passam a ser os menos aprovados. Que coluna está "fazendo o papel" da idade? Como você descobriria?
+
+### 37. ADR-006 proposto, modelo não alterado (decisão do Claude, a confirmar)
+- **O que:** recomendação de tirar `AGE` no próximo retreino, com revisão humana das negativas nos grupos com disparidade.
+- **Por que não agora:** mudar o modelo invalidaria a evidência versionada de drift e de monitoramento, que é a nota das Etapas 2 e 3.
+
