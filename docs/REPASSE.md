@@ -229,3 +229,32 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **O que:** `run_drift_report.py` grava em `outputs/drift/` (no `.gitignore`); `--reports-dir` muda o destino.
 - **Limitação desta sessão:** o proxy da nuvem bloqueou o download do UCI, então a validação real foi com lotes sintéticos do mesmo `inject_defects`. Rode no seu ambiente o comando da spec com `production_base.parquet` e `batch_corrupted.parquet` para registrar os números reais.
 
+## OBS-002 · Monitoramento semanal no MLflow (08/11/2026)
+
+### 23. Réguas recalibradas para o lote de 2.000, sempre em amostras sem drift (decisão do Claude)
+- **O que:** 400 amostras de 2.000 linhas da Produção-base: 200 para calibrar, 200 só para medir o alarme falso. Piso da AUC = percentil 2,5 (0,687); taxa de default entre os percentis 2,5 e 97,5 (20,6% a 23,6%); KS com Bonferroni (p < 0,0025) e D mínimo no percentil 95.
+- **Por quê:** são as três direções do comentário do PMF4-20. Os lotes com drift nunca entram na calibração: ajustar a régua neles seria ajustar a régua à resposta.
+- **Esperávamos e aconteceu:** a régua antiga do KS (p < 0,05) alarmou em 24,5% das amostras sem drift; a nova, em 1,5%. AUC: 3,5%. Taxa de default: 7,0%, acima dos 5% nominais, mas dentro do ruído de 200 amostras (erro padrão perto de 1,5 ponto).
+- **Surpresa:** o D mínimo saiu 0,0. Com 2.000 linhas, em mais de 95% das amostras nenhuma feature passa no Bonferroni, então ele sozinho já basta. O D mínimo fica no código, para lotes maiores.
+- **Pergunta para o Akira:** a taxa de default alarmou em 7% das semanas sem drift. Você aceitaria isso, ou alargaria o intervalo para 99%? O que se perde ao alargar?
+
+### 24. Quatro semanas disjuntas com drift crescente, mais uma corrompida (decisão do Claude)
+- **O que:** a Produção-base embaralhada vira 4 lotes de 2.000 sem cliente repetido. Intensidades 0; 0,33; 0,67 e 1, aplicando primeiro o concept drift (rótulos) e depois o data drift (entradas). Os 1.000 que sobram viram a semana corrompida, com os defeitos do DQ-002.
+- **Por quê:** lotes disjuntos imitam semanas reais (clientes diferentes); juntar os dois drifts mostra qual régua acorda primeiro.
+- **Previsão do Claude antes de rodar:** semana 2 com KS em `LIMIT_BAL`, semana 3 talvez com default, semana 4 com tudo. **Aconteceu:** a semana 3 já alarmou AUC (0,685) e default (27%), com PSI em 0,18. O concept drift aparece antes do data drift.
+- **Pergunta para o Akira:** se só existisse o `drift_alert` (PSI), quantas semanas o modelo ficaria degradado antes de alguém saber?
+
+### 25. MLflow com sqlite local, telemetria desligada, 3.18.0 (decisão do Claude)
+- **O que:** `mlflow.db` e `mlartifacts/` locais e fora do git; `MLFLOW_DISABLE_TELEMETRY` antes do import, como no Evidently (decisão 16). Versão 3.18.0 porque a 3.17.2 exige `pyarrow<26` e o projeto fixa 26.0.0; só o `certifi` mudou no lock.
+- **Descartado:** o armazenamento em pasta `mlruns/`, que o MLflow 3 já trata como legado.
+- **Pergunta para o Akira:** se o `mlflow.db` some, o que se perde de fato? O que dá para reconstruir rodando os scripts de novo?
+
+### 26. Métrica ausente não vira zero; a semana barrada não tem AUC (decisão do Claude)
+- **O que:** `log_pipeline_run` pula valores None. A semana 5 tem só 3 métricas (latência, linhas de entrada e rejeitadas) e a tag `status=falha`.
+- **Por quê:** AUC 0 no gráfico pareceria um modelo péssimo, quando na verdade o modelo nem rodou.
+
+### 27. Privacidade e reprodutibilidade (achados desta sessão)
+- **`failure_cases.csv` no MLflow:** o card pede esse artefato, e ele traz valores de linha (idade 15, IDs repetidos). Fica só em `mlartifacts/`, local e fora do git; minimizar o arquivo é o ADR-005, no GOV-001.
+- **Reprodutibilidade:** nesta sessão os dados foram baixados de novo do UCI e os lotes saíram com os mesmos hashes da evidência do DRIFT-002. O arquivo do modelo muda nos bytes (Python 3.12.3 aqui, 3.12.10 no seu), mas a AUC repete 0,7149.
+- **Armadilha achada:** `run_validation.py` e `make_drift_batch.py` ainda gravam resumo e manifesto em `reports/` e sobrescrevem a evidência quando rodados de novo. Restaurei com `git restore`. O pipeline semanal já grava em `outputs/`; mudar o padrão dos dois fica como candidato a `IMP-*`.
+

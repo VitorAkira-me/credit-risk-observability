@@ -109,3 +109,16 @@ faz esse papel de forma simples.
 **Analogia:** texto livre é o diário de bordo à mão; JSONL é a caixa-preta do avião.
 **Pergunta para pensar:** dá para tirar uma métrica de um log? E um log de uma métrica?
 
+## Bootstrap
+**O que é:** sortear muitas amostras dos próprios dados para ver quanto uma métrica varia só por
+acaso. Se a AUC de 200 amostras sem drift fica entre 0,69 e 0,74, uma semana com 0,66 é diferente
+de verdade, e não azar do sorteio.
+**Analogia:** para saber se uma moeda é viciada, você joga muitas vezes antes de desconfiar de três caras seguidas.
+**Pergunta para pensar:** por que o piso da AUC depende do tamanho do lote?
+
+## Fadiga de alerta
+**O que é:** quando um alerta dispara toda hora sem motivo, as pessoas param de olhar, e o alerta
+verdadeiro passa despercebido. Medir o alarme falso em dados sem drift é o antídoto.
+**Analogia:** o menino que gritava "lobo".
+**Pergunta para pensar:** é melhor um alerta que erra para mais ou para menos? Depende do custo de quê?
+
