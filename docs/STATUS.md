@@ -19,6 +19,8 @@ Decisões em `docs/REPASSE.md`, revisadas com o Akira antes do vídeo (PMF4-38).
 - GOV-001 em revisão (PR #16): inventário de PII, Privacy by Design e ADR-005 implementado.
 - GOV-003 em revisão: viés por grupo. Sexo passa na regra dos 4/5 (0,920); idade reprova (0,663),
   contra os mais velhos. Mitigação proposta no ADR-006 (tirar `AGE` no retreino), aguardando decisão.
+- GOV-004 em revisão: dose-resposta prova que o concept drift causa a queda (AUC 0,715 a 0,665) e o
+  data drift não (0,7149 a 0,7144); calotes aprovados +56%. Diagrama causal e plano de ação no README.
 - 113 testes passando; ruff limpo.
 
 ## Pendências (Akira)
@@ -30,7 +32,8 @@ Decisões em `docs/REPASSE.md`, revisadas com o Akira antes do vídeo (PMF4-38).
 - Débitos: PMF4-39; e `run_validation.py`/`make_drift_batch.py` ainda gravam em `reports/` (REPASSE 27).
 
 ## Próximo passo
-GOV-004 (análise causal e plano de ação) e GOV-002 (base legal e retenção), prazos de 12 e 13/11. DRIFT-003 (PSI à mão) segue em paralelo, prazo 13/11. Depois GOV-001 a GOV-004 (11 a 13/11) e DRIFT-003 (13/11).
+GOV-002 (base legal, retenção e art. 20), prazo 12/11: depende da conferência da LGPD no Planalto.
+Depois DRIFT-003 (Akira pilota), DOC-001 (README final) e o vídeo (VID-001/002). DRIFT-003 (PSI à mão) segue em paralelo, prazo 13/11. Depois GOV-001 a GOV-004 (11 a 13/11) e DRIFT-003 (13/11).
 
 ## Prazo
 A referência é o Jira. Entrega em 17/11/2026. Plano de corte no CLAUDE.md §8.

@@ -1,0 +1,102 @@
+[
+  {
+    "cenario": "data_drift",
+    "dose": 0.0,
+    "roc_auc": 0.7149,
+    "taxa_default": 0.2212,
+    "taxa_aprovacao": 0.6153,
+    "calote_aprovado": 716,
+    "bom_cliente_negado": 2187,
+    "exposicao_calote_aprovado": 138337680
+  },
+  {
+    "cenario": "data_drift",
+    "dose": 0.25,
+    "roc_auc": 0.7148,
+    "taxa_default": 0.2212,
+    "taxa_aprovacao": 0.6147,
+    "calote_aprovado": 714,
+    "bom_cliente_negado": 2191,
+    "exposicao_calote_aprovado": 129354075
+  },
+  {
+    "cenario": "data_drift",
+    "dose": 0.5,
+    "roc_auc": 0.7147,
+    "taxa_default": 0.2212,
+    "taxa_aprovacao": 0.6147,
+    "calote_aprovado": 714,
+    "bom_cliente_negado": 2191,
+    "exposicao_calote_aprovado": 120642970
+  },
+  {
+    "cenario": "data_drift",
+    "dose": 0.75,
+    "roc_auc": 0.7146,
+    "taxa_default": 0.2212,
+    "taxa_aprovacao": 0.6128,
+    "calote_aprovado": 710,
+    "bom_cliente_negado": 2204,
+    "exposicao_calote_aprovado": 110652490
+  },
+  {
+    "cenario": "data_drift",
+    "dose": 1.0,
+    "roc_auc": 0.7144,
+    "taxa_default": 0.2212,
+    "taxa_aprovacao": 0.6126,
+    "calote_aprovado": 708,
+    "bom_cliente_negado": 2204,
+    "exposicao_calote_aprovado": 101480760
+  },
+  {
+    "cenario": "concept_drift",
+    "dose": 0.0,
+    "roc_auc": 0.7149,
+    "taxa_default": 0.2212,
+    "taxa_aprovacao": 0.6153,
+    "calote_aprovado": 716,
+    "bom_cliente_negado": 2187,
+    "exposicao_calote_aprovado": 138337680
+  },
+  {
+    "cenario": "concept_drift",
+    "dose": 0.25,
+    "roc_auc": 0.7007,
+    "taxa_default": 0.234,
+    "taxa_aprovacao": 0.6153,
+    "calote_aprovado": 811,
+    "bom_cliente_negado": 2167,
+    "exposicao_calote_aprovado": 160647680
+  },
+  {
+    "cenario": "concept_drift",
+    "dose": 0.5,
+    "roc_auc": 0.6876,
+    "taxa_default": 0.2468,
+    "taxa_aprovacao": 0.6153,
+    "calote_aprovado": 911,
+    "bom_cliente_negado": 2152,
+    "exposicao_calote_aprovado": 184187680
+  },
+  {
+    "cenario": "concept_drift",
+    "dose": 0.75,
+    "roc_auc": 0.6763,
+    "taxa_default": 0.2594,
+    "taxa_aprovacao": 0.6153,
+    "calote_aprovado": 1013,
+    "bom_cliente_negado": 2140,
+    "exposicao_calote_aprovado": 204877680
+  },
+  {
+    "cenario": "concept_drift",
+    "dose": 1.0,
+    "roc_auc": 0.6647,
+    "taxa_default": 0.2722,
+    "taxa_aprovacao": 0.6153,
+    "calote_aprovado": 1114,
+    "bom_cliente_negado": 2126,
+    "exposicao_calote_aprovado": 228087680
+  }
+]
