@@ -28,6 +28,11 @@ EDA_REPORT_PATH = REPORTS_DIR / "eda" / "eda_summary.md"
 VALIDATION_REPORTS_DIR = REPORTS_DIR / "validation"
 DRIFT_REPORTS_DIR = REPORTS_DIR / "drift"
 
+# Saídas de execuções do pipeline: ficam fora do git (cada HTML do Evidently tem cerca de 6 MB e muda
+# a cada geração). Só os relatórios de reports/drift/ são evidência versionada (REPASSE, decisão 19).
+OUTPUTS_DIR = PROJECT_ROOT / "outputs"
+DRIFT_RUNS_DIR = OUTPUTS_DIR / "drift"
+
 MODELS_DIR = PROJECT_ROOT / "models"
 
 UCI_DATASET_ID = 350  # Default of Credit Card Clients (Taiwan)
