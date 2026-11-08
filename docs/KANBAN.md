@@ -18,7 +18,7 @@
 | DRIFT-002 | [PMF4-18](https://akiravkax.atlassian.net/browse/PMF4-18) | Done |
 | OBS-001 | [PMF4-19](https://akiravkax.atlassian.net/browse/PMF4-19) | Done |
 | OBS-002 | [PMF4-20](https://akiravkax.atlassian.net/browse/PMF4-20) | Done |
-| OBS-003 | [PMF4-21](https://akiravkax.atlassian.net/browse/PMF4-21) | To Do |
+| OBS-003 | [PMF4-21](https://akiravkax.atlassian.net/browse/PMF4-21) | In Review |
 | GOV-001 | [PMF4-22](https://akiravkax.atlassian.net/browse/PMF4-22) | To Do |
 | GOV-002 | [PMF4-23](https://akiravkax.atlassian.net/browse/PMF4-23) | To Do |
 | GOV-003 | [PMF4-24](https://akiravkax.atlassian.net/browse/PMF4-24) | To Do |
@@ -28,4 +28,4 @@
 | VID-002 | [PMF4-28](https://akiravkax.atlassian.net/browse/PMF4-28) | To Do |
 | ENTREGA-001 | [PMF4-29](https://akiravkax.atlassian.net/browse/PMF4-29) | To Do |
 | ADR-004 | [PMF4-35](https://akiravkax.atlassian.net/browse/PMF4-35) | To Do |
-| IMP-001 | [PMF4-30](https://akiravkax.atlassian.net/browse/PMF4-30) | In Review |
+| IMP-001 | [PMF4-30](https://akiravkax.atlassian.net/browse/PMF4-30) | Done |

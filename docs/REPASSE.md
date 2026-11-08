@@ -275,3 +275,11 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **O que:** o CD recalibra e roda `git diff --exit-code` no `alert_thresholds.json`; rodando de novo aqui, os limites saíram idênticos. O upload exclui o `failure_cases.csv`.
 - **Por quê:** régua que muda sem decisão é régua que ninguém revisou. E artefato do Actions fica acessível a quem lê o repositório: valores de linha não vão para lá (ADR-005).
 
+## OBS-003 · Métricas de saúde no README (08/11/2026)
+
+### 31. Tabela ligada às três perguntas do monitoramento, mais um guia de decisão (rascunho do Claude)
+- **O que:** cada métrica do MLflow numa linha com o que mede, por que importa, limiar e onde ver; prints da semana 1 (saudável) e da semana 4 (alerta); guia em 3 casos para "retreinar ou não".
+- **Por quê:** a pergunta do card ("se você saísse de férias, alguém decidiria só com a tabela?") pede uma regra de ação, não só definições. O guia separa falha de dado (corrigir a origem), data drift sem impacto (observar) e queda de performance (análise causal e retreino).
+- **Descartado:** limiar para a latência. Com 5 semanas não há histórico para calibrar; inventar um número seria uma régua sem base. Fica como referência.
+- **Pergunta para o Akira:** no caso 2 (data drift sem impacto), por quanto tempo você esperaria antes de agir? O que mudaria a sua resposta?
+
