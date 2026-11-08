@@ -315,3 +315,16 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **O que:** recomendação de tirar `AGE` no próximo retreino, com revisão humana das negativas nos grupos com disparidade.
 - **Por que não agora:** mudar o modelo invalidaria a evidência versionada de drift e de monitoramento, que é a nota das Etapas 2 e 3.
 
+## GOV-004 · Análise causal (08/11/2026)
+
+### 38. Dose-resposta em vez de correlação na série semanal (decisão do Claude)
+- **O que:** cada drift aplicado sozinho, em 5 doses, no mesmo modelo e nos mesmos 9.000 clientes. Mede AUC, calote aprovado, bom cliente negado e exposição.
+- **Por quê:** a pergunta do card ("PSI de `LIMIT_BAL` subiu e a AUC caiu na mesma semana: uma causou a outra?") só se responde com intervenção. Nas semanas os dois drifts vinham juntos, então a série sozinha confunde.
+- **Previsão do Claude:** AUC parada com data drift e caindo com concept drift. **Aconteceu:** data drift de 0,7149 para 0,7144; concept drift em linha reta até 0,6647. Calotes aprovados +56%, exposição +65%.
+- **Pergunta para o Akira:** em produção não dá para "aplicar drift" no mundo. Que experimento você faria com os dados que um banco de verdade tem?
+
+### 39. Plano de ação com critério para encerrar (decisão do Claude)
+- **O que:** cada gatilho do OBS-002 ligado a um diagnóstico, uma ação e um critério de saída. Rollback usa o `modelo_sha256` que cada run do MLflow já registra.
+- **Por quê:** um plano sem critério de saída deixa o alerta aberto para sempre (fadiga de alerta).
+- **Pergunta para o Akira:** quem decide o rollback numa fintech: o time de dados, o de risco ou os dois? O que o art. 20 da LGPD tem a ver com isso?
+

@@ -35,6 +35,7 @@ uv run python scripts/calibrate_alerts.py      # réguas de alerta para lotes de
 uv run python scripts/run_weekly_pipeline.py   # 5 semanas simuladas, cada uma vira um run do MLflow
 uv run python scripts/plot_weekly_panel.py     # painel estático em reports/figures/
 uv run python scripts/run_fairness.py          # auditoria de viés por sexo e idade (Etapa 4)
+uv run python scripts/run_causal_analysis.py   # dose-resposta: qual drift causa a queda (Etapa 4)
 uv run mlflow ui --backend-store-uri sqlite:///mlflow.db   # painel vivo em http://localhost:5000
 uv run pytest -q                          # testes
 uv run ruff check . ; uv run ruff format --check .
@@ -257,4 +258,49 @@ passam a ser os menos aprovados: o limite de crédito funciona como proxy de ida
 **Mitigação proposta ([ADR-006](docs/decisions/ADR-006-vies-por-idade.md), aguardando decisão):**
 tirar `AGE` no próximo retreino e encaminhar à revisão humana as negativas dos grupos com
 disparidade, com a auditoria rodando a cada retreino e a regra dos 4/5 como critério de aprovação.
+
+### Análise causal da degradação (GOV-004)
+```mermaid
+flowchart LR
+    M["Mudança no mundo<br/>(inflação, crise de crédito)"]
+    D["Data drift<br/>faturas sobem, limites caem"]
+    C["Concept drift<br/>quem tem fatura alta<br/>passa a atrasar mais"]
+    A["Modelo erra mais<br/>AUC cai"]
+    N["Impacto no negócio<br/>mais calote aprovado"]
+    M --> D
+    M --> C
+    D -. "sem efeito medido" .-> A
+    C --> A
+    A --> N
+```
+
+| Elo | Evidência no projeto |
+|---|---|
+| Mundo → data drift | Semana 4: PSI de `LIMIT_BAL` 0,30 e KS acusando o limite e as 6 faturas ([relatório](reports/drift/drift_report_batch_data_drift_i100.html)) |
+| Mundo → concept drift | Taxa de default de 22,1% para 27,2%, concentrada nos clientes de fatura alta ([relatório](reports/drift/drift_report_batch_concept_drift_i100.html)) |
+| Data drift → modelo | **Nenhum efeito:** AUC de 0,7149 para 0,7144 com a dose cheia (diferença menor que o ruído) |
+| Concept drift → modelo | AUC cai em linha reta com a dose: 0,715, 0,701, 0,688, 0,676, 0,665 |
+| Modelo → negócio | Calotes aprovados (em 9.000 clientes) de 716 para 1.114 (+56%); exposição em limite de crédito de NT$ 138 milhões para NT$ 228 milhões (+65%) |
+
+![Dose-resposta](reports/figures/dose_resposta.png)
+
+**Correlação não é causa, e aqui dá para provar.** Na semana 4 do painel, o PSI de `LIMIT_BAL`
+subiu e a AUC caiu juntos. Olhando só a série, seria natural culpar o limite. Mas nas semanas os
+dois drifts foram aplicados ao mesmo tempo. O experimento de dose-resposta
+(`scripts/run_causal_analysis.py`, [números](reports/causal/dose_resposta.json)) aplica **um de cada
+vez**, no mesmo modelo e nos mesmos clientes: com qualquer dose de data drift a AUC não se move; com
+o concept drift ela cai na proporção da dose. A queda é causada pela mudança na relação entre o
+cliente e o calote, não pela mudança nas faturas e no limite. Dois cuidados: a exposição cai no
+cenário de data drift só porque os limites foram cortados (efeito mecânico, não do modelo); e, em
+produção, não dá para intervir no mundo. Lá a mesma pergunta se responde com rótulos recentes,
+comparando a performance por segmento e retreinando numa janela nova para ver se a queda some.
+
+### Plano de ação quando o alerta dispara
+| Gatilho (régua do OBS-002) | Diagnóstico provável | Ação | Critério para encerrar |
+|---|---|---|---|
+| `status=falha` no contrato | dado sujo na origem | bloquear o lote e corrigir a fonte; **não** retreinar | lote seguinte aprovado no contrato |
+| Só PSI ou KS, com AUC e default normais | data drift sem impacto (semana 2) | investigar a causa (mudança de política, de público, de produto) e acompanhar | 2 semanas sem piora de AUC |
+| AUC abaixo de 0,687 ou default fora de 20,6% a 23,6% | concept drift (semanas 3 e 4) | revisão humana das decisões limítrofes já; análise por segmento; **retreino** com dados rotulados recentes | modelo novo com AUC maior na janela recente, contrato e regra dos 4/5 aprovados |
+| Modelo novo pior que o anterior, ou incidente em produção | retreino ruim | **rollback** para a versão anterior (`modelo_sha256` registrado em cada run do MLflow) | métricas de volta à faixa |
+| Regra dos 4/5 reprovada (GOV-003) | viés por grupo | revisão humana das negativas do grupo; ADR-006 no próximo retreino | razão de aprovação de pelo menos 0,8 |
 

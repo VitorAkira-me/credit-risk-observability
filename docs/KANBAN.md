@@ -22,7 +22,7 @@
 | GOV-001 | [PMF4-22](https://akiravkax.atlassian.net/browse/PMF4-22) | In Review |
 | GOV-002 | [PMF4-23](https://akiravkax.atlassian.net/browse/PMF4-23) | To Do |
 | GOV-003 | [PMF4-24](https://akiravkax.atlassian.net/browse/PMF4-24) | In Review |
-| GOV-004 | [PMF4-25](https://akiravkax.atlassian.net/browse/PMF4-25) | To Do |
+| GOV-004 | [PMF4-25](https://akiravkax.atlassian.net/browse/PMF4-25) | In Review |
 | DOC-001 | [PMF4-26](https://akiravkax.atlassian.net/browse/PMF4-26) | To Do |
 | VID-001 | [PMF4-27](https://akiravkax.atlassian.net/browse/PMF4-27) | To Do |
 | VID-002 | [PMF4-28](https://akiravkax.atlassian.net/browse/PMF4-28) | To Do |
