@@ -77,8 +77,9 @@ def test_gate_returns_0_and_logs_pass(clean_population, tmp_path):
 
     assert code == 0
     event = json.loads(events.PIPELINE_LOG_PATH.read_text(encoding="utf-8").splitlines()[-1])
-    assert event["event"] == "validation_passed"
-    assert event["rows"] == 500
+    assert event["evento"] == "validation_passed"
+    assert event["linhas_entrada"] == 500
+    assert event["status"] == "sucesso"
     assert not (tmp_path / "reports").exists()
 
 
@@ -92,7 +93,8 @@ def test_gate_returns_1_logs_failure_and_saves_cases(clean_population, tmp_path)
 
     assert code == 1
     event = json.loads(events.PIPELINE_LOG_PATH.read_text(encoding="utf-8").splitlines()[-1])
-    assert event["event"] == "validation_failed"
-    assert event["failures_by_rule"] == expected
+    assert event["evento"] == "validation_failed"
+    assert event["status"] == "falha"
+    assert event["detalhe"]["falhas_por_regra"] == expected
     cases = pd.read_csv(tmp_path / "reports" / "bad_failure_cases.csv")
     assert len(cases) == sum(expected.values())

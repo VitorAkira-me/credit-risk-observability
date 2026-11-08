@@ -198,3 +198,6 @@ models/*.joblib
 
 # Logs de execução do pipeline (evidência entra via reports/)
 logs/
+
+# Saídas das execuções do pipeline (relatórios de drift regerados; evidência fica em reports/)
+outputs/

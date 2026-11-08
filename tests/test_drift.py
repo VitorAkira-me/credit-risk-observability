@@ -316,7 +316,7 @@ def test_script_writes_batch_and_manifest(base, tmp_path):
     # O run_id do manifesto é o mesmo do log: é ele que liga os dois.
     log_line = events.PIPELINE_LOG_PATH.read_text(encoding="utf-8").splitlines()[-1]
     event = json.loads(log_line)
-    assert event["event"] == "drift_batch_generated"
+    assert event["evento"] == "drift_batch_generated"
     assert event["run_id"] == manifest["run_id"]
 
 
@@ -344,7 +344,7 @@ def test_script_does_not_write_a_batch_that_fails_the_contract(base, tmp_path):
     assert not (tmp_path / "production" / "batch_data_drift_i100.parquet").exists()
     assert not (tmp_path / "reports" / "batch_data_drift_i100_manifest.json").exists()
     event = json.loads(events.PIPELINE_LOG_PATH.read_text(encoding="utf-8").splitlines()[-1])
-    assert event["event"] == "drift_batch_rejected"
+    assert event["evento"] == "drift_batch_rejected"
 
 
 def test_script_refuses_intensity_that_would_collide_in_the_file_name(base, tmp_path):
