@@ -342,3 +342,14 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **O que aconteceu:** o rascunho do art. 20 dizia que "uso do limite" pesava; não é nem feature. Os coeficientes reais mostram `PAY_0` e a escolaridade no topo.
 - **Pergunta para o Akira:** se a escolaridade é um dos maiores pesos e tem risco discriminatório, o ADR-006 deveria tratar dela também?
 
+## DOC-001 · README final (08/11/2026)
+
+### 43. A Etapa 2 não tinha seção de resultados (achado do Claude)
+- **O que:** o README tinha a nota "o que fica no git" sobre os relatórios de drift, mas nenhuma tabela dizendo o que foi alterado e o que o PSI e o KS acusaram, que é o centro da Etapa 2 (25% da nota).
+- **Como foi pego:** reorganizando o README pela ordem das etapas do PDF, a Etapa 2 ficou sem corpo.
+- **Pergunta para o Akira:** o PSI das faturas ficou entre 0,03 e 0,05 com uma alta de 25%. Por que o KS pegou e o PSI não? (Pista: o que o PSI faz com o valor dentro de cada faixa?)
+
+### 44. Reprodutibilidade provada numa pasta limpa (validação do Claude)
+- **O que:** clone limpo, sequência inteira do README: 2min46, todos os passos com o exit esperado. Painel, limites, viés e dose-resposta saíram idênticos; só `run_id`, datas e versão do Python mudaram.
+- **Pendente:** o mesmo teste no PowerShell (lição da Fase 3), que este ambiente não tem.
+
