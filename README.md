@@ -131,6 +131,33 @@ default, PSI por feature, nº de features com alerta) e artefatos (HTML do Evide
 log e, na semana barrada, as falhas do contrato). `mlflow.db`, `mlartifacts/` e `outputs/` ficam
 fora do git; a evidência versionada é o painel e os limites calibrados.
 
+## Métricas de saúde: o que cada número do painel quer dizer (OBS-003)
+Cada semana é um run do MLflow (`uv run mlflow ui --backend-store-uri sqlite:///mlflow.db`) e uma
+linha por etapa em `logs/pipeline.jsonl`. Os limites valem para lotes de 2.000 clientes.
+
+| Métrica | O que mede | Por que importa | Limiar de alerta | Onde ver |
+|---|---|---|---|---|
+| `status` | se a etapa terminou bem (`sucesso`) ou não (`falha`) | pergunta 1: o pipeline rodou? | qualquer `falha` | tag `status` no MLflow; campo `status` no log |
+| `linhas_entrada` | quantos clientes chegaram no lote | lote truncado ou duplicado aparece aqui antes de virar drift | diferente do esperado (2.000) | métrica no MLflow; campo no log |
+| `linhas_rejeitadas` | clientes com ao menos uma falha no contrato | dado sujo não pode chegar ao modelo | maior que 0 (o lote inteiro é barrado) | métrica; `detalhe.falhas_por_regra` no log |
+| `duracao_validacao_s`, `duracao_drift_s` | latência de cada etapa | pergunta 2: rodou bem? Lentidão anuncia lote anormal ou máquina sobrecarregada | sem limiar calibrado; referência: 0,01 s e 3 s | métricas; `duracao_s` no log |
+| `roc_auc` | se o modelo ainda ordena bem quem paga e quem não paga | pergunta 3: o modelo ainda é confiável? É o efeito que importa ao negócio | abaixo de 0,687 | métrica; tag `alerta_auc` |
+| `taxa_default` | proporção de clientes que deram calote no lote | concept drift e mudança econômica aparecem aqui primeiro | fora de 20,6% a 23,6% | métrica; tag `alerta_taxa_default` |
+| `psi_<feature>`, `psi_max` | quanto a distribuição de cada feature mudou desde o treino | data drift: o público mudou | PSI acima de 0,25 (entre 0,10 e 0,25, atenção) | métricas; tag `drift_alert` |
+| `n_features_psi`, `n_features_ks` | quantas features alarmaram em cada teste | uma feature é sinal localizado; muitas são mudança de público | maior que 0 | métricas; tag `alerta_ks` |
+| `rotulos_trocados` | rótulos trocados pela simulação de concept drift | controle do experimento, não existe em produção real | não se aplica | métrica |
+
+| Semana 1: saudável | Semana 4: com alerta |
+|---|---|
+| ![Run saudável](reports/figures/mlflow_run_saudavel.png) | ![Run com alerta](reports/figures/mlflow_run_alerta.png) |
+
+**Retreinar ou não?** O que fazer conforme o que acende:
+1. **`status=falha`:** o problema é o dado, não o modelo. Corrigir a origem do lote; retreinar não resolve.
+2. **Só PSI ou KS, com AUC e default normais:** data drift sem impacto (ex.: semana 2). Observar a
+   tendência e descobrir a causa da mudança; ainda não retreinar.
+3. **AUC ou taxa de default fora da faixa:** o modelo está errando mais (ex.: semanas 3 e 4).
+   Abrir a análise causal (GOV-004) e, confirmado o concept drift, retreinar com dados recentes rotulados.
+
 ## CI/CD no GitHub Actions (IMP-001)
 | Workflow | Quando roda | O que garante |
 |---|---|---|
