@@ -10,13 +10,13 @@ Decisões em `docs/REPASSE.md`, revisadas com o Akira antes do vídeo (PMF4-38).
 ## Onde estamos
 - Etapas 1 e 2 (parte obrigatória) concluídas. Evidência de drift versionada em `reports/drift/`.
 - OBS-001 concluído e validado com os dados reais (9.000 aprovadas; corrompido com 130 linhas rejeitadas).
-- OBS-002 concluído: réguas recalibradas para lotes de 2.000 (`reports/monitoring/alert_thresholds.json`),
+- OBS-002 em revisão (PR #12): réguas recalibradas para lotes de 2.000 (`reports/monitoring/alert_thresholds.json`),
   5 semanas no MLflow e painel em `reports/figures/painel_semanas.png`. O concept drift alarma na
   semana 3, antes do PSI (semana 4).
 - 111 testes passando; ruff limpo.
 
 ## Pendências (Akira)
-- Mover PMF4-19 e PMF4-20 para Done no Jira (a escrita no Jira foi bloqueada nesta sessão).
+- Revisar e mergear o PR #12 (OBS-002, PMF4-20 em In Review no Jira).
 - Apagar a branch remota `claude/project-continuity-jira-51vtlk` (a sessão não tem permissão).
 - ADR-004: PMF4-35 está To Do, e o arquivo diz "aguardando revisão".
 - Citar o ADR-005 no card PMF4-22.

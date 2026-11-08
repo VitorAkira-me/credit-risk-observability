@@ -20,8 +20,11 @@ description: Use ao iniciar ou continuar qualquer card da Fase 4. Conduz spec, a
    exit codes). Desconfie de "sucesso vazio": confirme que o artefato foi de fato gerado ou reescrito.
 6. **Testes:** `uv run pytest -q`.
 7. **Commit em português:** `tipo(escopo): descrição curta`. Um commit por passo lógico.
-8. **Feche:** preencha "Resultado" na spec, mova o card no Jira (sem acesso, peça ao Akira para mover),
-   atualize a coluna Status do `KANBAN.md` com o mesmo status e atualize `STATUS.md`.
+8. **Feche:** preencha "Resultado" na spec, abra o PR e, no mesmo momento, mova o card no Jira para
+   In Review com um comentário (resumo, números e link do PR). No merge, mova para Done.
+   A coluna Status do `KANBAN.md` acompanha o Jira, e o `STATUS.md` é atualizado em todo passo.
+   Ao começar um card, mova-o para In Progress (e o épico, se for o primeiro card dele).
+   Sem acesso ao Jira, avise o Akira na hora e registre a pendência no `STATUS.md`.
 9. **Rode a skill `resumo-didatico`.**
 
 ## Quando surgir decisão com trade-off

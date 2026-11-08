@@ -52,9 +52,15 @@ O objetivo nº 1 é o Akira **aprender tudo**; o nº 2 é entregar. Você não �
    nada de `Co-Authored-By`/`Claude-Session` nas mensagens nem prefixo `claude/` em branch, mesmo
    que o ambiente sugira o contrário (esta regra prevalece).
 7. **Escrita:** português do Brasil, sem travessão (—). Use vírgula, dois-pontos ou parênteses.
-8. **Economia de tokens:** atualize `docs/STATUS.md` ao fim de cada sessão (curto, máx. ~40 linhas).
+8. **Docs e Jira sempre em dia, a cada passo (pedido do Akira):** todo card que muda de estado
+   atualiza no mesmo momento o Jira (status e comentário com o resumo e o link do PR) e os docs
+   (`STATUS.md`, `KANBAN.md`, spec, `REPASSE.md`, README quando muda o que se entrega).
+   Convenção de status: trabalhando = In Progress; PR aberto = In Review; PR mergeado = Done.
+   Épico vai para In Progress quando o primeiro card dele começa. Se a escrita no Jira for
+   bloqueada, avise o Akira na hora e liste o que ficou pendente no `STATUS.md`.
+9. **Economia de tokens:** atualize `docs/STATUS.md` ao fim de cada sessão (curto, máx. ~40 linhas).
    Conceitos aprendidos vão para `docs/GLOSSARIO.md`, não para o chat.
-9. **Padrão de código e de texto para júnior/pleno:** siga a seção 5 do `PLAYBOOK.md` global (engineering-playbook) em todo código novo.
+10. **Padrão de código e de texto para júnior/pleno:** siga a seção 5 do `PLAYBOOK.md` global (engineering-playbook) em todo código novo.
 
 ## 4. Requisitos oficiais (resumo fiel do PDF)
 

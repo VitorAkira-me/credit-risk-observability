@@ -2,7 +2,8 @@
 
 > O dia a dia das tarefas acontece no Jira, a fonte de verdade: [projeto PMF4](https://akiravkax.atlassian.net/issues?jql=project%20%3D%20PMF4%20ORDER%20BY%20key%20ASC).
 > Melhorias `IMP-*` e prazos ficam só lá. Como nem todo leitor tem acesso ao Jira, esta tabela mostra o
-> andamento no próprio repositório: a coluna Status é atualizada ao fechar cada card.
+> andamento no próprio repositório: a coluna Status acompanha o Jira (In Progress, In Review com PR
+> aberto, Done no merge).
 > Cada card vira uma spec em `docs/specs/<ID>.md` antes de começar.
 
 | Card | Jira | Status |
@@ -16,7 +17,7 @@
 | DRIFT-003 | [PMF4-17](https://akiravkax.atlassian.net/browse/PMF4-17) | To Do |
 | DRIFT-002 | [PMF4-18](https://akiravkax.atlassian.net/browse/PMF4-18) | Done |
 | OBS-001 | [PMF4-19](https://akiravkax.atlassian.net/browse/PMF4-19) | Done |
-| OBS-002 | [PMF4-20](https://akiravkax.atlassian.net/browse/PMF4-20) | Done |
+| OBS-002 | [PMF4-20](https://akiravkax.atlassian.net/browse/PMF4-20) | In Review |
 | OBS-003 | [PMF4-21](https://akiravkax.atlassian.net/browse/PMF4-21) | To Do |
 | GOV-001 | [PMF4-22](https://akiravkax.atlassian.net/browse/PMF4-22) | To Do |
 | GOV-002 | [PMF4-23](https://akiravkax.atlassian.net/browse/PMF4-23) | To Do |
