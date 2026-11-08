@@ -13,7 +13,7 @@ Decisões em `docs/REPASSE.md`, revisadas com o Akira antes do vídeo (PMF4-38).
 - OBS-002 concluído (PR #12 mergeado): réguas recalibradas para lotes de 2.000 (`reports/monitoring/alert_thresholds.json`),
   5 semanas no MLflow e painel em `reports/figures/painel_semanas.png`. O concept drift alarma na
   semana 3, antes do PSI (semana 4).
-- IMP-001 em revisão: CI (ruff, pytest e portão de contrato com dados reais) em todo PR e merge; CD que roda
+- IMP-001 concluído (PR #14): CI (ruff, pytest e portão de contrato com dados reais) em todo PR e merge; CD que roda
   o pipeline de monitoramento a cada merge e publica os artefatos.
 - OBS-003 em revisão: tabela de métricas de saúde, prints do MLflow e guia "retreinar ou não" no README.
 - 111 testes passando; ruff limpo.
