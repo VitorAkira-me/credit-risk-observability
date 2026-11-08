@@ -34,6 +34,7 @@ uv run python scripts/run_drift_report.py data/production/batch_concept_drift_i1
 uv run python scripts/calibrate_alerts.py      # réguas de alerta para lotes de 2.000 (Etapa 3)
 uv run python scripts/run_weekly_pipeline.py   # 5 semanas simuladas, cada uma vira um run do MLflow
 uv run python scripts/plot_weekly_panel.py     # painel estático em reports/figures/
+uv run python scripts/run_fairness.py          # auditoria de viés por sexo e idade (Etapa 4)
 uv run mlflow ui --backend-store-uri sqlite:///mlflow.db   # painel vivo em http://localhost:5000
 uv run pytest -q                          # testes
 uv run ruff check . ; uv run ruff format --check .
@@ -219,3 +220,41 @@ do código, e o dado continuaria sendo pessoal, porque quem tem a chave reidenti
 | Nada sai da máquina | telemetria do Evidently e do MLflow desligada antes do import | teste do Evidently; variáveis em `tracking.py` |
 | Artefato de CI sem detalhe | `pipeline.yml` exclui o arquivo de detalhe das falhas | regra de exclusão no upload |
 | Acesso mínimo | projeto local; em produção, o detalhe das falhas ficaria restrito ao time de dados | a definir na retenção (GOV-002) |
+
+### Viés por grupo (GOV-003)
+Aprovar = o modelo prever que o cliente paga (score abaixo de 0,5). Duas métricas de justiça:
+**paridade demográfica** (os grupos são aprovados na mesma proporção?) e **igualdade de
+oportunidade** (entre quem de fato paga, os grupos são aprovados na mesma proporção?). A **regra dos
+4/5** sinaliza impacto desigual quando a menor taxa de aprovação é menos de 80% da maior.
+Números em [`reports/fairness/fairness_report.json`](reports/fairness/fairness_report.json)
+(`uv run python scripts/run_fairness.py`); só taxas agregadas, com centenas a milhares de clientes por grupo.
+
+| Conjunto | AUC | Sexo: paridade | Sexo: razão 4/5 | Idade: paridade | Idade: razão 4/5 | Idade: oportunidade |
+|---|---|---|---|---|---|---|
+| Referência (treino) | 0,729 | 0,074 | 0,887 | 0,231 | **0,661** | 0,241 |
+| Produção-base | 0,715 | 0,051 | 0,920 | 0,228 | **0,663** | 0,237 |
+| Data drift | 0,714 | 0,051 | 0,919 | 0,213 | **0,681** | 0,224 |
+| Concept drift | 0,665 | 0,051 | 0,920 | 0,228 | **0,663** | 0,245 |
+
+**O que os números dizem:**
+- **Sexo:** mulheres aprovadas 5 pontos a mais que homens (63,6% contra 58,5%), em linha com a
+  taxa real de default (21,0% contra 23,9%). Passa na regra dos 4/5.
+- **Idade: o problema está aqui.** Clientes com 50 anos ou mais são aprovados em 44,8% dos casos,
+  contra 67,6% na faixa de 30 a 39; entre bons pagadores, 50,6% contra 74,3%. Reprova na regra dos 4/5.
+- **O drift e a justiça:** o data drift reduziu um pouco a disparidade por idade (0,228 para 0,213);
+  o mecanismo ainda não foi isolado (o corte de limite e a alta das faturas mexem nos grupos de forma
+  diferente). O concept drift não mudou quem é aprovado (as
+  entradas são as mesmas), mas aumentou a injustiça entre bons pagadores (0,237 para 0,245): os
+  novos inadimplentes se concentram no grupo de faturas altas.
+
+**Tirar `SEX` do modelo resolve?** Em parte. As features do modelo adivinham o sexo com AUC 0,577
+(0,5 seria nada): há proxy, mas fraco. O contrafactual com `SEX` e `MARRIAGE` de volta dobraria a
+disparidade por sexo (0,051 para 0,125). Então retirar ajudou, mas a diferença que sobra vem do
+proxy e da diferença real de default. Para idade, o mesmo teste mostra que tirar `AGE` reduz a
+disparidade (0,228 para 0,134; razão 0,800) a um custo de 0,0012 de AUC, mas os menores de 29
+passam a ser os menos aprovados: o limite de crédito funciona como proxy de idade.
+
+**Mitigação proposta ([ADR-006](docs/decisions/ADR-006-vies-por-idade.md), aguardando decisão):**
+tirar `AGE` no próximo retreino e encaminhar à revisão humana as negativas dos grupos com
+disparidade, com a auditoria rodando a cada retreino e a regra dos 4/5 como critério de aprovação.
+

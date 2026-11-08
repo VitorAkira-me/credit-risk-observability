@@ -1,0 +1,411 @@
+{
+  "conjuntos": {
+    "referencia": {
+      "clientes": 21000,
+      "roc_auc": 0.7285,
+      "taxa_aprovacao_geral": 0.6216,
+      "sexo": {
+        "grupos": [
+          {
+            "grupo": "feminino",
+            "clientes": 12675,
+            "taxa_default_real": 0.2069,
+            "taxa_aprovacao": 0.6508,
+            "aprovacao_bons_pagadores": 0.7233
+          },
+          {
+            "grupo": "masculino",
+            "clientes": 8325,
+            "taxa_default_real": 0.243,
+            "taxa_aprovacao": 0.5772,
+            "aprovacao_bons_pagadores": 0.6606
+          }
+        ],
+        "diferencas": {
+          "paridade_demografica": 0.0736,
+          "razao_impacto": 0.8869,
+          "igualdade_oportunidade": 0.0627,
+          "passa_regra_4_5": true
+        }
+      },
+      "idade": {
+        "grupos": [
+          {
+            "grupo": "30 a 39",
+            "clientes": 7906,
+            "taxa_default_real": 0.2043,
+            "taxa_aprovacao": 0.6805,
+            "aprovacao_bons_pagadores": 0.7533
+          },
+          {
+            "grupo": "40 a 49",
+            "clientes": 4506,
+            "taxa_default_real": 0.2257,
+            "taxa_aprovacao": 0.5779,
+            "aprovacao_bons_pagadores": 0.6509
+          },
+          {
+            "grupo": "50 ou mais",
+            "clientes": 1852,
+            "taxa_default_real": 0.25,
+            "taxa_aprovacao": 0.4498,
+            "aprovacao_bons_pagadores": 0.5119
+          },
+          {
+            "grupo": "até 29",
+            "clientes": 6736,
+            "taxa_default_real": 0.2301,
+            "taxa_aprovacao": 0.629,
+            "aprovacao_bons_pagadores": 0.716
+          }
+        ],
+        "diferencas": {
+          "paridade_demografica": 0.2307,
+          "razao_impacto": 0.661,
+          "igualdade_oportunidade": 0.2414,
+          "passa_regra_4_5": false
+        }
+      }
+    },
+    "producao_base": {
+      "clientes": 9000,
+      "roc_auc": 0.7149,
+      "taxa_aprovacao_geral": 0.6153,
+      "sexo": {
+        "grupos": [
+          {
+            "grupo": "feminino",
+            "clientes": 5437,
+            "taxa_default_real": 0.2099,
+            "taxa_aprovacao": 0.6355,
+            "aprovacao_bons_pagadores": 0.7065
+          },
+          {
+            "grupo": "masculino",
+            "clientes": 3563,
+            "taxa_default_real": 0.2386,
+            "taxa_aprovacao": 0.5846,
+            "aprovacao_bons_pagadores": 0.6587
+          }
+        ],
+        "diferencas": {
+          "paridade_demografica": 0.0509,
+          "razao_impacto": 0.9199,
+          "igualdade_oportunidade": 0.0478,
+          "passa_regra_4_5": true
+        }
+      },
+      "idade": {
+        "grupos": [
+          {
+            "grupo": "30 a 39",
+            "clientes": 3332,
+            "taxa_default_real": 0.1984,
+            "taxa_aprovacao": 0.6756,
+            "aprovacao_bons_pagadores": 0.7428
+          },
+          {
+            "grupo": "40 a 49",
+            "clientes": 1958,
+            "taxa_default_real": 0.239,
+            "taxa_aprovacao": 0.5689,
+            "aprovacao_bons_pagadores": 0.6362
+          },
+          {
+            "grupo": "50 ou mais",
+            "clientes": 828,
+            "taxa_default_real": 0.2597,
+            "taxa_aprovacao": 0.4481,
+            "aprovacao_bons_pagadores": 0.5057
+          },
+          {
+            "grupo": "até 29",
+            "clientes": 2882,
+            "taxa_default_real": 0.2245,
+            "taxa_aprovacao": 0.6253,
+            "aprovacao_bons_pagadores": 0.7069
+          }
+        ],
+        "diferencas": {
+          "paridade_demografica": 0.2275,
+          "razao_impacto": 0.6633,
+          "igualdade_oportunidade": 0.2371,
+          "passa_regra_4_5": false
+        }
+      }
+    },
+    "data_drift": {
+      "clientes": 9000,
+      "roc_auc": 0.7144,
+      "taxa_aprovacao_geral": 0.6126,
+      "sexo": {
+        "grupos": [
+          {
+            "grupo": "feminino",
+            "clientes": 5437,
+            "taxa_default_real": 0.2099,
+            "taxa_aprovacao": 0.6329,
+            "aprovacao_bons_pagadores": 0.7044
+          },
+          {
+            "grupo": "masculino",
+            "clientes": 3563,
+            "taxa_default_real": 0.2386,
+            "taxa_aprovacao": 0.5815,
+            "aprovacao_bons_pagadores": 0.6557
+          }
+        ],
+        "diferencas": {
+          "paridade_demografica": 0.0514,
+          "razao_impacto": 0.9188,
+          "igualdade_oportunidade": 0.0487,
+          "passa_regra_4_5": true
+        }
+      },
+      "idade": {
+        "grupos": [
+          {
+            "grupo": "30 a 39",
+            "clientes": 3332,
+            "taxa_default_real": 0.1984,
+            "taxa_aprovacao": 0.6669,
+            "aprovacao_bons_pagadores": 0.7349
+          },
+          {
+            "grupo": "40 a 49",
+            "clientes": 1958,
+            "taxa_default_real": 0.239,
+            "taxa_aprovacao": 0.5715,
+            "aprovacao_bons_pagadores": 0.6396
+          },
+          {
+            "grupo": "50 ou mais",
+            "clientes": 828,
+            "taxa_default_real": 0.2597,
+            "taxa_aprovacao": 0.4541,
+            "aprovacao_bons_pagadores": 0.5106
+          },
+          {
+            "grupo": "até 29",
+            "clientes": 2882,
+            "taxa_default_real": 0.2245,
+            "taxa_aprovacao": 0.6232,
+            "aprovacao_bons_pagadores": 0.7051
+          }
+        ],
+        "diferencas": {
+          "paridade_demografica": 0.2128,
+          "razao_impacto": 0.6809,
+          "igualdade_oportunidade": 0.2243,
+          "passa_regra_4_5": false
+        }
+      }
+    },
+    "concept_drift": {
+      "clientes": 9000,
+      "roc_auc": 0.6647,
+      "taxa_aprovacao_geral": 0.6153,
+      "sexo": {
+        "grupos": [
+          {
+            "grupo": "feminino",
+            "clientes": 5437,
+            "taxa_default_real": 0.2601,
+            "taxa_aprovacao": 0.6355,
+            "aprovacao_bons_pagadores": 0.6955
+          },
+          {
+            "grupo": "masculino",
+            "clientes": 3563,
+            "taxa_default_real": 0.2908,
+            "taxa_aprovacao": 0.5846,
+            "aprovacao_bons_pagadores": 0.6435
+          }
+        ],
+        "diferencas": {
+          "paridade_demografica": 0.0509,
+          "razao_impacto": 0.9199,
+          "igualdade_oportunidade": 0.052,
+          "passa_regra_4_5": true
+        }
+      },
+      "idade": {
+        "grupos": [
+          {
+            "grupo": "30 a 39",
+            "clientes": 3332,
+            "taxa_default_real": 0.2533,
+            "taxa_aprovacao": 0.6756,
+            "aprovacao_bons_pagadores": 0.7315
+          },
+          {
+            "grupo": "40 a 49",
+            "clientes": 1958,
+            "taxa_default_real": 0.2906,
+            "taxa_aprovacao": 0.5689,
+            "aprovacao_bons_pagadores": 0.6206
+          },
+          {
+            "grupo": "50 ou mais",
+            "clientes": 828,
+            "taxa_default_real": 0.3152,
+            "taxa_aprovacao": 0.4481,
+            "aprovacao_bons_pagadores": 0.4868
+          },
+          {
+            "grupo": "até 29",
+            "clientes": 2882,
+            "taxa_default_real": 0.2693,
+            "taxa_aprovacao": 0.6253,
+            "aprovacao_bons_pagadores": 0.6961
+          }
+        ],
+        "diferencas": {
+          "paridade_demografica": 0.2275,
+          "razao_impacto": 0.6633,
+          "igualdade_oportunidade": 0.2447,
+          "passa_regra_4_5": false
+        }
+      }
+    }
+  },
+  "proxy": {
+    "auc_features_preveem_sexo": 0.5772
+  },
+  "contrafactuais_producao_base": {
+    "com_sexo_e_estado_civil": {
+      "clientes": 9000,
+      "roc_auc": 0.7173,
+      "taxa_aprovacao_geral": 0.6209,
+      "sexo": {
+        "grupos": [
+          {
+            "grupo": "feminino",
+            "clientes": 5437,
+            "taxa_default_real": 0.2099,
+            "taxa_aprovacao": 0.6704,
+            "aprovacao_bons_pagadores": 0.743
+          },
+          {
+            "grupo": "masculino",
+            "clientes": 3563,
+            "taxa_default_real": 0.2386,
+            "taxa_aprovacao": 0.5453,
+            "aprovacao_bons_pagadores": 0.6174
+          }
+        ],
+        "diferencas": {
+          "paridade_demografica": 0.1251,
+          "razao_impacto": 0.8134,
+          "igualdade_oportunidade": 0.1256,
+          "passa_regra_4_5": true
+        }
+      },
+      "idade": {
+        "grupos": [
+          {
+            "grupo": "30 a 39",
+            "clientes": 3332,
+            "taxa_default_real": 0.1984,
+            "taxa_aprovacao": 0.6618,
+            "aprovacao_bons_pagadores": 0.7297
+          },
+          {
+            "grupo": "40 a 49",
+            "clientes": 1958,
+            "taxa_default_real": 0.239,
+            "taxa_aprovacao": 0.5838,
+            "aprovacao_bons_pagadores": 0.655
+          },
+          {
+            "grupo": "50 ou mais",
+            "clientes": 828,
+            "taxa_default_real": 0.2597,
+            "taxa_aprovacao": 0.4928,
+            "aprovacao_bons_pagadores": 0.5546
+          },
+          {
+            "grupo": "até 29",
+            "clientes": 2882,
+            "taxa_default_real": 0.2245,
+            "taxa_aprovacao": 0.6357,
+            "aprovacao_bons_pagadores": 0.7168
+          }
+        ],
+        "diferencas": {
+          "paridade_demografica": 0.169,
+          "razao_impacto": 0.7446,
+          "igualdade_oportunidade": 0.1751,
+          "passa_regra_4_5": false
+        }
+      }
+    },
+    "sem_idade": {
+      "clientes": 9000,
+      "roc_auc": 0.7137,
+      "taxa_aprovacao_geral": 0.6114,
+      "sexo": {
+        "grupos": [
+          {
+            "grupo": "feminino",
+            "clientes": 5437,
+            "taxa_default_real": 0.2099,
+            "taxa_aprovacao": 0.6301,
+            "aprovacao_bons_pagadores": 0.6983
+          },
+          {
+            "grupo": "masculino",
+            "clientes": 3563,
+            "taxa_default_real": 0.2386,
+            "taxa_aprovacao": 0.5829,
+            "aprovacao_bons_pagadores": 0.6572
+          }
+        ],
+        "diferencas": {
+          "paridade_demografica": 0.0472,
+          "razao_impacto": 0.9251,
+          "igualdade_oportunidade": 0.0411,
+          "passa_regra_4_5": true
+        }
+      },
+      "idade": {
+        "grupos": [
+          {
+            "grupo": "30 a 39",
+            "clientes": 3332,
+            "taxa_default_real": 0.1984,
+            "taxa_aprovacao": 0.6678,
+            "aprovacao_bons_pagadores": 0.7357
+          },
+          {
+            "grupo": "40 a 49",
+            "clientes": 1958,
+            "taxa_default_real": 0.239,
+            "taxa_aprovacao": 0.6415,
+            "aprovacao_bons_pagadores": 0.7174
+          },
+          {
+            "grupo": "50 ou mais",
+            "clientes": 828,
+            "taxa_default_real": 0.2597,
+            "taxa_aprovacao": 0.5833,
+            "aprovacao_bons_pagadores": 0.6574
+          },
+          {
+            "grupo": "até 29",
+            "clientes": 2882,
+            "taxa_default_real": 0.2245,
+            "taxa_aprovacao": 0.534,
+            "aprovacao_bons_pagadores": 0.6022
+          }
+        ],
+        "diferencas": {
+          "paridade_demografica": 0.1338,
+          "razao_impacto": 0.7996,
+          "igualdade_oportunidade": 0.1335,
+          "passa_regra_4_5": false
+        }
+      }
+    }
+  }
+}

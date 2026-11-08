@@ -122,3 +122,17 @@ verdadeiro passa despercebido. Medir o alarme falso em dados sem drift é o ant�
 **Analogia:** o menino que gritava "lobo".
 **Pergunta para pensar:** é melhor um alerta que erra para mais ou para menos? Depende do custo de quê?
 
+## Paridade demográfica e igualdade de oportunidade
+**O que é:** duas réguas de justiça. Paridade: os grupos são aprovados na mesma proporção. Igualdade
+de oportunidade: entre os que de fato pagam, os grupos são aprovados na mesma proporção. A regra
+dos 4/5 sinaliza problema quando a menor aprovação é menos de 80% da maior.
+**Analogia:** paridade é "todo time tem o mesmo número de convocados"; oportunidade é "todo jogador
+bom tem a mesma chance de ser convocado, seja de que time for".
+**Pergunta para pensar:** dá para ter as duas ao mesmo tempo quando os grupos têm taxas de default diferentes?
+
+## Proxy
+**O que é:** uma coluna que carrega a informação de outra. Tirar `SEX` do modelo não impede o viés
+por sexo se outra coluna "adivinha" o sexo. Mede-se treinando um modelo para prever o atributo
+retirado a partir das outras colunas.
+**Pergunta para pensar:** se o proxy for fraco (AUC 0,58), o problema acabou?
+
