@@ -38,7 +38,7 @@ from credit_risk_observability.drift.scenarios import (
     apply_data_drift,
     validate_intensity,
 )
-from credit_risk_observability.monitoring.events import log_event, new_run_id
+from credit_risk_observability.monitoring.events import pipeline_step
 
 logger = logging.getLogger("make_drift_batch")
 
@@ -117,52 +117,46 @@ def main(
 
     validate_intensity(args.intensity)
     batch_name = build_batch_name(args.scenario, args.intensity)
-    # run_id: identifica esta execução e liga o log ao manifesto (prepara o OBS-001).
-    run_id = new_run_id()
+    # pipeline_step mede a etapa e grava o evento; o run_id dele também vai para o manifesto.
+    with pipeline_step(logger, "geracao_lote_drift") as step:
+        step.detalhe.update(lote=batch_name, cenario=args.scenario, intensidade=args.intensity)
+        base = pd.read_parquet(base_path)
+        if args.scenario == "data_drift":
+            batch, details = apply_data_drift(base, args.intensity)
+        else:
+            batch, details = apply_concept_drift(base, args.intensity, args.seed)
 
-    base = pd.read_parquet(base_path)
-    if args.scenario == "data_drift":
-        batch, details = apply_data_drift(base, args.intensity)
-    else:
-        batch, details = apply_concept_drift(base, args.intensity, args.seed)
+        # O contrato vem antes de gravar: um lote reprovado nunca chega ao disco.
+        result = validate_batch(batch)
+        step.linhas_entrada = result.rows
+        step.linhas_rejeitadas = result.rejected_rows
+        if not result.passed:
+            step.fail(
+                "drift_batch_rejected",
+                motivo="lote gerado reprovado no contrato; nada foi gravado",
+                falhas_por_regra=result.failures_by_rule,
+            )
+            print(f"Lote {batch_name} REPROVADO no contrato: {result.failures_by_rule}")
+            return 1
 
-    # O contrato vem antes de gravar: um lote reprovado nunca chega ao disco.
-    result = validate_batch(batch)
-    fields = {"run_id": run_id, "batch": batch_name, "rows": result.rows}
-    if not result.passed:
-        log_event(
-            logger,
-            "drift_batch_rejected",
-            level=logging.ERROR,
-            **fields,
-            failures_by_rule=result.failures_by_rule,
+        production_dir.mkdir(parents=True, exist_ok=True)
+        reports_dir.mkdir(parents=True, exist_ok=True)
+        batch_path = production_dir / f"{batch_name}.parquet"
+        batch.to_parquet(batch_path, index=False)
+
+        manifest = build_manifest(step.run_id, args, details, base_path, batch_path, len(batch))
+        manifest_path = reports_dir / f"{batch_name}_manifest.json"
+        manifest_path.write_text(
+            json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8"
         )
-        print(f"Lote {batch_name} REPROVADO no contrato: {result.failures_by_rule}")
-        return 1
 
-    production_dir.mkdir(parents=True, exist_ok=True)
-    reports_dir.mkdir(parents=True, exist_ok=True)
-    batch_path = production_dir / f"{batch_name}.parquet"
-    batch.to_parquet(batch_path, index=False)
-
-    manifest = build_manifest(run_id, args, details, base_path, batch_path, len(batch))
-    manifest_path = reports_dir / f"{batch_name}_manifest.json"
-    manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
-
-    log_event(
-        logger,
-        "drift_batch_generated",
-        **fields,
-        scenario=args.scenario,
-        intensity=args.intensity,
-        labels_flipped=details["labels_flipped"],
-    )
-    print(
-        f"Lote {batch_name}: {len(batch)} linhas, aprovado no contrato. "
-        f"Faturas x {details['bill_factor']:.4f}, limite x {details['limit_factor']:.4f}, "
-        f"{details['labels_flipped']} rótulos trocados. Manifesto: {manifest_path.name}"
-    )
-    return 0
+        step.succeed("drift_batch_generated", rotulos_trocados=details["labels_flipped"])
+        print(
+            f"Lote {batch_name}: {len(batch)} linhas, aprovado no contrato. "
+            f"Faturas x {details['bill_factor']:.4f}, limite x {details['limit_factor']:.4f}, "
+            f"{details['labels_flipped']} rótulos trocados. Manifesto: {manifest_path.name}"
+        )
+        return 0
 
 
 if __name__ == "__main__":

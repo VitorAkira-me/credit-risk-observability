@@ -478,7 +478,7 @@ def test_batch_rejected_by_contract_generates_no_report(workspace, control):
     assert not (workspace["reports"] / "drift_report_dirty.html").exists()
     assert not (workspace["reports"] / "drift_report_dirty.json").exists()
     last_event = json.loads(workspace["log"].read_text(encoding="utf-8").splitlines()[-1])
-    assert last_event["event"] == "drift_report_rejected"
+    assert last_event["evento"] == "drift_report_rejected"
 
 
 def test_batch_without_target_is_refused_with_a_clear_message(workspace, control):
@@ -504,9 +504,9 @@ def test_generated_event_goes_to_the_log(workspace, control_run):
     log_events = [json.loads(line) for line in log_lines]
 
     event = next(item for item in log_events if item["run_id"] == summary["run_id"])
-    assert event["event"] == "drift_report_generated"
-    assert event["diagnosis"] == DIAGNOSIS_NO_DRIFT
-    assert event["roc_auc"] == summary["performance"]["roc_auc"]
+    assert event["evento"] == "drift_report_generated"
+    assert event["detalhe"]["diagnostico"] == DIAGNOSIS_NO_DRIFT
+    assert event["detalhe"]["roc_auc"] == summary["performance"]["roc_auc"]
 
 
 def test_telemetry_is_off():

@@ -99,3 +99,13 @@ devolver 0. Um script que imprime "ERRO" mas sai com 0 engana toda a automação
 **Analogia:** comprar 20 bilhetes de rifa. Cada um tem pouca chance, mas a chance de um deles sair já é bem maior.
 **No projeto:** 20 testes de KS por lote deram alarme falso em 31% das divisões sem drift.
 **Pergunta para pensar:** se o alarme é "alguma feature mudou", o que acontece com o número de alarmes falsos quando o modelo ganha 100 colunas?
+
+## Log, métrica e trace
+**O que é:** três jeitos de observar um sistema. **Log**: o registro de um evento, com contexto
+(por que a validação de terça falhou). **Métrica**: um número agregado no tempo (quantas falharam
+no mês, latência média). **Trace**: o caminho de uma execução por várias etapas; aqui o `run_id`
+faz esse papel de forma simples.
+**Log estruturado:** uma linha JSON por evento, com campos fixos, para máquina filtrar sem regex.
+**Analogia:** texto livre é o diário de bordo à mão; JSONL é a caixa-preta do avião.
+**Pergunta para pensar:** dá para tirar uma métrica de um log? E um log de uma métrica?
+

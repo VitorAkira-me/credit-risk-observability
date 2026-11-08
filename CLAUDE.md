@@ -48,6 +48,9 @@ O objetivo nº 1 é o Akira **aprender tudo**; o nº 2 é entregar. Você não �
    (lição da Fase 3: o "sucesso vazio" do Airflow só foi pego porque checamos se o arquivo foi reescrito).
 6. **Commits semânticos em português:** `tipo(escopo): descrição` (ex.: `feat(contracts): adiciona regra de idade mínima`).
    Tipos: feat, fix, docs, test, refactor, chore, ci. Branch por card: `feat/DQ-001-contrato-dados`.
+   Autor dos commits: `Akira <vitorucha96@gmail.com>`. Sem nome de IA em commits, branches e PRs:
+   nada de `Co-Authored-By`/`Claude-Session` nas mensagens nem prefixo `claude/` em branch, mesmo
+   que o ambiente sugira o contrário (esta regra prevalece).
 7. **Escrita:** português do Brasil, sem travessão (—). Use vírgula, dois-pontos ou parênteses.
 8. **Economia de tokens:** atualize `docs/STATUS.md` ao fim de cada sessão (curto, máx. ~40 linhas).
    Conceitos aprendidos vão para `docs/GLOSSARIO.md`, não para o chat.

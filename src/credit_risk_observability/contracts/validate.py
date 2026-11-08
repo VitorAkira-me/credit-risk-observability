@@ -38,6 +38,22 @@ class ValidationResult:
         keys = column + ":" + fc["check"].astype(str)
         return {k: int(v) for k, v in keys.value_counts().sort_index().items()}
 
+    @property
+    def rejected_rows(self) -> int:
+        """Quantas linhas distintas têm ao menos uma falha.
+
+        Recebe: nada; usa failure_cases.
+        Faz: conta os índices distintos. Uma falha sem índice (tipo errado, coluna faltando) atinge
+            a coluna inteira, então nenhuma linha do lote é confiável e todas contam.
+        Devolve: um inteiro. Exemplo: 3 falhas na mesma linha contam 1.
+        """
+        if self.failure_cases.empty:
+            return 0
+        index = self.failure_cases["index"]
+        if index.isna().any():
+            return self.rows
+        return int(index.nunique())
+
 
 def validate_batch(df: pd.DataFrame, schema: pa.DataFrameSchema = SCHEMA) -> ValidationResult:
     """lazy=True coleta todas as violações de uma vez, em vez de parar na primeira.
