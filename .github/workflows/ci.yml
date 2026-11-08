@@ -1,0 +1,58 @@
+# CI (IMP-001): roda em todo PR para a main e em todo merge na main.
+# Dois portões: qualidade do código (lint + testes) e contrato de dados com os dados reais.
+# Se qualquer um falhar, o PR fica vermelho e não deve ser mergeado.
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Um push novo no mesmo PR cancela a execução antiga: só o código mais recente interessa.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  qualidade:
+    name: Lint e testes
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      # --locked: falha se o uv.lock não bater com o pyproject.toml (versões fixadas, lição da Fase 3).
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run pytest -q
+
+  contrato:
+    name: Contrato de dados e evidência
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: qualidade
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --locked
+      # Dados reais do UCI: o portão precisa deles, e eles ficam fora do git.
+      - run: uv run python scripts/prepare_data.py
+      - run: uv run python scripts/train_baseline.py
+      - run: uv run python scripts/make_corrupted_batch.py
+      - run: uv run python scripts/make_drift_batch.py --scenario data_drift --intensity 1
+      - run: uv run python scripts/make_drift_batch.py --scenario concept_drift --intensity 1
+      # Produção-base passa, lote corrompido é barrado com as falhas exatas e os lotes batem
+      # com os hashes da evidência versionada em reports/drift/.
+      - run: uv run python scripts/check_evidence.py
