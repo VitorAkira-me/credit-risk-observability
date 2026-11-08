@@ -60,9 +60,15 @@ def check_contract_gate() -> list[str]:
     gate = _load_validation_script()
     problems = []
     with tempfile.TemporaryDirectory() as tmp:
-        if gate.main([str(PRODUCTION_BASE_PATH)], reports_dir=Path(tmp)) != 0:
+        if (
+            gate.main([str(PRODUCTION_BASE_PATH)], reports_dir=Path(tmp), detail_dir=Path(tmp))
+            != 0
+        ):
             problems.append("Produção-base foi BARRADA: o contrato ficou rígido demais.")
-        if gate.main([str(CORRUPTED_BATCH_PATH)], reports_dir=Path(tmp)) != 1:
+        if (
+            gate.main([str(CORRUPTED_BATCH_PATH)], reports_dir=Path(tmp), detail_dir=Path(tmp))
+            != 1
+        ):
             problems.append("Lote corrompido PASSOU: o contrato deixou de barrar dado sujo.")
 
     expected = json.loads(CORRUPTED_EXPECTED_PATH.read_text(encoding="utf-8"))

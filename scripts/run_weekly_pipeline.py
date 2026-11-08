@@ -160,8 +160,10 @@ def run_week(
         if validation.passed:
             step.succeed("validation_passed")
         else:
-            cases_path = week_dir / "failure_cases.csv"
-            validation.failure_cases.to_csv(cases_path, index=False)
+            # Para o MLflow vai só regra e posição (ADR-005); o detalhe fica na pasta local.
+            cases_path = week_dir / "falhas_contrato.csv"
+            validation.minimized_failures.to_csv(cases_path, index=False)
+            validation.failure_cases.to_csv(week_dir / "failure_cases.csv", index=False)
             run.artifacts.append(cases_path)
             step.fail(
                 "validation_failed",

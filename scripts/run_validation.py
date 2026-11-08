@@ -11,6 +11,9 @@ Uso:
 Exit code é o número que o programa devolve ao terminar.
 Exit code 0 = lote aprovado, pode seguir para o modelo.
 Exit code 1 = lote bloqueado; falhas em reports/validation/<lote>_failure_cases.csv.
+
+Privacidade (ADR-005): o CSV versionado tem só a regra e a posição da linha, nunca o valor barrado.
+O detalhe completo, com os valores, vai para outputs/validation/ (local, fora do git).
 Um orquestrador (Airflow, CI, `&&` no shell) usa o exit code para não executar o passo seguinte.
 """
 
@@ -22,7 +25,7 @@ import sys
 
 import pandas as pd
 
-from credit_risk_observability.config import VALIDATION_REPORTS_DIR
+from credit_risk_observability.config import VALIDATION_DETAIL_DIR, VALIDATION_REPORTS_DIR
 from credit_risk_observability.contracts.schema import SCHEMA
 from credit_risk_observability.contracts.validate import validate_batch
 from credit_risk_observability.monitoring.events import pipeline_step
@@ -30,10 +33,15 @@ from credit_risk_observability.monitoring.events import pipeline_step
 logger = logging.getLogger("run_validation")
 
 
-def main(argv: list[str] | None = None, reports_dir: Path = VALIDATION_REPORTS_DIR) -> int:
+def main(
+    argv: list[str] | None = None,
+    reports_dir: Path = VALIDATION_REPORTS_DIR,
+    detail_dir: Path = VALIDATION_DETAIL_DIR,
+) -> int:
     """Valida um lote e informa o resultado.
 
-    Recebe: os argumentos da linha de comando e a pasta de relatórios (temporária nos testes).
+    Recebe: os argumentos da linha de comando, a pasta de relatórios e a pasta do detalhe local
+        (as duas temporárias nos testes).
     Faz: aplica o contrato, registra o evento e, se reprovar, grava as falhas em reports_dir.
     Devolve: o exit code. Exemplo: batch_corrupted.parquet devolve 1.
     """
@@ -60,7 +68,10 @@ def main(argv: list[str] | None = None, reports_dir: Path = VALIDATION_REPORTS_D
         reports_dir.mkdir(parents=True, exist_ok=True)
         cases_path = reports_dir / f"{args.batch.stem}_failure_cases.csv"
         summary_path = reports_dir / f"{args.batch.stem}_summary.json"
-        result.failure_cases.to_csv(cases_path, index=False)
+        # Versionado: só regra e posição. Local: o detalhe com os valores, para investigar.
+        result.minimized_failures.to_csv(cases_path, index=False)
+        detail_dir.mkdir(parents=True, exist_ok=True)
+        result.failure_cases.to_csv(detail_dir / f"{args.batch.stem}_detalhe.csv", index=False)
         summary = {
             "run_id": step.run_id,
             "batch": args.batch.name,

@@ -32,11 +32,35 @@ class ValidationResult:
         """
         if self.failure_cases.empty:
             return {}
+        keys = self._rule_keys()
+        return {k: int(v) for k, v in keys.value_counts().sort_index().items()}
+
+    def _rule_keys(self) -> pd.Series:
+        """O nome da regra de cada falha, no formato "coluna:checagem"."""
         fc = self.failure_cases
         # Falhas do lote inteiro (coluna faltando, lote vazio) vêm com contexto DataFrameSchema
         column = fc["column"].astype(str).where(fc["schema_context"] == "Column", "<lote>")
-        keys = column + ":" + fc["check"].astype(str)
-        return {k: int(v) for k, v in keys.value_counts().sort_index().items()}
+        return column + ":" + fc["check"].astype(str)
+
+    @property
+    def minimized_failures(self) -> pd.DataFrame:
+        """As falhas sem nenhum valor de cliente: só a regra e a posição da linha no lote.
+
+        Recebe: nada; usa failure_cases.
+        Faz: descarta a coluna failure_case, que traz o valor barrado (a idade, o ID repetido).
+            A posição diz em que linha do arquivo está o problema, sem dizer quem é o cliente.
+            É a opção C do ADR-005: minimização na origem (LGPD, princípio da necessidade).
+        Devolve: tabela com "regra" e "posicao_linha" (vazia se o lote passou). Falha do lote
+            inteiro, como tipo errado, vem sem posição.
+        """
+        if self.failure_cases.empty:
+            return pd.DataFrame({"regra": [], "posicao_linha": []})
+        return pd.DataFrame(
+            {
+                "regra": self._rule_keys().to_numpy(),
+                "posicao_linha": pd.to_numeric(self.failure_cases["index"]).astype("Int64"),
+            }
+        )
 
     @property
     def rejected_rows(self) -> int:

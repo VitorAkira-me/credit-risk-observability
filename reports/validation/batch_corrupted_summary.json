@@ -1,8 +1,9 @@
 {
+  "run_id": "f7afd9127ea74942932cb2a9d578efa9",
   "batch": "batch_corrupted.parquet",
   "schema": "credit_default_input_v1",
   "rows": 1020,
-  "duration_ms": 112.5,
+  "rejected_rows": 130,
   "failures_by_rule": {
     "AGE:in_range(18, 100)": 50,
     "ID:field_uniqueness": 40,

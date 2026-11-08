@@ -126,7 +126,9 @@ def test_corrupted_batch_logs_failure_with_reason_and_no_pii(clean_population, t
     path = tmp_path / "bad.parquet"
     batch.to_parquet(path)
 
-    code = load_script("run_validation").main([str(path)], reports_dir=tmp_path / "reports")
+    code = load_script("run_validation").main(
+        [str(path)], reports_dir=tmp_path / "reports", detail_dir=tmp_path / "detalhe"
+    )
 
     assert code == 1
     [event] = read_events()
