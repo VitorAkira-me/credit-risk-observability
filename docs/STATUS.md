@@ -19,7 +19,7 @@ Decisões em `docs/REPASSE.md`, revisadas com o Akira antes do vídeo (PMF4-38).
 - GOV-001 concluído (PR #16): inventário de PII, Privacy by Design e ADR-005 implementado.
 - GOV-003 concluído (PR #17): viés por grupo. Sexo passa na regra dos 4/5 (0,920); idade reprova (0,663),
   contra os mais velhos. Mitigação proposta no ADR-006 (tirar `AGE` no retreino), aguardando decisão.
-- GOV-004 em revisão: dose-resposta prova que o concept drift causa a queda (AUC 0,715 a 0,665) e o
+- GOV-004 concluído (PR #18): dose-resposta prova que o concept drift causa a queda (AUC 0,715 a 0,665) e o
   data drift não (0,7149 a 0,7144); calotes aprovados +56%. Diagrama causal e plano de ação no README.
 - GOV-002 em revisão: base legal (proteção do crédito e contrato), art. 20, retenção por código.
 - 113 testes passando; ruff limpo.
