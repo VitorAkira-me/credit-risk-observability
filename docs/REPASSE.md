@@ -353,3 +353,23 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **O que:** clone limpo, sequência inteira do README: 2min46, todos os passos com o exit esperado. Painel, limites, viés e dose-resposta saíram idênticos; só `run_id`, datas e versão do Python mudaram.
 - **Pendente:** o mesmo teste no PowerShell (lição da Fase 3), que este ambiente não tem.
 
+## DOC-002 · Documentação no padrão da Fase 3 (09/11/2026)
+
+### 45. ADR-006 decidido: `AGE` sai no próximo retreino (decisão do Akira)
+- **O que:** opção B (tirar `AGE` das features) com D (revisão humana das negativas dos grupos com disparidade), aplicada no próximo retreino.
+- **Por quê:** a razão da regra dos 4/5 por idade sobe de 0,663 para 0,800, a um custo de 0,0012 de AUC, menor que o ruído entre seeds.
+- **Descartado:** tirar agora, que mudaria todos os números das Etapas 2 e 3 a 8 dias da entrega; e só documentar, difícil de defender pelo art. 20.
+- **Esperávamos e aconteceu:** decisão registrada no ADR, no Model Card, no README e na fala final do roteiro.
+- **Pergunta para o Akira:** sem `AGE`, os menores de 29 anos passam a ser os menos aprovados. Que métrica você acompanharia no primeiro mês depois do retreino para saber se trocou um viés por outro?
+
+### 46. O que veio do projeto anterior, e o que não veio (decisão do Claude)
+- **O que entrou:** Model Card, ML Canvas, Roadmap, README com badges, autor, requisitos, seções numeradas e índice de ADRs; Makefile, pre-commit e cobertura de testes.
+- **O que ficou de fora:** Docker, API e notebooks. Este projeto é de sustentação em lote, sem API servindo predições, e a EDA já está em `reports/eda/`.
+- **Por quê:** trazer só o que responde a uma pergunta deste projeto. Um Dockerfile sem serviço para empacotar seria peça de vitrine.
+- **Pergunta para o Akira:** se a banca perguntar "como isso iria para produção?", qual peça da Fase 3 você citaria, e o que mudaria nela?
+
+### 47. Ferramentas com as bordas medidas (decisão do Claude)
+- **Makefile:** só chama comandos `uv run`, iguais aos do README. O `make` não existe no Windows desta máquina, então foi testado no WSL (Ubuntu 24.04), num clone separado. O teste real achou uma ordem implícita: `make evidence` precisa de `make drift` antes. A ajuda agora avisa, e `make pipeline` já roda na ordem certa.
+- **pre-commit:** `reports/` e `models/` ficam de fora. O hook de fim de arquivo tentou mudar `models/baseline_metrics.json`, que o `train_baseline.py` regrava sem quebra de linha: hook e script brigariam a cada treino.
+- **Cobertura:** 93% do pacote `src/`. Os scripts de `scripts/` são testados de ponta a ponta, mas ficam fora da conta; os mais baixos são o download e a EDA (46% a 50%), que dependem de rede. O CI mostra o número, sem limite mínimo.
+- **Pergunta para o Akira:** um limite mínimo de cobertura no CI (por exemplo, 90%) protegeria o quê, e que tipo de teste ruim ele incentivaria?
