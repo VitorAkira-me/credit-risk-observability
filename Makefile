@@ -1,91 +1,102 @@
-#################################################################################
-# GLOBALS                                                                       #
-#################################################################################
+# Atalhos do projeto. O make é opcional: cada alvo só chama comandos `uv run`, que funcionam
+# iguais no Linux, no macOS, no WSL e no Windows sem make (copie a linha do alvo).
+# Uso: make <alvo>. Sem alvo, mostra a ajuda.
 
-PROJECT_NAME = credit-risk-observability
-PYTHON_VERSION = 3.12
-PYTHON_INTERPRETER = python
+.DEFAULT_GOAL := help
+.PHONY: help install data train contract drift monitor governance evidence pipeline mlflow test coverage lint format precommit restore-evidence
 
-#################################################################################
-# COMMANDS                                                                      #
-#################################################################################
+## Lista os comandos disponíveis
+help:
+	@echo "Comandos (make <alvo>):"
+	@echo "  install           Instala as dependências fixadas e o hook do pre-commit"
+	@echo "  data              Etapa 0: download, EDA e split Referência / Produção"
+	@echo "  train             Etapa 0: treina o baseline e salva as métricas"
+	@echo "  contract          Etapa 1: gera o lote corrompido e mostra o portão barrando (exit 1 esperado)"
+	@echo "  drift             Etapa 2: lotes com drift e relatórios do Evidently"
+	@echo "  monitor           Etapa 3: calibra as réguas, roda as 5 semanas no MLflow e gera o painel"
+	@echo "  governance        Etapa 4: viés por grupo, análise causal e retenção (em simulação)"
+	@echo "  evidence          Portão do CI: contrato e hashes da evidência (depois de make drift)"
+	@echo "  pipeline          Roda tudo do zero, na ordem do README"
+	@echo "  mlflow            Abre o painel do MLflow em http://localhost:5000"
+	@echo "  test              Roda os testes"
+	@echo "  coverage          Roda os testes com a cobertura do pacote src/"
+	@echo "  lint              Confere estilo e formatação com o ruff"
+	@echo "  format            Corrige estilo e formatação com o ruff"
+	@echo "  precommit         Roda os hooks do pre-commit em todos os arquivos"
+	@echo "  restore-evidence  Desfaz as regravações da evidência versionada feitas por uma execução"
 
-
-## Install Python dependencies
-.PHONY: requirements
-requirements:
+## Instala as dependências fixadas e o hook do pre-commit
+install:
 	uv sync
-	
+	uv run pre-commit install
 
-
-
-## Delete all compiled Python files
-.PHONY: clean
-clean:
-	find . -type f -name "*.py[co]" -delete
-	find . -type d -name "__pycache__" -delete
-
-
-## Run tests
-.PHONY: test
-test:
-	uv run pytest -q
-
-## Download, EDA e split Referencia/Producao
-.PHONY: data
+## Etapa 0: download, EDA e split Referência / Produção
 data:
 	uv run python scripts/prepare_data.py
 
-## Treina o baseline
-.PHONY: train
-train: data
+## Etapa 0: treina o baseline e salva as métricas
+train:
 	uv run python scripts/train_baseline.py
 
-## Lint using ruff (use `make format` to do formatting)
-.PHONY: lint
-lint:
-	uv run ruff format --check .
-	uv run ruff check .
+## Etapa 1: gera o lote corrompido e mostra o portão barrando (exit 1 esperado)
+contract:
+	uv run python scripts/make_corrupted_batch.py
+	-uv run python scripts/run_validation.py data/production/batch_corrupted.parquet
 
-## Format source code with ruff
-.PHONY: format
+## Etapa 2: lotes com drift e relatórios do Evidently
+drift:
+	uv run python scripts/make_drift_batch.py --scenario data_drift --intensity 1
+	uv run python scripts/make_drift_batch.py --scenario concept_drift --intensity 1
+	uv run python scripts/run_drift_report.py data/production/production_base.parquet
+	uv run python scripts/run_drift_report.py data/production/batch_data_drift_i100.parquet
+	uv run python scripts/run_drift_report.py data/production/batch_concept_drift_i100.parquet
+
+## Etapa 3: calibra as réguas, roda as 5 semanas no MLflow e gera o painel
+monitor:
+	uv run python scripts/calibrate_alerts.py
+	uv run python scripts/run_weekly_pipeline.py
+	uv run python scripts/plot_weekly_panel.py
+
+## Etapa 4: viés por grupo, análise causal e retenção (em simulação)
+governance:
+	uv run python scripts/run_fairness.py
+	uv run python scripts/run_causal_analysis.py
+	uv run python scripts/apply_retention.py
+
+## Portão do CI: contrato e hashes da evidência (depois de make drift)
+evidence:
+	uv run python scripts/check_evidence.py
+
+## Roda tudo do zero, na ordem do README
+pipeline: data train contract drift monitor governance evidence
+	@echo "Pipeline completo. Para desfazer as regravações da evidência: make restore-evidence"
+
+## Abre o painel do MLflow em http://localhost:5000
+mlflow:
+	uv run mlflow ui --backend-store-uri sqlite:///mlflow.db
+
+## Roda os testes
+test:
+	uv run pytest -q
+
+## Roda os testes com a cobertura do pacote src/
+coverage:
+	uv run pytest -q --cov=credit_risk_observability --cov-report=term-missing
+
+## Confere estilo e formatação com o ruff
+lint:
+	uv run ruff check .
+	uv run ruff format --check .
+
+## Corrige estilo e formatação com o ruff
 format:
 	uv run ruff check --fix .
 	uv run ruff format .
 
+## Roda os hooks do pre-commit em todos os arquivos
+precommit:
+	uv run pre-commit run --all-files
 
-
-## Set up Python interpreter environment
-.PHONY: create_environment
-create_environment:
-	uv venv --python $(PYTHON_VERSION)
-	@echo ">>> New uv virtual environment created. Activate with:"
-	@echo ">>> Windows: .\\\\.venv\\\\Scripts\\\\activate"
-	@echo ">>> Unix/macOS: source ./.venv/bin/activate"
-	
-
-
-
-#################################################################################
-# PROJECT RULES                                                                 #
-#################################################################################
-
-
-
-#################################################################################
-# Self Documenting Commands                                                     #
-#################################################################################
-
-.DEFAULT_GOAL := help
-
-define PRINT_HELP_PYSCRIPT
-import re, sys; \
-lines = '\n'.join([line for line in sys.stdin]); \
-matches = re.findall(r'\n## (.*)\n[\s\S]+?\n([a-zA-Z_-]+):', lines); \
-print('Available rules:\n'); \
-print('\n'.join(['{:25}{}'.format(*reversed(match)) for match in matches]))
-endef
-export PRINT_HELP_PYSCRIPT
-
-help:
-	@$(PYTHON_INTERPRETER) -c "${PRINT_HELP_PYSCRIPT}" < $(MAKEFILE_LIST)
+## Desfaz as regravações da evidência versionada feitas por uma execução
+restore-evidence:
+	git restore reports
