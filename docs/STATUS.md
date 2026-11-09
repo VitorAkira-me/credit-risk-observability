@@ -17,7 +17,7 @@ Decisões em `docs/REPASSE.md` (1 a 47), revisadas com o Akira antes do vídeo (
 - DRIFT-003 em andamento (**Akira pilota**): andaime mergeado (PR #20); falta `psi()`.
 - DOC-001 concluído (PR #21): README final reestruturado; "como rodar" testado do zero (2min46, Linux).
 - VID-001 em andamento: roteiro v2 em `docs/video/roteiro.md` (3min44 de fala, 8 telas), com as práticas.
-- DOC-002 (PMF4-40) em PR: Model Card, ML Canvas, Roadmap, README reestruturado, Makefile, pre-commit
+- DOC-002 (PMF4-40) concluído (PR #24): Model Card, ML Canvas, Roadmap, README reestruturado, Makefile, pre-commit
   e cobertura de 93%; ADR-006 decidido (B + D no próximo retreino).
 - 125 testes passando (+5 pulados até a `psi()` existir); ruff limpo.
 
