@@ -1,0 +1,25 @@
+# Hooks rodados antes de cada commit (instalação: make install, ou uv run pre-commit install).
+# Versões fixadas: o ruff do hook é o mesmo do uv.lock (0.17.1), para o hook e o CI concordarem.
+# reports/ e models/ ficam de fora: são artefatos gerados pelos scripts (evidência e métricas),
+# e nenhum hook pode reescrevê-los, senão hook e script brigariam a cada execução.
+exclude: ^(reports|models)/
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.1
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-yaml
+      - id: check-toml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        # No Markdown, dois espaços no fim da linha são uma quebra de linha intencional.
+        args: [--markdown-linebreak-ext=md]
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+      - id: check-merge-conflict

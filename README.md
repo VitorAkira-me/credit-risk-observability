@@ -1,11 +1,29 @@
-# credit-risk-observability
+# Credit Risk Observability
 
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.9-F7931E?logo=scikitlearn&logoColor=white)
+![Pandera](https://img.shields.io/badge/Pandera-0.34-6E4C9F)
+![Evidently](https://img.shields.io/badge/Evidently-0.7-ED0400)
+![MLflow](https://img.shields.io/badge/MLflow-3.18-0194E2?logo=mlflow&logoColor=white)
+![uv](https://img.shields.io/badge/uv-DE5FE9?logo=uv&logoColor=white)
+![Ruff](https://img.shields.io/badge/lint-ruff-D7FF64?logo=ruff&logoColor=black)
+![pre-commit](https://img.shields.io/badge/pre--commit-ativo-FAB040?logo=precommit&logoColor=white)
+![coverage](https://img.shields.io/badge/cobertura-93%25-brightgreen)
 [![CI](https://github.com/VitorAkira-me/credit-risk-observability/actions/workflows/ci.yml/badge.svg)](https://github.com/VitorAkira-me/credit-risk-observability/actions/workflows/ci.yml)
 [![Pipeline de monitoramento](https://github.com/VitorAkira-me/credit-risk-observability/actions/workflows/pipeline.yml/badge.svg)](https://github.com/VitorAkira-me/credit-risk-observability/actions/workflows/pipeline.yml)
+![license](https://img.shields.io/github/license/VitorAkira-me/credit-risk-observability)
 
 Camada de sustentação de um modelo de **Credit Scoring** em produção: contratos de qualidade de
 dados, simulação e detecção de drift, observabilidade do pipeline e governança (LGPD).
-Tech Challenge Fase 4 (Pós-tech ML).
+Desenvolvido para o Tech Challenge da Fase 4 da Pós Tech em Machine Learning Engineering (FIAP).
+
+## Autor
+
+| Nome | RM | Contato |
+|---|---|---|
+| Vitor Akira Ucha Ito | RM371483 | [GitHub](https://github.com/VitorAkira-me) · [LinkedIn](https://www.linkedin.com/in/vitor-akira/) |
+
+🎥 Vídeo explicativo em até 5 min: *link adicionado após a gravação*
 
 ## Resultados em um minuto
 | Etapa | O que o projeto entrega | Resultado real |
@@ -15,20 +33,30 @@ Tech Challenge Fase 4 (Pós-tech ML).
 | 3. Observabilidade | log estruturado, 5 semanas no MLflow, réguas de alerta calibradas, CI/CD | o concept drift alarma na semana 3, uma antes do PSI; alarme falso do KS de 24,5% para 1,5% |
 | 4. Governança | inventário de PII, Privacy by Design, base legal, retenção, viés, causalidade | idade reprova a regra dos 4/5 (0,663); a dose-resposta prova que a queda vem do concept drift (+56% de calote aprovado) |
 
-Tudo se reproduz do zero: numa pasta limpa, a sequência de [Como rodar](#como-rodar) levou 2min46
+Tudo se reproduz do zero: numa pasta limpa, a sequência de [Como rodar](#2-como-rodar) levou 2min46
 no Linux e cerca de 3min10 no Windows (PowerShell), sem contar os testes, e regerou todos os
 números acima; só `run_id`, datas e a versão do Python mudaram.
 Andamento e decisões em [`docs/STATUS.md`](docs/STATUS.md), [`docs/KANBAN.md`](docs/KANBAN.md) e
 [`docs/REPASSE.md`](docs/REPASSE.md).
 
-## O problema
+## Requisitos
+
+- [uv](https://docs.astral.sh/uv/): instala o Python 3.12 e as versões fixadas no `uv.lock`.
+- Internet na primeira execução, para baixar o dataset do UCI (sem login, sem token, sem `.env`).
+- Git, para clonar o repositório.
+- Opcional: `make`, para os atalhos da seção 2. Ele vem no Linux, no macOS e no WSL; no Windows
+  sem `make`, os mesmos comandos `uv run` funcionam direto no PowerShell.
+
+## 1. Visão geral
+
+### O problema
 Uma fintech tem um modelo de crédito em produção. A economia muda (inflação sobe as faturas, os
 bancos cortam limites, um grupo de clientes passa a atrasar mais), e o modelo pode degradar **em
 silêncio**: a API continua respondendo, mas as decisões pioram. Este projeto é a camada de
 sustentação que impede isso: barra dado sujo antes do modelo, detecta e explica a mudança, avisa
 quando o modelo deixa de ser confiável e documenta como os dados pessoais são protegidos.
 
-## Arquitetura
+### Arquitetura
 ```mermaid
 flowchart LR
     UCI["Dataset UCI<br/>30.000 clientes"] --> SPLIT["Referência (treino)<br/>e Produção"]
@@ -44,12 +72,12 @@ flowchart LR
     OBS --> GOV["Governança<br/>viés, causa, plano de ação"]
 ```
 
-## Dataset
+### Dataset
 [Default of Credit Card Clients (UCI, Taiwan)](https://archive.ics.uci.edu/dataset/350):
 30.000 clientes, alvo binário `default` (22,12% de inadimplência). Baixado sem login via
 `ucimlrepo`. Escolha justificada em [ADR-001](docs/decisions/ADR-001-dataset.md).
 
-## Como rodar
+## 2. Como rodar
 Pré-requisito: [uv](https://docs.astral.sh/uv/). O uv instala o Python 3.12 se precisar.
 Sequência testada do zero numa pasta limpa no Linux (bash, 08/11/2026) e no Windows (PowerShell
 5.1, 09/11/2026): todos os passos com exit 0, exceto a validação do lote corrompido, que **deve**
@@ -83,7 +111,27 @@ uv run pytest -q                          # testes
 uv run ruff check . ; uv run ruff format --check .
 ```
 
-## Dados e modelo baseline
+### Atalhos com `make`
+Cada alvo do [`Makefile`](Makefile) só chama os comandos acima, na mesma ordem (`make help` lista
+todos). Testado no Linux (WSL, Ubuntu 24.04) em 09/11/2026.
+
+| Comando | O que faz |
+|---|---|
+| `make install` | instala as dependências e o hook do pre-commit |
+| `make pipeline` | roda tudo do zero: dados, modelo e as 4 etapas, terminando no portão do CI |
+| `make contract`, `make drift`, `make monitor`, `make governance` | uma etapa por vez |
+| `make test`, `make coverage`, `make lint`, `make precommit` | qualidade do código |
+| `make mlflow` | abre o painel do MLflow |
+| `make restore-evidence` | desfaz as regravações da evidência feitas por uma execução |
+
+### Qualidade do código
+- **Testes:** 125 testes com pytest e 93% de cobertura do pacote `src/` (os scripts de entrada
+  são testados de ponta a ponta, mas ficam fora da conta). O CI mostra a cobertura em todo PR.
+- **pre-commit:** ruff, formatação e checagens de arquivo antes de cada commit; `reports/` e
+  `models/` ficam de fora, porque são gerados pelos scripts.
+- **CI:** ruff, pytest e o portão de contrato com dados reais em todo PR (seção 6).
+
+## 3. Dados e modelo baseline
 ### Referência vs Produção
 | Conjunto | Arquivo | Linhas | Uso |
 |---|---|---|---|
@@ -104,7 +152,7 @@ LogisticRegression balanceada. `SEX` e `MARRIAGE` ficam fora das features
 
 Métricas completas em [`models/baseline_metrics.json`](models/baseline_metrics.json) e [ML-001](docs/specs/ML-001.md).
 
-## Etapa 1 · Contrato de dados
+## 4. Contrato de dados (Etapa 1)
 Schema Pandera `credit_default_input_v1` com 9 regras rígidas (colunas exatas, `int64` sem
 nulos, `ID` único, `AGE` 18 a 100, `LIMIT_BAL` > 0, domínio dos códigos, `PAY_AMT` ≥ 0, alvo
 binário, lote não vazio). Regras e decisões em [DQ-001](docs/specs/DQ-001.md).
@@ -119,7 +167,7 @@ com **exit 1**, log `validation_failed` e falhas em `reports/validation/`.
 
 As contagens batem exatamente com os defeitos injetados ([DQ-002](docs/specs/DQ-002.md)).
 
-## Etapa 2 · Simulação e detecção de drift
+## 5. Simulação e detecção de drift (Etapa 2)
 Dois cenários aplicados à Produção-base, cada um com a "resposta certa" conhecida
 ([DRIFT-001](docs/specs/DRIFT-001.md)), medidos contra a Referência com PSI e KS do Evidently
 ([DRIFT-002](docs/specs/DRIFT-002.md)):
@@ -141,7 +189,7 @@ devem ser regerados em PRs futuros, porque cada regeneração soma cerca de 4,7 
 Desde o OBS-001, `scripts/run_drift_report.py` grava por padrão em `outputs/drift/`, fora do git, e não
 toca na evidência. No OBS-002, esses relatórios viram artefatos do MLflow.
 
-## Etapa 3 · Observabilidade do pipeline e do modelo
+## 6. Observabilidade do pipeline e do modelo (Etapa 3)
 ### Log estruturado do pipeline (OBS-001)
 Cada etapa (`validacao`, `geracao_lote_drift`, `relatorio_drift`) grava uma linha JSON em
 `logs/pipeline.jsonl`, sempre com os mesmos campos:
@@ -221,6 +269,16 @@ linha por etapa em `logs/pipeline.jsonl`. Os limites valem para lotes de 2.000 c
    Abrir a análise causal (GOV-004) e, confirmado o concept drift, retreinar com dados recentes rotulados.
 
 ### CI/CD no GitHub Actions (IMP-001)
+```mermaid
+flowchart LR
+    PR["PR para a main"] --> Q["Lint e testes<br/>ruff + pytest + cobertura"]
+    Q --> C["Contrato e evidência<br/>dados reais do UCI"]
+    C --> G{"Tudo verde?"}
+    G -->|sim| M["merge na main"]
+    G -->|não| X["PR vermelho"]
+    M --> P["Pipeline de monitoramento<br/>artefatos da execução"]
+```
+
 | Workflow | Quando roda | O que garante |
 |---|---|---|
 | [`ci.yml`](.github/workflows/ci.yml) | todo PR para a `main` e todo merge | **Qualidade:** `uv sync --locked`, ruff e pytest. **Contrato:** com os dados reais do UCI, a Produção-base passa, o lote corrompido é barrado com as falhas exatas e os lotes regerados batem com os hashes da evidência em `reports/drift/` (`scripts/check_evidence.py`). |
@@ -229,7 +287,7 @@ linha por etapa em `logs/pipeline.jsonl`. Os limites valem para lotes de 2.000 c
 Um PR que afrouxa o contrato fica vermelho mesmo quando o lote corrompido continua barrado por
 outras regras: o portão compara as falhas regra a regra, e não só o exit code.
 
-## Etapa 4 · Governança, LGPD e causalidade
+## 7. Governança, LGPD e causalidade (Etapa 4)
 > Plano técnico de conformidade, não parecer jurídico. As citações da Lei 13.709/2018 (LGPD) estão
 > parafraseadas e listadas para conferência no texto oficial em `docs/specs/GOV-001.md`.
 
@@ -346,7 +404,7 @@ proxy e da diferença real de default. Para idade, o mesmo teste mostra que tira
 disparidade (0,228 para 0,134; razão 0,800) a um custo de 0,0012 de AUC, mas os menores de 29
 passam a ser os menos aprovados: o limite de crédito funciona como proxy de idade.
 
-**Mitigação proposta ([ADR-006](docs/decisions/ADR-006-vies-por-idade.md), aguardando decisão):**
+**Mitigação decidida ([ADR-006](docs/decisions/ADR-006-vies-por-idade.md), aceito em 09/11/2026):**
 tirar `AGE` no próximo retreino e encaminhar à revisão humana as negativas dos grupos com
 disparidade, com a auditoria rodando a cada retreino e a regra dos 4/5 como critério de aprovação.
 
@@ -395,7 +453,19 @@ comparando a performance por segmento e retreinando numa janela nova para ver se
 | Modelo novo pior que o anterior, ou incidente em produção | retreino ruim | **rollback** para a versão anterior (`modelo_sha256` registrado em cada run do MLflow) | métricas de volta à faixa |
 | Regra dos 4/5 reprovada (GOV-003) | viés por grupo | revisão humana das negativas do grupo; ADR-006 no próximo retreino | razão de aprovação de pelo menos 0,8 |
 
-## Lições aprendidas
+## 8. Decisões de arquitetura (ADRs)
+Cada escolha com trade-off virou um ADR, com contexto, opções, decisão e consequências.
+
+| ADR | Decisão | Status |
+|---|---|---|
+| [ADR-001](docs/decisions/ADR-001-dataset.md) | dataset UCI de Taiwan: 30.000 clientes e atributos sensíveis reais | aceita |
+| [ADR-002](docs/decisions/ADR-002-pandera.md) | contratos de dados com Pandera, e não Great Expectations | aceita |
+| [ADR-003](docs/decisions/ADR-003-mlflow.md) | observabilidade com MLflow local primeiro | aceita |
+| [ADR-004](docs/decisions/ADR-004-features-sensiveis.md) | `SEX` e `MARRIAGE` fora do modelo, mas nos dados para auditar viés | aceita; revisão pendente |
+| [ADR-005](docs/decisions/ADR-005-minimizacao-failure-cases.md) | relatórios de validação sem valores de cliente | aceita e implementada |
+| [ADR-006](docs/decisions/ADR-006-vies-por-idade.md) | `AGE` fora do modelo no próximo retreino, com revisão humana até lá | aceita em 09/11/2026 |
+
+## 9. Lições aprendidas
 - **Validação real, não visual.** O portão do CI compara as falhas regra a regra: afrouxar a idade
   mínima deixou o lote corrompido barrado pelas outras regras, e só a comparação exata pegou.
 - **Uma régua só não basta.** O PSI perdeu as faturas (+25%) que o KS pegou, e nenhum dos dois vê
@@ -409,16 +479,20 @@ comparando a performance por segmento e retreinando numa janela nova para ver se
 - **Prever antes de rodar.** Duas previsões erraram (viés contra jovens; data drift derrubando a
   AUC): os erros viraram as melhores seções deste README.
 
-## Documentação do processo
+## 10. Documentação do processo
 | Onde | O que tem |
 |---|---|
+| [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md) | o modelo: uso pretendido, avaliação, justiça, limitações e manutenção |
+| [`docs/ML_CANVAS.md`](docs/ML_CANVAS.md) | o negócio: proposta de valor, decisões que o score alimenta e impacto medido |
+| [`docs/ROADMAP.md`](docs/ROADMAP.md) | a ordem de construção, cada passo com o porquê |
 | [`docs/specs/`](docs/specs/) | uma spec por card, com critérios de aceite e o resultado medido |
 | [`docs/decisions/`](docs/decisions/) | ADRs: dataset, Pandera, MLflow, atributos sensíveis, minimização, viés por idade |
 | [`docs/REPASSE.md`](docs/REPASSE.md) | 44 decisões com o porquê, a alternativa descartada e uma pergunta |
 | [`docs/GLOSSARIO.md`](docs/GLOSSARIO.md) | conceitos da fase em linguagem simples |
+| [`docs/video/roteiro.md`](docs/video/roteiro.md) | roteiro do vídeo STAR, com a lista de telas |
 | [Jira PMF4](https://akiravkax.atlassian.net/issues?jql=project%20%3D%20PMF4%20ORDER%20BY%20key%20ASC) | cards, prazos e status |
 
-## Estrutura
+## 11. Estrutura
 ```
 src/credit_risk_observability/   # pacote: config, data/, model/, contracts/, drift/, monitoring/, governance/
 scripts/                         # pontos de entrada do pipeline (um por etapa)
@@ -426,6 +500,7 @@ tests/                           # pytest (unitários e de ponta a ponta com dad
 reports/                         # evidências versionadas: EDA, validação, drift, monitoramento, viés, causal, figuras
 models/                          # métricas versionadas; o modelo .joblib é regerável
 .github/workflows/               # CI (qualidade e contrato) e CD (pipeline de monitoramento)
-docs/                            # STATUS, KANBAN, GLOSSARIO, REPASSE, specs/ e decisions/ (ADRs)
+docs/                            # MODEL_CARD, ML_CANVAS, ROADMAP, STATUS, KANBAN, GLOSSARIO, REPASSE, specs/, decisions/
+Makefile, .pre-commit-config.yaml  # atalhos e hooks de qualidade
 data/, outputs/, logs/           # fora do git: regeráveis pelos scripts
 ```

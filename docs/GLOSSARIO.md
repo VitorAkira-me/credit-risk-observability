@@ -135,4 +135,3 @@ bom tem a mesma chance de ser convocado, seja de que time for".
 por sexo se outra coluna "adivinha" o sexo. Mede-se treinando um modelo para prever o atributo
 retirado a partir das outras colunas.
 **Pergunta para pensar:** se o proxy for fraco (AUC 0,58), o problema acabou?
-
