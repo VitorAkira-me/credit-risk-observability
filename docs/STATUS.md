@@ -15,7 +15,7 @@ Decisões em `docs/REPASSE.md` (1 a 44), revisadas com o Akira antes do vídeo (
     por dose-resposta (o concept drift causa a queda); base legal e retenção por código.
 - CI (ruff, pytest, portão de contrato com dados reais) e CD (pipeline a cada merge) verdes na `main`.
 - DRIFT-003 em andamento (**Akira pilota**): andaime mergeado (PR #20); falta `psi()`.
-- DOC-001 em revisão: README final reestruturado; "como rodar" testado do zero (2min46, Linux).
+- DOC-001 concluído (PR #21): README final reestruturado; "como rodar" testado do zero (2min46, Linux).
 - VID-001 em andamento: rascunho cronometrado em `docs/video/roteiro.md` (3min16 de fala, 7 telas).
 - 125 testes passando (+5 pulados até a `psi()` existir); ruff limpo.
 
