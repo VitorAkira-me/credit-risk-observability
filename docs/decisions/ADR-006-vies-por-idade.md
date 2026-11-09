@@ -1,7 +1,7 @@
 # ADR-006 · Mitigar o viés por idade
 
-- Status: **proposta** (Claude, 08/11/2026), aguardando decisão do Akira
-- Data: 08/11/2026
+- Status: **aceita** (proposta pelo Claude em 08/11/2026; decidida pelo Akira em 09/11/2026)
+- Data: 09/11/2026
 
 ## Contexto
 A auditoria do GOV-003 (`reports/fairness/fairness_report.json`) mediu, na Produção-base:
@@ -36,7 +36,18 @@ Contrafactuais (mesmo modelo, mesma Referência, medidos na Produção-base):
 agora: mudar o modelo invalidaria a evidência versionada das Etapas 2 e 3. A troca entra junto
 com o primeiro retreino previsto no plano de ação (GOV-004).
 
-## Consequências se aceita
+## Decisão
+Opção **B com D como rede de segurança**, aplicada no **próximo retreino**, e não agora.
+
+- **B:** `AGE` sai das features do modelo. A razão da regra dos 4/5 por idade sobe de 0,663 para
+  0,800, a um custo de 0,0012 de AUC, menor que o ruído entre seeds (0,714 a 0,732 na validação).
+- **D:** até o retreino, e depois dele, as negativas dos grupos com disparidade vão para revisão
+  humana. É o caminho humano do direito de revisão (LGPD, art. 20).
+- **Por que não agora:** retreinar mudaria todos os números das Etapas 2 e 3, e a evidência
+  versionada em `reports/` deixaria de valer a 8 dias da entrega. O modelo atual fica documentado
+  como está, com o viés medido e explicado.
+
+## Consequências
 - `SENSITIVE_EXCLUDED` passa a incluir `AGE`; o ADR-004 fica revisado (opção C).
 - A auditoria do GOV-003 roda a cada retreino, com a regra dos 4/5 como critério de aprovação.
 - Acompanhar a nova disparidade contra os mais jovens, que a mudança cria.
