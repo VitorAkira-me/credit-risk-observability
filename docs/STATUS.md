@@ -15,12 +15,14 @@ Decisões em `docs/REPASSE.md` (1 a 44), revisadas com o Akira antes do vídeo (
     por dose-resposta (o concept drift causa a queda); base legal e retenção por código.
 - CI (ruff, pytest, portão de contrato com dados reais) e CD (pipeline a cada merge) verdes na `main`.
 - DRIFT-003 em andamento (**Akira pilota**): andaime mergeado (PR #20); falta `psi()`.
-- DOC-001 em revisão: README final reestruturado; "como rodar" testado do zero (2min46, Linux).
+- DOC-001 concluído (PR #21): README final reestruturado; "como rodar" testado do zero (2min46, Linux).
+- VID-001 em andamento: rascunho cronometrado em `docs/video/roteiro.md` (3min16 de fala, 7 telas).
 - 125 testes passando (+5 pulados até a `psi()` existir); ruff limpo.
 
 ## Pendências (Akira)
 - Implementar `psi()` (DRIFT-003, spec em `docs/specs/DRIFT-003.md`).
 - Testar o "Como rodar" do README no PowerShell (DOC-001).
+- Reescrever o roteiro com a sua voz e cronometrar lendo em voz alta (VID-001), depois do REPASSE.
 - Decidir o ADR-006 (viés por idade) e revisar o ADR-004 (PMF4-35).
 - Conferir as citações da LGPD no Planalto (listas nas specs do GOV-001 e GOV-002): o site recusa a nuvem.
 - Revisar os textos "Akira pilota" escritos pelo Claude (OBS-003, GOV-001 a GOV-004).
