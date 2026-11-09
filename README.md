@@ -7,9 +7,42 @@ Camada de sustentação de um modelo de **Credit Scoring** em produção: contra
 dados, simulação e detecção de drift, observabilidade do pipeline e governança (LGPD).
 Tech Challenge Fase 4 (Pós-tech ML).
 
-> Status: em construção. Concluído: dados, baseline, Etapa 1 (contrato), Etapa 2 (drift) e o
-> monitoramento da Etapa 3 (log estruturado e MLflow).
-> Andamento em [`docs/STATUS.md`](docs/STATUS.md) e [`docs/KANBAN.md`](docs/KANBAN.md).
+## Resultados em um minuto
+| Etapa | O que o projeto entrega | Resultado real |
+|---|---|---|
+| 1. Validação de dados | contrato Pandera com 9 regras rígidas, portão de ingestão | lote corrompido de 1.020 linhas **barrado** (exit 1, 130 linhas rejeitadas); Produção-base aprovada |
+| 2. Drift | lotes com data drift e concept drift, relatório Evidently com PSI e KS | `LIMIT_BAL` acusado pelo PSI (0,27) e pelo KS, faturas só pelo KS; concept drift derruba a AUC de 0,715 para 0,665 |
+| 3. Observabilidade | log estruturado, 5 semanas no MLflow, réguas de alerta calibradas, CI/CD | o concept drift alarma na semana 3, uma antes do PSI; alarme falso do KS de 24,5% para 1,5% |
+| 4. Governança | inventário de PII, Privacy by Design, base legal, retenção, viés, causalidade | idade reprova a regra dos 4/5 (0,663); a dose-resposta prova que a queda vem do concept drift (+56% de calote aprovado) |
+
+Tudo se reproduz do zero: numa pasta limpa, a sequência de [Como rodar](#como-rodar) levou 2min46
+(com as dependências já baixadas) e regerou todos os números acima; só `run_id`, datas e a versão do
+Python mudaram.
+Andamento e decisões em [`docs/STATUS.md`](docs/STATUS.md), [`docs/KANBAN.md`](docs/KANBAN.md) e
+[`docs/REPASSE.md`](docs/REPASSE.md).
+
+## O problema
+Uma fintech tem um modelo de crédito em produção. A economia muda (inflação sobe as faturas, os
+bancos cortam limites, um grupo de clientes passa a atrasar mais), e o modelo pode degradar **em
+silêncio**: a API continua respondendo, mas as decisões pioram. Este projeto é a camada de
+sustentação que impede isso: barra dado sujo antes do modelo, detecta e explica a mudança, avisa
+quando o modelo deixa de ser confiável e documenta como os dados pessoais são protegidos.
+
+## Arquitetura
+```mermaid
+flowchart LR
+    UCI["Dataset UCI<br/>30.000 clientes"] --> SPLIT["Referência (treino)<br/>e Produção"]
+    SPLIT --> MODEL["Modelo baseline<br/>regressão logística"]
+    SPLIT --> LOTES["Lotes semanais<br/>com drift simulado"]
+    LOTES --> GATE{"Contrato de dados<br/>(Pandera)"}
+    GATE -- "reprovado" --> FALHA["Lote barrado<br/>status=falha"]
+    GATE -- "aprovado" --> DRIFT["Relatório de drift<br/>Evidently: PSI e KS"]
+    MODEL --> DRIFT
+    DRIFT --> ALERTA["Réguas de alerta<br/>calibradas"]
+    FALHA --> OBS["Log JSON e MLflow<br/>painel por semana"]
+    ALERTA --> OBS
+    OBS --> GOV["Governança<br/>viés, causa, plano de ação"]
+```
 
 ## Dataset
 [Default of Credit Card Clients (UCI, Taiwan)](https://archive.ics.uci.edu/dataset/350):
@@ -18,7 +51,8 @@ Tech Challenge Fase 4 (Pós-tech ML).
 
 ## Como rodar
 Pré-requisito: [uv](https://docs.astral.sh/uv/). O uv instala o Python 3.12 se precisar.
-Os comandos funcionam iguais no PowerShell e no Git Bash.
+Sequência testada do zero numa pasta limpa (Linux, bash) em 08/11/2026: todos os passos com exit 0,
+exceto a validação do lote corrompido, que **deve** sair com exit 1 (é o bloqueio funcionando).
 
 ```
 uv sync                                   # ambiente com versões fixadas pelo uv.lock
@@ -37,12 +71,14 @@ uv run python scripts/plot_weekly_panel.py     # painel estático em reports/fig
 uv run python scripts/run_fairness.py          # auditoria de viés por sexo e idade (Etapa 4)
 uv run python scripts/run_causal_analysis.py   # dose-resposta: qual drift causa a queda (Etapa 4)
 uv run python scripts/apply_retention.py       # retenção: lista o que venceu (--aplicar apaga)
+uv run python scripts/check_evidence.py        # portão do CI: contrato e hashes da evidência
 uv run mlflow ui --backend-store-uri sqlite:///mlflow.db   # painel vivo em http://localhost:5000
 uv run pytest -q                          # testes
 uv run ruff check . ; uv run ruff format --check .
 ```
 
-## Referência vs Produção
+## Dados e modelo baseline
+### Referência vs Produção
 | Conjunto | Arquivo | Linhas | Uso |
 |---|---|---|---|
 | Referência | `data/reference/reference.parquet` | 21.000 | treino e validação do modelo |
@@ -51,7 +87,7 @@ uv run ruff check . ; uv run ruff format --check .
 Split estratificado (seed 42), 0 clientes em comum. Detalhes em [DATA-001](docs/specs/DATA-001.md);
 EDA em [`reports/eda/eda_summary.md`](reports/eda/eda_summary.md).
 
-## Modelo baseline
+### Modelo baseline
 LogisticRegression balanceada. `SEX` e `MARRIAGE` ficam fora das features
 ([ADR-004](docs/decisions/ADR-004-features-sensiveis.md)).
 
@@ -77,13 +113,30 @@ com **exit 1**, log `validation_failed` e falhas em `reports/validation/`.
 
 As contagens batem exatamente com os defeitos injetados ([DQ-002](docs/specs/DQ-002.md)).
 
-## Relatórios de drift: o que fica no git
-Os 3 relatórios de `reports/drift/drift_report_*` são a evidência da Etapa 2: ficam versionados e não
+## Etapa 2 · Simulação e detecção de drift
+Dois cenários aplicados à Produção-base, cada um com a "resposta certa" conhecida
+([DRIFT-001](docs/specs/DRIFT-001.md)), medidos contra a Referência com PSI e KS do Evidently
+([DRIFT-002](docs/specs/DRIFT-002.md)):
+
+| Lote | O que foi alterado | PSI acusou | KS acusou | AUC | Diagnóstico | Relatório |
+|---|---|---|---|---|---|---|
+| Produção-base | nada (controle) | nenhuma | nenhuma | 0,715 | sem drift relevante | [HTML](reports/drift/drift_report_production_base.html) |
+| Data drift | faturas +25%, limite -25% | `LIMIT_BAL` (0,27) | `LIMIT_BAL` e as 6 faturas | 0,714 | data drift sem impacto no modelo | [HTML](reports/drift/drift_report_batch_data_drift_i100.html) |
+| Concept drift | rótulos: default dobra no quartil de fatura alta | nenhuma | nenhuma | **0,665** | suspeita de concept drift | [HTML](reports/drift/drift_report_batch_concept_drift_i100.html) |
+
+**Leitura:** o detector acertou as duas "respostas certas". As faturas subiram 25% e o PSI ficou
+entre 0,03 e 0,05 (abaixo da régua), mas o KS acusou: por isso o projeto usa os dois testes. E o
+concept drift é invisível para os testes de distribuição (as entradas não mudaram): só aparece na
+queda de AUC e na taxa de default (22,1% para 27,2%). Os relatórios também abrem com um resumo em
+português no topo do HTML.
+
+**O que fica no git:** os 3 relatórios de `reports/drift/drift_report_*` são a evidência da Etapa 2: ficam versionados e não
 devem ser regerados em PRs futuros, porque cada regeneração soma cerca de 4,7 MB ao histórico.
 Desde o OBS-001, `scripts/run_drift_report.py` grava por padrão em `outputs/drift/`, fora do git, e não
 toca na evidência. No OBS-002, esses relatórios viram artefatos do MLflow.
 
-## Log estruturado do pipeline (OBS-001)
+## Etapa 3 · Observabilidade do pipeline e do modelo
+### Log estruturado do pipeline (OBS-001)
 Cada etapa (`validacao`, `geracao_lote_drift`, `relatorio_drift`) grava uma linha JSON em
 `logs/pipeline.jsonl`, sempre com os mesmos campos:
 
@@ -99,7 +152,7 @@ Cada etapa (`validacao`, `geracao_lote_drift`, `relatorio_drift`) grava uma linh
 
 O log guarda só contagens, nomes de regra e nomes de arquivo: nenhum ID nem valor de linha (Etapa 4).
 
-## Etapa 3 · Monitoramento semanal no MLflow (OBS-002)
+### Monitoramento semanal no MLflow (OBS-002)
 A Produção-base vira 4 semanas de 2.000 clientes, sem cliente repetido, com drift crescente
 (semana 1 sem drift; semana 4 com o data drift e o concept drift cheios do DRIFT-001), mais uma
 semana com lote corrompido. Cada semana passa pelo contrato, pelo relatório de drift e pelas réguas
@@ -134,7 +187,7 @@ default, PSI por feature, nº de features com alerta) e artefatos (HTML do Evide
 log e, na semana barrada, as falhas do contrato). `mlflow.db`, `mlartifacts/` e `outputs/` ficam
 fora do git; a evidência versionada é o painel e os limites calibrados.
 
-## Métricas de saúde: o que cada número do painel quer dizer (OBS-003)
+### Métricas de saúde: o que cada número do painel quer dizer (OBS-003)
 Cada semana é um run do MLflow (`uv run mlflow ui --backend-store-uri sqlite:///mlflow.db`) e uma
 linha por etapa em `logs/pipeline.jsonl`. Os limites valem para lotes de 2.000 clientes.
 
@@ -161,7 +214,7 @@ linha por etapa em `logs/pipeline.jsonl`. Os limites valem para lotes de 2.000 c
 3. **AUC ou taxa de default fora da faixa:** o modelo está errando mais (ex.: semanas 3 e 4).
    Abrir a análise causal (GOV-004) e, confirmado o concept drift, retreinar com dados recentes rotulados.
 
-## CI/CD no GitHub Actions (IMP-001)
+### CI/CD no GitHub Actions (IMP-001)
 | Workflow | Quando roda | O que garante |
 |---|---|---|
 | [`ci.yml`](.github/workflows/ci.yml) | todo PR para a `main` e todo merge | **Qualidade:** `uv sync --locked`, ruff e pytest. **Contrato:** com os dados reais do UCI, a Produção-base passa, o lote corrompido é barrado com as falhas exatas e os lotes regerados batem com os hashes da evidência em `reports/drift/` (`scripts/check_evidence.py`). |
@@ -170,18 +223,7 @@ linha por etapa em `logs/pipeline.jsonl`. Os limites valem para lotes de 2.000 c
 Um PR que afrouxa o contrato fica vermelho mesmo quando o lote corrompido continua barrado por
 outras regras: o portão compara as falhas regra a regra, e não só o exit code.
 
-## Estrutura
-```
-src/credit_risk_observability/   # pacote: config, data/, model/, contracts/, drift/, monitoring/
-scripts/                         # pontos de entrada do pipeline
-tests/                           # pytest
-reports/                         # evidências versionadas (EDA, relatórios de drift)
-models/                          # métricas versionadas; modelo .joblib regerável
-docs/                            # STATUS, KANBAN, GLOSSARIO, specs/ e decisions/ (ADRs)
-data/                            # fora do git (regerável pelos scripts)
-```
-
-## Governança (LGPD, vieses, análise causal)
+## Etapa 4 · Governança, LGPD e causalidade
 > Plano técnico de conformidade, não parecer jurídico. As citações da Lei 13.709/2018 (LGPD) estão
 > parafraseadas e listadas para conferência no texto oficial em `docs/specs/GOV-001.md`.
 
@@ -347,3 +389,37 @@ comparando a performance por segmento e retreinando numa janela nova para ver se
 | Modelo novo pior que o anterior, ou incidente em produção | retreino ruim | **rollback** para a versão anterior (`modelo_sha256` registrado em cada run do MLflow) | métricas de volta à faixa |
 | Regra dos 4/5 reprovada (GOV-003) | viés por grupo | revisão humana das negativas do grupo; ADR-006 no próximo retreino | razão de aprovação de pelo menos 0,8 |
 
+## Lições aprendidas
+- **Validação real, não visual.** O portão do CI compara as falhas regra a regra: afrouxar a idade
+  mínima deixou o lote corrompido barrado pelas outras regras, e só a comparação exata pegou.
+- **Uma régua só não basta.** O PSI perdeu as faturas (+25%) que o KS pegou, e nenhum dos dois vê
+  concept drift: a AUC e a taxa de default precisam estar no painel.
+- **Régua calibrada para o tamanho certo.** A régua do KS herdada de lotes de 9.000 linhas dava
+  alarme falso em 24,5% das semanas de 2.000; calibrar em amostras sem drift trouxe para 1,5%.
+- **Correlação engana.** Na semana 4, PSI e AUC pioraram juntos; o experimento de dose-resposta
+  mostrou que a causa era outra.
+- **Tirar a coluna não tira o viés.** Sem `SEX`, ainda sobra proxy; e a auditoria achou o viés onde
+  ninguém esperava (idade, contra os mais velhos).
+- **Prever antes de rodar.** Duas previsões erraram (viés contra jovens; data drift derrubando a
+  AUC): os erros viraram as melhores seções deste README.
+
+## Documentação do processo
+| Onde | O que tem |
+|---|---|
+| [`docs/specs/`](docs/specs/) | uma spec por card, com critérios de aceite e o resultado medido |
+| [`docs/decisions/`](docs/decisions/) | ADRs: dataset, Pandera, MLflow, atributos sensíveis, minimização, viés por idade |
+| [`docs/REPASSE.md`](docs/REPASSE.md) | 44 decisões com o porquê, a alternativa descartada e uma pergunta |
+| [`docs/GLOSSARIO.md`](docs/GLOSSARIO.md) | conceitos da fase em linguagem simples |
+| [Jira PMF4](https://akiravkax.atlassian.net/issues?jql=project%20%3D%20PMF4%20ORDER%20BY%20key%20ASC) | cards, prazos e status |
+
+## Estrutura
+```
+src/credit_risk_observability/   # pacote: config, data/, model/, contracts/, drift/, monitoring/, governance/
+scripts/                         # pontos de entrada do pipeline (um por etapa)
+tests/                           # pytest (unitários e de ponta a ponta com dados sintéticos)
+reports/                         # evidências versionadas: EDA, validação, drift, monitoramento, viés, causal, figuras
+models/                          # métricas versionadas; o modelo .joblib é regerável
+.github/workflows/               # CI (qualidade e contrato) e CD (pipeline de monitoramento)
+docs/                            # STATUS, KANBAN, GLOSSARIO, REPASSE, specs/ e decisions/ (ADRs)
+data/, outputs/, logs/           # fora do git: regeráveis pelos scripts
+```
