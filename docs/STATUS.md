@@ -21,7 +21,6 @@ Decisões em `docs/REPASSE.md` (1 a 44), revisadas com o Akira antes do vídeo (
 
 ## Pendências (Akira)
 - Implementar `psi()` (DRIFT-003, spec em `docs/specs/DRIFT-003.md`).
-- Testar o "Como rodar" do README no PowerShell (DOC-001).
 - Reescrever o roteiro com a sua voz e cronometrar lendo em voz alta (VID-001), depois do REPASSE.
 - Decidir o ADR-006 (viés por idade) e revisar o ADR-004 (PMF4-35).
 - Conferir as citações da LGPD no Planalto (listas nas specs do GOV-001 e GOV-002): o site recusa a nuvem.
