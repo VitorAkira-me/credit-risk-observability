@@ -16,8 +16,8 @@ Tech Challenge Fase 4 (Pós-tech ML).
 | 4. Governança | inventário de PII, Privacy by Design, base legal, retenção, viés, causalidade | idade reprova a regra dos 4/5 (0,663); a dose-resposta prova que a queda vem do concept drift (+56% de calote aprovado) |
 
 Tudo se reproduz do zero: numa pasta limpa, a sequência de [Como rodar](#como-rodar) levou 2min46
-(com as dependências já baixadas) e regerou todos os números acima; só `run_id`, datas e a versão do
-Python mudaram.
+no Linux e cerca de 3min10 no Windows (PowerShell), sem contar os testes, e regerou todos os
+números acima; só `run_id`, datas e a versão do Python mudaram.
 Andamento e decisões em [`docs/STATUS.md`](docs/STATUS.md), [`docs/KANBAN.md`](docs/KANBAN.md) e
 [`docs/REPASSE.md`](docs/REPASSE.md).
 
@@ -51,8 +51,14 @@ flowchart LR
 
 ## Como rodar
 Pré-requisito: [uv](https://docs.astral.sh/uv/). O uv instala o Python 3.12 se precisar.
-Sequência testada do zero numa pasta limpa (Linux, bash) em 08/11/2026: todos os passos com exit 0,
-exceto a validação do lote corrompido, que **deve** sair com exit 1 (é o bloqueio funcionando).
+Sequência testada do zero numa pasta limpa no Linux (bash, 08/11/2026) e no Windows (PowerShell
+5.1, 09/11/2026): todos os passos com exit 0, exceto a validação do lote corrompido, que **deve**
+sair com exit 1 (é o bloqueio funcionando). Os comandos são os mesmos nos dois shells.
+
+Rodar a sequência regrava 5 arquivos versionados: os 2 manifestos de `reports/drift/` e o resumo de
+`reports/validation/` mudam só no `run_id` e na data; as 2 figuras de `reports/figures/` mudam só no
+desenho (fontes do sistema), não nos números. Os relatórios HTML da evidência não são tocados. Para
+voltar ao estado versionado: `git restore reports`.
 
 ```
 uv sync                                   # ambiente com versões fixadas pelo uv.lock

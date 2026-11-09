@@ -53,7 +53,7 @@
 **Tela 7:** aba Actions do GitHub com o CI e o CD verdes.
 
 > O resultado: dado sujo não passa, o drift é detectado e explicado, e o alerta chega uma semana
-> antes do que chegaria só com PSI. Tudo roda do zero em menos de três minutos, e o CI barra
+> antes do que chegaria só com PSI. Tudo roda do zero em poucos minutos, no Linux e no Windows, e o CI barra
 > o PR que afrouxa o contrato, conferindo as falhas regra a regra. Aprendi que uma régua só não basta, que correlação engana,
 > e que tirar a coluna sensível não tira o viés. O que eu faria diferente: decidir o tratamento da
 > idade antes de treinar, e não depois de auditar.
