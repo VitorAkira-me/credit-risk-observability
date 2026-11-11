@@ -404,3 +404,10 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **Acrescentado:** prazos conferidos: 5 anos para informações negativas (CDC, art. 43, §1º) e 15 anos para o histórico de adimplemento (Lei 12.414/2011, art. 14).
 - **Limite:** conferi se o texto citado diz o que afirmamos. A interpretação jurídica (por exemplo, proteção do crédito como base legal) continua sendo uma leitura técnica, e não parecer de advogado.
 - **Pergunta para o Akira:** se a lei não exige revisão por pessoa, por que o projeto escolheu manter a revisão humana? O que uma revisão só automática deixaria de resolver no viés por idade?
+
+### 52. ADR-007: pipeline na AWS em Lambda com imagem (feito pelo Claude por decisão do Akira; revisar no repasse)
+- **O que:** Lambda com imagem de contêiner, disparada por S3 e por agendamento, com logs, métricas, painel e alarme por e-mail no CloudWatch, tudo em `sa-east-1` e descrito em CDK.
+- **Por quê:** lote semanal de segundos, com longos períodos parados. Pagar só quando roda.
+- **Descartado:** ECS Fargate (VPC e cluster para um trabalho de segundos) e EC2 (paga parado).
+- **Dois achados antes de escrever código:** a skill da AWS sugeria criptografar o tópico SNS com `alias/aws/sns`, o que impediria o CloudWatch de publicar (o e-mail nunca chegaria); e o `aws-cdk-lib` no mesmo lockfile rebaixaria o `typeguard` do Pandera, por isso `infra/` é um projeto separado.
+- **Pergunta para o Akira:** o contrato reprovado não é "erro" da função, mas dispara alarme. Qual a diferença, para quem opera, entre um lote ruim e um pipeline quebrado?
