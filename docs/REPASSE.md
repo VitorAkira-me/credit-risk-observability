@@ -397,3 +397,10 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **O que:** o ADR-004 (`SEX` e `MARRIAGE` fora do modelo) passa de "aguardando revisão" para "aceita por delegação em 10/11, revisar no repasse". O conteúdo não mudou.
 - **Ligação com o ADR-006:** na época, `AGE` ficou no modelo (opção C descartada). O ADR-006 tira `AGE` no próximo retreino, então o ADR-004 será revisto nesse ponto.
 - **Pergunta para o Akira:** o ADR-004 justificou manter `AGE` por "uso legítimo em crédito", e a auditoria mostrou razão 0,663. O argumento estava errado, ou faltou medir antes de decidir?
+
+### 51. Citações da LGPD conferidas no texto oficial (feito pelo Claude por decisão do Akira; revisar no repasse)
+- **O que:** cada artigo citado foi lido no planalto.gov.br. A tabela completa está na spec do GOV-002.
+- **Corrigido:** art. 6º, IX ("ilícitos ou abusivos"); art. 13, §4º (a definição vale para estudos em saúde pública, citada aqui por analogia); art. 16 ("finalidade legítima" não é hipótese do artigo); art. 20 ("qualquer decisão" era amplo demais, e a lei não exige revisão por pessoa).
+- **Acrescentado:** prazos conferidos: 5 anos para informações negativas (CDC, art. 43, §1º) e 15 anos para o histórico de adimplemento (Lei 12.414/2011, art. 14).
+- **Limite:** conferi se o texto citado diz o que afirmamos. A interpretação jurídica (por exemplo, proteção do crédito como base legal) continua sendo uma leitura técnica, e não parecer de advogado.
+- **Pergunta para o Akira:** se a lei não exige revisão por pessoa, por que o projeto escolheu manter a revisão humana? O que uma revisão só automática deixaria de resolver no viés por idade?

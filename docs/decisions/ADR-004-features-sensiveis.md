@@ -5,7 +5,7 @@
 
 ## Contexto
 O dataset traz `SEX`, `MARRIAGE`, `EDUCATION` e `AGE`. A LGPD (art. 6º, IX) proíbe tratamento
-para fins discriminatórios ilícitos, e o art. 20 dá ao titular direito de revisão de decisões
+para fins discriminatórios ilícitos ou abusivos, e o art. 20 dá ao titular direito de revisão de decisões
 automatizadas. Precisamos decidir quais desses atributos o baseline (ML-001) usa como entrada.
 
 Medição na validação da Referência (LogisticRegression, mesmo pré-processamento, seed 42):

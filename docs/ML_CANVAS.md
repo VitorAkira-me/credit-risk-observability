@@ -35,7 +35,8 @@ Classificação binária: dado o histórico de um cliente de cartão (limite, id
 | grupo com disparidade (ADR-006) | revisão humana da negativa | analista de crédito |
 
 O score **ordena** os clientes; ele não é uma probabilidade calibrada ([Model Card](MODEL_CARD.md)).
-O cliente pode pedir revisão de qualquer decisão automatizada (LGPD, art. 20).
+O cliente pode pedir revisão das decisões tomadas unicamente por tratamento automatizado que afetem
+seus interesses, inclusive as de crédito (LGPD, art. 20).
 
 ## Fontes de dados
 
