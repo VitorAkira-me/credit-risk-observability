@@ -316,7 +316,7 @@ e é aí que mora o cuidado (princípio da não discriminação, art. 6º, IX).
 **Por que o `ID` é descartado das saídas, e não trocado por um hash:** os IDs do UCI são
 sequenciais (1 a 30.000). Um hash sem segredo se desfaz testando os 30.000 valores. Como nenhuma
 saída precisa identificar o cliente, a opção mais simples e segura é não gravá-lo. Num sistema real,
-a pseudonimização (art. 13, §4º) seria feita na ingestão com HMAC-SHA256 e uma chave guardada fora
+a pseudonimização (conceito do art. 13, §4º, definido para estudos em saúde pública e usado aqui por analogia) seria feita na ingestão com HMAC-SHA256 e uma chave guardada fora
 do código, e o dado continuaria sendo pessoal, porque quem tem a chave reidentifica.
 
 ### Privacy by Design: o que o código já faz
@@ -340,8 +340,9 @@ cliente fornece ao pedir o cartão e para gerir o contrato depois de aprovado.
 qualquer momento. Na concessão de crédito ele não é livre de verdade (sem ele, não há crédito), e a
 revogação criaria um problema sem saída: o cliente inadimplente revogaria o consentimento para
 apagar o próprio histórico de calote, justamente o dado que protege os outros clientes e o banco.
-Com a proteção do crédito como base, a revogação não obriga a apagar o histórico enquanto houver
-finalidade legítima e prazo legal para guardá-lo (art. 16).
+Com a proteção do crédito como base, não há consentimento a revogar. Terminado o tratamento, a
+conservação depende de uma das hipóteses do art. 16, como o cumprimento de obrigação legal ou
+regulatória (inciso I).
 
 **Direito de revisão de decisão automatizada (art. 20).** O cliente pode pedir revisão de decisão
 tomada só por tratamento automatizado que afete seus interesses, e tem direito a informação clara
@@ -353,7 +354,9 @@ sobre os critérios usados, respeitado o segredo comercial. O que isso exige do 
   discriminatório (inventário acima) e precisa entrar na auditoria de viés do próximo retreino.
 - **Critérios declaráveis:** `SEX` e `MARRIAGE` fora do modelo (ADR-004) tornam a explicação
   defensável; a auditoria do GOV-003 mostra o que ainda pesa por grupo.
-- **Caminho humano:** o plano de ação (GOV-004) prevê revisão humana para as decisões limítrofes e
+- **Caminho humano:** a lei não obriga a revisão por pessoa (a expressão "por pessoa natural" saiu
+  do art. 20 com a MP 869/2018, e a Lei 13.853/2019 manteve a mudança); a revisão humana é uma
+  escolha do projeto. O plano de ação (GOV-004) a prevê para as decisões limítrofes e
   para os grupos com disparidade.
 - **Rastreabilidade:** cada decisão aponta para a versão do modelo (`modelo_sha256` no MLflow) e
   para o lote (`run_id`), sem guardar dados do cliente fora da base de origem.
@@ -362,7 +365,7 @@ sobre os critérios usados, respeitado o segredo comercial. O que isso exige do 
 
 | Dado | Onde fica | Prazo | Por quê | Como é apagado |
 |---|---|---|---|---|
-| Base de clientes (Referência, Produção, lotes) | `data/`, fora do git | enquanto durar a relação e o prazo legal de guarda de registros de crédito; no projeto, até a entrega | é a fonte de treino e de auditoria de viés | apagar `data/`; regerável do UCI por `prepare_data.py` |
+| Base de clientes (Referência, Produção, lotes) | `data/`, fora do git | enquanto durar a relação e o prazo legal de guarda de registros de crédito (informações negativas: até 5 anos, CDC, art. 43, §1º; histórico de adimplemento: até 15 anos, Lei 12.414/2011, art. 14); no projeto, até a entrega | é a fonte de treino e de auditoria de viés | apagar `data/`; regerável do UCI por `prepare_data.py` |
 | Detalhe das falhas do contrato (com valores) | `outputs/validation/` | **30 dias** | só serve para investigar um lote barrado | `scripts/apply_retention.py --aplicar` |
 | Saídas das semanas e relatórios regerados | `outputs/` | **90 dias** | comparar um trimestre de semanas | `scripts/apply_retention.py --aplicar` |
 | Log do pipeline (sem PII) | `logs/pipeline.jsonl` | **180 dias** | auditoria operacional | `scripts/apply_retention.py --aplicar` remove as linhas vencidas |
