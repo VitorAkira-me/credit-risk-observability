@@ -127,7 +127,7 @@ todos). Testado no Linux (WSL, Ubuntu 24.04) em 09/11/2026.
 | `make restore-evidence` | desfaz as regravações da evidência feitas por uma execução |
 
 ### Qualidade do código
-- **Testes:** 125 testes com pytest e 93% de cobertura do pacote `src/` (os scripts de entrada
+- **Testes:** 130 testes com pytest e 93% de cobertura do pacote `src/` (os scripts de entrada
   são testados de ponta a ponta, mas ficam fora da conta). O CI mostra a cobertura em todo PR.
 - **pre-commit:** ruff, formatação e checagens de arquivo antes de cada commit; `reports/` e
   `models/` ficam de fora, porque são gerados pelos scripts.
