@@ -36,6 +36,9 @@ credit-risk-observability = "credit_risk_observability:main"
 
 
 [dependency-groups]
+cloud = [
+    "boto3==1.44.0",
+]
 dev = [
     "pytest>=9.1.1",
     "ruff>=0.17.1",

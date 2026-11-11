@@ -1,0 +1,7 @@
+# Lista de permissão: ignora tudo e libera só o que a imagem precisa.
+# Assim, um arquivo novo com dados de clientes nunca entra na imagem por engano.
+*
+!pyproject.toml
+!uv.lock
+!src/
+**/__pycache__/

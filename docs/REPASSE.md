@@ -411,3 +411,11 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **Descartado:** ECS Fargate (VPC e cluster para um trabalho de segundos) e EC2 (paga parado).
 - **Dois achados antes de escrever código:** a skill da AWS sugeria criptografar o tópico SNS com `alias/aws/sns`, o que impediria o CloudWatch de publicar (o e-mail nunca chegaria); e o `aws-cdk-lib` no mesmo lockfile rebaixaria o `typeguard` do Pandera, por isso `infra/` é um projeto separado.
 - **Pergunta para o Akira:** o contrato reprovado não é "erro" da função, mas dispara alarme. Qual a diferença, para quem opera, entre um lote ruim e um pipeline quebrado?
+
+### 53. Imagem e stack prontas, sem deploy (feito pelo Claude por decisão do Akira; revisar no repasse)
+- **O que:** handler do Lambda, Dockerfile, stack em CDK (27 recursos) e atalhos no Makefile. Nada foi criado na AWS.
+- **Por quê:** o `cdk diff` precisa da stack escrita, e o deploy espera o ok do Akira.
+- **Descartado:** usar Powertools para as métricas: o formato EMF é uma linha JSON, e uma dependência a menos pesa menos na imagem.
+- **Esperávamos:** o handler real funcionando na imagem com o disco somente leitura. **Aconteceu:** controle sem alerta (AUC 0,728), concept drift com alerta de AUC e taxa (AUC 0,668), corrompido reprovado (130 linhas). Primeira execução em 9,8 s; as seguintes, em 3 s.
+- **Achado:** no lote de 2.000 linhas de concept drift, o relatório diz "data drift com impacto", enquanto as réguas calibradas só apontam AUC e taxa. O diagnóstico em quadrantes ainda usa a régua do DRIFT-002 (KS sem Bonferroni), feita para 9.000 linhas.
+- **Pergunta para o Akira:** se o relatório e o alarme discordam do nome do problema, em qual dos dois você confiaria, e o que mudaria para eles concordarem?

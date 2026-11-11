@@ -5,7 +5,7 @@
 
 ## Modo de trabalho
 **Modo prazo até a entrega:** Claude decide e segue, parando só em commit/PR, algo irreversível ou mudança no que é entregue.
-Decisões em `docs/REPASSE.md` (1 a 52), revisadas com o Akira depois da entrega (PMF4-38, 21/11).
+Decisões em `docs/REPASSE.md` (1 a 53), revisadas com o Akira depois da entrega (PMF4-38, 21/11).
 
 ## Onde estamos
 - **Etapas 1 a 4 concluídas** (épicos PMF4-2, 4 e 5 em Done).
@@ -19,7 +19,7 @@ Decisões em `docs/REPASSE.md` (1 a 52), revisadas com o Akira depois da entrega
 - VID-001 em revisão: roteiro v3 em `docs/video/roteiro.md`, números conferidos (4min10 de fala, 9 telas).
 - DOC-002 (PMF4-40) concluído (PR #24): Model Card, ML Canvas, Roadmap, README reestruturado, Makefile, pre-commit
   e cobertura de 93%; ADR-006 decidido (B + D no próximo retreino).
-- 130 testes passando; ruff limpo.
+- 141 testes passando; ruff limpo.
 
 ## Pendências (Akira)
 - Cronometrar o roteiro em voz alta e gravar (VID-001 e VID-002).
@@ -30,7 +30,7 @@ Decisões em `docs/REPASSE.md` (1 a 52), revisadas com o Akira depois da entrega
 - Débitos: PMF4-39; `run_validation.py`/`make_drift_batch.py` ainda gravam em `reports/` (REPASSE 27).
 
 ## Próximo passo
-Finalização delegada: AWS em andamento (ADR-007 proposto; corte em 13/11 às 18h), parada antes do primeiro deploy.
+AWS: imagem e stack prontas, sem nenhum recurso criado; aguardando o ok do Akira para o primeiro deploy (corte em 13/11 às 18h).
 VID-002 (gravação, 15/11), ENTREGA-001 (17/11), REPASSE-001 (21/11, depois da entrega).
 
 ## Prazo

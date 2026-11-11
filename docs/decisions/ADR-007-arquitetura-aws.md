@@ -70,12 +70,12 @@ regras de transferência internacional (LGPD, Capítulo V). O e-mail de alarme l
 Os logs mantêm a regra do projeto: contagens, nomes de regra e de arquivo, nunca valores de linha.
 
 ## Custo estimado (`sa-east-1`, preços da API de preços da AWS em 10/11/2026)
-Cenário: 100 execuções no mês, 3 GB de memória, 30 s cada, imagem de 2 GB.
+Cenário: 100 execuções no mês, 3 GB de memória, 30 s cada, imagem medida de 1,98 GB (449 MB compactada).
 
 | Item | Conta | Por mês |
 |---|---|---|
 | Lambda | 9.000 GB-s × US$ 0,0000166667 (antes da cota grátis) | US$ 0,15 |
-| ECR (imagem) | 2 GB × US$ 0,10 | US$ 0,20 |
+| ECR (imagem, guardada compactada) | 0,45 GB × US$ 0,10 | US$ 0,05 |
 | S3 | menos de 1 GB × US$ 0,0405 | US$ 0,04 |
 | CloudWatch | 8 métricas (US$ 0,30 cada, se fora da cota grátis) | até US$ 2,40 |
 | CloudWatch Logs | menos de 0,1 GB | US$ 0,09 |
@@ -88,7 +88,7 @@ criar um limite de gasto em AWS Settings > Billing.
 ## Teardown
 1. `make cdk-destroy` remove função, bucket (com o conteúdo), logs, alarmes, painel e tópico.
 2. Sobra do bootstrap do CDK: a stack `CDKToolkit`, um bucket e um repositório ECR com a imagem (cerca de
-   US$ 0,20 por mês). Para zerar: esvaziar os dois e apagar a stack `CDKToolkit`.
+   US$ 0,05 por mês). Para zerar: esvaziar os dois e apagar a stack `CDKToolkit`.
 
 ## Riscos
 - **Credenciais:** o perfil local é a conta root (`aws login`). Para o deploy manual é o que existe; o
