@@ -31,6 +31,6 @@
 | ADR-004 | [PMF4-35](https://akiravkax.atlassian.net/browse/PMF4-35) | Done |
 | IMP-001 | [PMF4-30](https://akiravkax.atlassian.net/browse/PMF4-30) | Done |
 | AWS-001 | [PMF4-42](https://akiravkax.atlassian.net/browse/PMF4-42) | In Review |
-| AWS-002 | [PMF4-43](https://akiravkax.atlassian.net/browse/PMF4-43) | To Do |
+| AWS-002 | [PMF4-43](https://akiravkax.atlassian.net/browse/PMF4-43) | In Progress |
 | AWS-003 | [PMF4-44](https://akiravkax.atlassian.net/browse/PMF4-44) | To Do |
 | AWS-004 | [PMF4-45](https://akiravkax.atlassian.net/browse/PMF4-45) | To Do |

@@ -1,0 +1,14 @@
+# Projeto separado do pipeline, com lockfile próprio: o aws-cdk-lib exige um typeguard antigo que,
+# no mesmo lockfile, rebaixaria o usado pelo Pandera e mudaria o ambiente que gerou a evidência.
+[project]
+name = "credit-risk-observability-infra"
+version = "0.1.0"
+description = "Infraestrutura como código do pipeline na AWS (ADR-007)"
+requires-python = "~=3.12.0"
+dependencies = [
+    "aws-cdk-lib==2.276.0",
+    "constructs==10.8.1",
+]
+
+[tool.uv]
+package = false

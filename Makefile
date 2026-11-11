@@ -3,11 +3,32 @@
 # Uso: make <alvo>. Sem alvo, mostra a ajuda.
 
 .DEFAULT_GOAL := help
-.PHONY: help install data train contract drift monitor governance evidence pipeline mlflow test coverage lint format precommit restore-evidence
+.PHONY: cdk-synth cdk-diff cdk-deploy cdk-destroy help install data train contract drift monitor governance evidence pipeline mlflow test coverage lint format precommit restore-evidence
+
+# Infra na AWS (ADR-007). Versão do CDK fixada; PROFILE é o perfil de ~/.aws/config.
+CDK = npx --yes aws-cdk@2.1148.0
+PROFILE ?= RM371483
+
+## Gera o modelo do CloudFormation, sem criar nada
+cdk-synth:
+	cd infra && $(CDK) synth --strict --quiet --profile $(PROFILE)
+
+## Mostra o que mudaria na AWS, sem criar nada
+cdk-diff:
+	cd infra && $(CDK) diff --no-change-set --profile $(PROFILE)
+
+## Cria a infra. Uso: make cdk-deploy ALERT_EMAIL=voce@exemplo.com
+cdk-deploy:
+	cd infra && $(CDK) deploy --profile $(PROFILE) --parameters AlertEmail=$(ALERT_EMAIL)
+
+## Remove a infra (a stack CDKToolkit do bootstrap continua: ver ADR-007)
+cdk-destroy:
+	cd infra && $(CDK) destroy --profile $(PROFILE)
 
 ## Lista os comandos disponíveis
 help:
 	@echo "Comandos (make <alvo>):"
+	@echo "  cdk-synth, cdk-diff, cdk-deploy, cdk-destroy: infra na AWS (ADR-007)"
 	@echo "  install           Instala as dependências fixadas e o hook do pre-commit"
 	@echo "  data              Etapa 0: download, EDA e split Referência / Produção"
 	@echo "  train             Etapa 0: treina o baseline e salva as métricas"
