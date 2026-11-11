@@ -463,7 +463,7 @@ Cada escolha com trade-off virou um ADR, com contexto, opções, decisão e cons
 | [ADR-001](docs/decisions/ADR-001-dataset.md) | dataset UCI de Taiwan: 30.000 clientes e atributos sensíveis reais | aceita |
 | [ADR-002](docs/decisions/ADR-002-pandera.md) | contratos de dados com Pandera, e não Great Expectations | aceita |
 | [ADR-003](docs/decisions/ADR-003-mlflow.md) | observabilidade com MLflow local primeiro | aceita |
-| [ADR-004](docs/decisions/ADR-004-features-sensiveis.md) | `SEX` e `MARRIAGE` fora do modelo, mas nos dados para auditar viés | aceita; revisão pendente |
+| [ADR-004](docs/decisions/ADR-004-features-sensiveis.md) | `SEX` e `MARRIAGE` fora do modelo, mas nos dados para auditar viés | aceita por delegação em 10/11; revisar no repasse |
 | [ADR-005](docs/decisions/ADR-005-minimizacao-failure-cases.md) | relatórios de validação sem valores de cliente | aceita e implementada |
 | [ADR-006](docs/decisions/ADR-006-vies-por-idade.md) | `AGE` fora do modelo no próximo retreino, com revisão humana até lá | aceita em 09/11/2026 |
 

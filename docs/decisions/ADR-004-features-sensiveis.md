@@ -1,6 +1,6 @@
 # ADR-004 · Atributos sensíveis fora das features do modelo
 
-- Status: aceita (proposta pelo Claude em 21/10/2026, aguardando revisão do Akira)
+- Status: aceita por delegação em 10/11/2026, revisar no repasse (proposta pelo Claude em 21/10/2026)
 - Data: 21/10/2026
 
 ## Contexto
