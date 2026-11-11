@@ -25,7 +25,7 @@
 | GOV-004 | [PMF4-25](https://akiravkax.atlassian.net/browse/PMF4-25) | Done |
 | DOC-001 | [PMF4-26](https://akiravkax.atlassian.net/browse/PMF4-26) | Done |
 | DOC-002 | [PMF4-40](https://akiravkax.atlassian.net/browse/PMF4-40) | Done |
-| VID-001 | [PMF4-27](https://akiravkax.atlassian.net/browse/PMF4-27) | In Progress |
+| VID-001 | [PMF4-27](https://akiravkax.atlassian.net/browse/PMF4-27) | In Review |
 | VID-002 | [PMF4-28](https://akiravkax.atlassian.net/browse/PMF4-28) | To Do |
 | ENTREGA-001 | [PMF4-29](https://akiravkax.atlassian.net/browse/PMF4-29) | To Do |
 | ADR-004 | [PMF4-35](https://akiravkax.atlassian.net/browse/PMF4-35) | To Do |
