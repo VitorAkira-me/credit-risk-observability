@@ -373,3 +373,14 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **pre-commit:** `reports/` e `models/` ficam de fora. O hook de fim de arquivo tentou mudar `models/baseline_metrics.json`, que o `train_baseline.py` regrava sem quebra de linha: hook e script brigariam a cada treino.
 - **Cobertura:** 93% do pacote `src/`. Os scripts de `scripts/` são testados de ponta a ponta, mas ficam fora da conta; os mais baixos são o download e a EDA (46% a 50%), que dependem de rede. O CI mostra o número, sem limite mínimo.
 - **Pergunta para o Akira:** um limite mínimo de cobertura no CI (por exemplo, 90%) protegeria o quê, e que tipo de teste ruim ele incentivaria?
+
+## Finalização delegada (10/11/2026)
+
+> Por decisão do Akira em 10/11, o Claude finaliza o que falta até a entrega, e o repasse fica para depois (PMF4-38, 21/11). As entradas abaixo estão marcadas: **feito pelo Claude por decisão do Akira; revisar no repasse.**
+
+### 48. Roteiro v3 conferido número a número (feito pelo Claude por decisão do Akira; revisar no repasse)
+- **O que:** cada número e referência do roteiro foi conferido contra README, Model Card, ML Canvas e os dados.
+- **Corrigido:** alarme falso do KS era "vinte e quatro" e passou a "vinte e quatro e meio" (24,5%); o print `mlflow_run_alerta.png` é da semana 4, e não da 3; a resposta sobre o PSI culpava as faturas zeradas, mas elas são só 6,7%: a causa medida são as faixas largas (cerca de NT$ 70 mil), em que 83% a 89% dos clientes continuam na mesma faixa.
+- **Ajuste preventivo:** "cento e vinte e cinco testes" virou "mais de cento e vinte", porque o número sobe com o DRIFT-003.
+- **Descartado:** deixar 0,71 como 0,715 na fala: o arredondamento de 0,7149 para 0,71 está correto e é mais fácil de falar.
+- **Pergunta para o Akira:** se as faixas do PSI fossem por quantis, e não de largura fixa, o que aconteceria com o PSI das faturas?

@@ -25,6 +25,8 @@ Desenvolvido para o Tech Challenge da Fase 4 da Pós Tech em Machine Learning En
 
 🎥 Vídeo explicativo em até 5 min: *link adicionado após a gravação*
 
+🔗 [XERJ Corpus Hub](https://hub.xerj.org/contributors/VitorAkira-me): commit selecionado como implementação de referência.
+
 ## Resultados em um minuto
 | Etapa | O que o projeto entrega | Resultado real |
 |---|---|---|

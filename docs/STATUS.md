@@ -5,7 +5,7 @@
 
 ## Modo de trabalho
 **Modo prazo até a entrega:** Claude decide e segue, parando só em commit/PR, algo irreversível ou mudança no que é entregue.
-Decisões em `docs/REPASSE.md` (1 a 47), revisadas com o Akira antes do vídeo (PMF4-38).
+Decisões em `docs/REPASSE.md` (1 a 48), revisadas com o Akira depois da entrega (PMF4-38, 21/11).
 
 ## Onde estamos
 - **Etapas 1 a 4 concluídas** (épicos PMF4-2, 4 e 5 em Done; PMF4-3 aberto só pelo DRIFT-003).
@@ -16,14 +16,14 @@ Decisões em `docs/REPASSE.md` (1 a 47), revisadas com o Akira antes do vídeo (
 - CI (ruff, pytest, portão de contrato com dados reais) e CD (pipeline a cada merge) verdes na `main`.
 - DRIFT-003 em andamento (**Akira pilota**): andaime mergeado (PR #20); falta `psi()`.
 - DOC-001 concluído (PR #21): README final reestruturado; "como rodar" testado do zero (2min46, Linux).
-- VID-001 em andamento: roteiro v2 em `docs/video/roteiro.md` (3min44 de fala, 8 telas), com as práticas.
+- VID-001 em revisão: roteiro v3 em `docs/video/roteiro.md`, números conferidos (4min10 de fala, 9 telas).
 - DOC-002 (PMF4-40) concluído (PR #24): Model Card, ML Canvas, Roadmap, README reestruturado, Makefile, pre-commit
   e cobertura de 93%; ADR-006 decidido (B + D no próximo retreino).
 - 125 testes passando (+5 pulados até a `psi()` existir); ruff limpo.
 
 ## Pendências (Akira)
 - Implementar `psi()` (DRIFT-003, spec em `docs/specs/DRIFT-003.md`).
-- Reescrever o roteiro com a sua voz e cronometrar lendo em voz alta (VID-001), depois do REPASSE.
+- Cronometrar o roteiro em voz alta e gravar (VID-001 e VID-002).
 - Revisar o ADR-004 (PMF4-35). O ADR-006 foi decidido em 09/11: tirar `AGE` no próximo retreino.
 - Conferir as citações da LGPD no Planalto (listas nas specs do GOV-001 e GOV-002): o site recusa a nuvem.
 - Revisar os textos "Akira pilota" escritos pelo Claude (OBS-003, GOV-001 a GOV-004).
