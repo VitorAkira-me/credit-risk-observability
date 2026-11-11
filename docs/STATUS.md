@@ -5,7 +5,7 @@
 
 ## Modo de trabalho
 **Modo prazo até a entrega:** Claude decide e segue, parando só em commit/PR, algo irreversível ou mudança no que é entregue.
-Decisões em `docs/REPASSE.md` (1 a 51), revisadas com o Akira depois da entrega (PMF4-38, 21/11).
+Decisões em `docs/REPASSE.md` (1 a 52), revisadas com o Akira depois da entrega (PMF4-38, 21/11).
 
 ## Onde estamos
 - **Etapas 1 a 4 concluídas** (épicos PMF4-2, 4 e 5 em Done).
@@ -30,7 +30,7 @@ Decisões em `docs/REPASSE.md` (1 a 51), revisadas com o Akira depois da entrega
 - Débitos: PMF4-39; `run_validation.py`/`make_drift_batch.py` ainda gravam em `reports/` (REPASSE 27).
 
 ## Próximo passo
-Finalização delegada em andamento (ADR-004, LGPD, GitHub, AWS com corte em 13/11).
+Finalização delegada: AWS em andamento (ADR-007 proposto; corte em 13/11 às 18h), parada antes do primeiro deploy.
 VID-002 (gravação, 15/11), ENTREGA-001 (17/11), REPASSE-001 (21/11, depois da entrega).
 
 ## Prazo
