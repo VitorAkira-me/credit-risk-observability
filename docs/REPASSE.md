@@ -384,3 +384,11 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **Ajuste preventivo:** "cento e vinte e cinco testes" virou "mais de cento e vinte", porque o número sobe com o DRIFT-003.
 - **Descartado:** deixar 0,71 como 0,715 na fala: o arredondamento de 0,7149 para 0,71 está correto e é mais fácil de falar.
 - **Pergunta para o Akira:** se as faixas do PSI fossem por quantis, e não de largura fixa, o que aconteceria com o PSI das faturas?
+
+### 49. `psi()` implementada no lugar do Akira (feito pelo Claude por decisão do Akira; revisar no repasse)
+- **O que:** a `psi()` de `drift/manual.py`, com faixas por quantis da Referência e bordas externas abertas. Os 5 testes passam, e o exercício continua: trocar o corpo por `NotImplementedError` volta os testes a pulados.
+- **Por quê:** quantis são o padrão em crédito, e cada faixa começa com a mesma quantidade de clientes. A borda aberta evita que um valor fora da faixa suma da conta.
+- **Descartado:** copiar a função do spike (a referência precisava ser independente) e copiar a regra do Evidently, que soma PSI em faixas vazias nos dois lados.
+- **Esperávamos:** números próximos do Evidently, com diferença explicável. **Aconteceu:** KS idêntico; PSI igual em `AGE` e `PAY_*` com as mesmas faixas; reproduzindo a regra de zeros do Evidently, diferença de 4e-19 nas 40 comparações.
+- **Achado:** a decisão muda com as faixas. O PSI de `LIMIT_BAL` vai de 0,19 (5 quantis) a 0,48 (20 quantis), passando pelo limite de 0,25.
+- **Pergunta para o Akira:** se o mesmo dado dá 0,19 ou 0,48 conforme as faixas, o que precisa estar escrito ao lado de "PSI acima de 0,25" para essa régua significar alguma coisa?

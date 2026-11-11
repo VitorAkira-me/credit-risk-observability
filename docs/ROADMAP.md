@@ -28,9 +28,9 @@ prazos ficam no [Jira PMF4](https://akiravkax.atlassian.net/issues?jql=project%2
   Simular a "resposta certa" antes de construir o detector, para poder conferi-lo.
 - **STEP 7 · Relatório de drift** ✅ 04/11 ([DRIFT-002](specs/DRIFT-002.md))
   PSI e KS nas features, mais alvo, score e performance: só a performance vê o concept drift.
-- **STEP 8 · PSI à mão** 🔄 em andamento ([DRIFT-003](specs/DRIFT-003.md))
-  Calcular o PSI sem biblioteca para entender o que o Evidently faz por baixo. Card de aprendizado,
-  fica para depois da entrega.
+- **STEP 8 · PSI à mão** ✅ 10/11 ([DRIFT-003](specs/DRIFT-003.md))
+  Calcular o PSI sem biblioteca para entender o que o Evidently faz por baixo. Feito pelo Claude por
+  decisão do Akira, que refaz à mão no repasse.
 
 ## Etapa 3 · Observabilidade
 
@@ -65,5 +65,5 @@ prazos ficam no [Jira PMF4](https://akiravkax.atlassian.net/issues?jql=project%2
 ## Depois da entrega
 
 - Sessão de repasse das decisões do [`REPASSE.md`](REPASSE.md) (REPASSE-001).
-- PSI à mão (DRIFT-003) e revisão do ADR-004.
+- Refazer o PSI à mão (DRIFT-003) e revisar o ADR-004.
 - Retreino com `AGE` fora das features (ADR-006).

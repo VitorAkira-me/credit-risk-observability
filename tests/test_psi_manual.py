@@ -1,8 +1,9 @@
 """Testes do DRIFT-003: o que a função psi() precisa cumprir.
 
-O que faz: define o comportamento certo antes do código existir (é o "contrato" do Akira).
-Por que existe: enquanto psi() não está implementada, os testes são pulados e o CI fica verde;
-quando o Akira implementar, eles passam a valer sozinhos.
+O que faz: define o comportamento certo da função (é o "contrato" do exercício).
+Por que existe: a psi() foi implementada pelo Claude por decisão do Akira (10/11). Quando o Akira
+for refazê-la no repasse, basta trocar o corpo por um NotImplementedError: os testes voltam a ser
+pulados e passam a valer sozinhos de novo.
 Onde entra no fluxo: roda no pytest.
 """
 
@@ -17,7 +18,7 @@ def call_psi(*args, **kwargs) -> float:
     try:
         return manual.psi(*args, **kwargs)
     except NotImplementedError:
-        pytest.skip("psi() ainda não implementada (DRIFT-003, Akira pilota)")
+        pytest.skip("psi() sem implementação (exercício do repasse, DRIFT-003)")
 
 
 def test_series_against_itself_is_zero():
