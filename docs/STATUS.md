@@ -5,7 +5,7 @@
 
 ## Modo de trabalho
 **Modo prazo até a entrega:** Claude decide e segue, parando só em commit/PR, algo irreversível ou mudança no que é entregue.
-Decisões em `docs/REPASSE.md` (1 a 49), revisadas com o Akira depois da entrega (PMF4-38, 21/11).
+Decisões em `docs/REPASSE.md` (1 a 50), revisadas com o Akira depois da entrega (PMF4-38, 21/11).
 
 ## Onde estamos
 - **Etapas 1 a 4 concluídas** (épicos PMF4-2, 4 e 5 em Done).
@@ -23,7 +23,7 @@ Decisões em `docs/REPASSE.md` (1 a 49), revisadas com o Akira depois da entrega
 
 ## Pendências (Akira)
 - Cronometrar o roteiro em voz alta e gravar (VID-001 e VID-002).
-- Revisar o ADR-004 (PMF4-35). O ADR-006 foi decidido em 09/11: tirar `AGE` no próximo retreino.
+- ADR-004 aceito por delegação (PMF4-35): revisar no repasse. ADR-006: tirar `AGE` no próximo retreino.
 - Conferir as citações da LGPD no Planalto (listas nas specs do GOV-001 e GOV-002): o site recusa a nuvem.
 - Revisar os textos "Akira pilota" escritos pelo Claude (OBS-003, GOV-001 a GOV-004).
 - Exigir os checks do CI na proteção da `main` (Settings > Branches).

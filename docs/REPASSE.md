@@ -392,3 +392,8 @@ O `make_drift_batch.py` também confere o contrato antes de gravar, porque lote 
 - **Esperávamos:** números próximos do Evidently, com diferença explicável. **Aconteceu:** KS idêntico; PSI igual em `AGE` e `PAY_*` com as mesmas faixas; reproduzindo a regra de zeros do Evidently, diferença de 4e-19 nas 40 comparações.
 - **Achado:** a decisão muda com as faixas. O PSI de `LIMIT_BAL` vai de 0,19 (5 quantis) a 0,48 (20 quantis), passando pelo limite de 0,25.
 - **Pergunta para o Akira:** se o mesmo dado dá 0,19 ou 0,48 conforme as faixas, o que precisa estar escrito ao lado de "PSI acima de 0,25" para essa régua significar alguma coisa?
+
+### 50. ADR-004 aceito por delegação (feito pelo Claude por decisão do Akira; revisar no repasse)
+- **O que:** o ADR-004 (`SEX` e `MARRIAGE` fora do modelo) passa de "aguardando revisão" para "aceita por delegação em 10/11, revisar no repasse". O conteúdo não mudou.
+- **Ligação com o ADR-006:** na época, `AGE` ficou no modelo (opção C descartada). O ADR-006 tira `AGE` no próximo retreino, então o ADR-004 será revisto nesse ponto.
+- **Pergunta para o Akira:** o ADR-004 justificou manter `AGE` por "uso legítimo em crédito", e a auditoria mostrou razão 0,663. O argumento estava errado, ou faltou medir antes de decidir?

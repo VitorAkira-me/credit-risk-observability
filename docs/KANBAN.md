@@ -28,5 +28,5 @@
 | VID-001 | [PMF4-27](https://akiravkax.atlassian.net/browse/PMF4-27) | In Review |
 | VID-002 | [PMF4-28](https://akiravkax.atlassian.net/browse/PMF4-28) | To Do |
 | ENTREGA-001 | [PMF4-29](https://akiravkax.atlassian.net/browse/PMF4-29) | To Do |
-| ADR-004 | [PMF4-35](https://akiravkax.atlassian.net/browse/PMF4-35) | To Do |
+| ADR-004 | [PMF4-35](https://akiravkax.atlassian.net/browse/PMF4-35) | Done |
 | IMP-001 | [PMF4-30](https://akiravkax.atlassian.net/browse/PMF4-30) | Done |
