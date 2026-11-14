@@ -25,7 +25,7 @@ Desenvolvido para o Tech Challenge da Fase 4 da Pós Tech em Machine Learning En
 
 🎥 Vídeo explicativo em até 5 min: *link adicionado após a gravação*
 
-🔗 [XERJ Corpus Hub](https://hub.xerj.org/contributors/VitorAkira-me): commit selecionado como implementação de referência.
+🔗 Material complementar, fora dos requisitos da entrega: [XERJ Corpus Hub](https://hub.xerj.org/contributors/VitorAkira-me), onde um commit deste projeto foi selecionado como implementação de referência.
 
 ## Resultados em um minuto
 | Etapa | O que o projeto entrega | Resultado real |
@@ -38,8 +38,7 @@ Desenvolvido para o Tech Challenge da Fase 4 da Pós Tech em Machine Learning En
 Tudo se reproduz do zero: numa pasta limpa, a sequência de [Como rodar](#2-como-rodar) levou 2min46
 no Linux e cerca de 3min10 no Windows (PowerShell), sem contar os testes, e regerou todos os
 números acima; só `run_id`, datas e a versão do Python mudaram.
-Andamento e decisões em [`docs/STATUS.md`](docs/STATUS.md), [`docs/KANBAN.md`](docs/KANBAN.md) e
-[`docs/REPASSE.md`](docs/REPASSE.md).
+As decisões técnicas estão nas [specs](docs/specs/), nos [ADRs](docs/decisions/) e no [ROADMAP](docs/ROADMAP.md).
 
 ## Requisitos
 
@@ -500,7 +499,6 @@ Cada escolha com trade-off virou um ADR, com contexto, opções, decisão e cons
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | a ordem de construção, cada passo com o porquê |
 | [`docs/specs/`](docs/specs/) | uma spec por card, com critérios de aceite e o resultado medido |
 | [`docs/decisions/`](docs/decisions/) | ADRs: dataset, Pandera, MLflow, atributos sensíveis, minimização, viés por idade |
-| [`docs/REPASSE.md`](docs/REPASSE.md) | 53 decisões com o porquê, a alternativa descartada e uma pergunta |
 | [`docs/GLOSSARIO.md`](docs/GLOSSARIO.md) | conceitos da fase em linguagem simples |
 | [Jira PMF4](https://akiravkax.atlassian.net/issues?jql=project%20%3D%20PMF4%20ORDER%20BY%20key%20ASC) | cards, prazos e status |
 
@@ -513,7 +511,7 @@ reports/                         # evidências versionadas: EDA, validação, dr
 models/                          # métricas versionadas; o modelo .joblib é regerável
 .github/workflows/               # CI (qualidade e contrato) e CD (pipeline de monitoramento)
 infra/, Dockerfile               # opcional: pipeline na AWS em CDK (ADR-007), não implantado; nada da avaliação depende dele
-docs/                            # MODEL_CARD, ML_CANVAS, ROADMAP, STATUS, KANBAN, GLOSSARIO, REPASSE, specs/, decisions/
+docs/                            # MODEL_CARD, ML_CANVAS, ROADMAP, GLOSSARIO, specs/, decisions/
 Makefile, .pre-commit-config.yaml  # atalhos e hooks de qualidade
 data/, outputs/, logs/           # fora do git: regeráveis pelos scripts
 ```

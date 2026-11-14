@@ -24,7 +24,7 @@ mudou; abaixo de 0,1 é estável, de 0,1 a 0,25 pede atenção e acima de 0,25 �
 o quanto o modelo ordena bem os clientes: 0,5 é sorteio e 1,0 é perfeito.
 
 ## Decisões do Akira
-Racional completo em `docs/REPASSE.md`.
+Racional completo registrado nas notas internas do projeto (fora do repositório).
 
 ### 1. Data drift: "inflação + aperto de crédito"
 `BILL_AMT1` a `BILL_AMT6` sobem com o mesmo fator nas seis, o que preserva a correlação entre elas, e

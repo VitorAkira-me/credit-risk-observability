@@ -64,6 +64,6 @@ prazos ficam no [Jira PMF4](https://akiravkax.atlassian.net/issues?jql=project%2
 
 ## Depois da entrega
 
-- Sessão de repasse das decisões do [`REPASSE.md`](REPASSE.md) (REPASSE-001).
+- Sessão de repasse das decisões do projeto (REPASSE-001).
 - Refazer o PSI à mão (DRIFT-003) e revisar o ADR-004.
 - Retreino com `AGE` fora das features (ADR-006).
