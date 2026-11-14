@@ -81,7 +81,7 @@ Clientes com 50 anos ou mais são aprovados em 44,8% dos casos, contra 67,6% na 
 Parte disso vem da diferença real de default, mas o modelo amplia essa diferença.
 
 **Decisão ([ADR-006](decisions/ADR-006-vies-por-idade.md), 09/11/2026):** tirar `AGE` no próximo
-retreino (razão sobe para 0,800, custo de 0,0012 de AUC) e encaminhar à revisão humana as negativas
+retreino (a razão sobe de 0,663 para 0,7996, ainda logo abaixo do 0,8 da regra, a um custo de 0,0012 de AUC) e encaminhar à revisão humana as negativas
 dos grupos com disparidade até lá. Atenção para o efeito colateral medido: sem `AGE`, os menores de
 29 anos passam a ser os menos aprovados, porque o limite de crédito funciona como proxy da idade.
 
@@ -106,7 +106,7 @@ dos grupos com disparidade até lá. Atenção para o efeito colateral medido: s
 | Régua | Dispara quando | Alarme falso medido |
 |---|---|---|
 | PSI | PSI acima de 0,25 em alguma feature | não calibrado |
-| KS | p-valor abaixo de 0,0025 (0,05 / 20) e efeito acima do mínimo | 1,5% |
+| KS | p-valor abaixo de 0,0025 (0,05 / 20); o efeito mínimo calibrado saiu 0, então vale só o Bonferroni | 1,5% |
 | AUC | abaixo de 0,687 (lotes de 2.000 clientes) | 3,5% |
 | Taxa de default | fora de 20,6% a 23,6% | 7,0% |
 
@@ -121,6 +121,6 @@ do PSI ([OBS-002](specs/OBS-002.md)).
   concept drift. Só PSI ou KS alterados, com AUC normal, não justificam retreino
   ([OBS-003](specs/OBS-003.md)).
 - **O que o próximo retreino precisa cumprir:** AUC maior que a do modelo atual na janela recente,
-  contrato de dados aprovado, regra dos 4/5 aprovada e `AGE` fora das features (ADR-006).
+  contrato de dados aprovado, `AGE` fora das features (ADR-006) e a regra dos 4/5 medida de novo. Atenção: só tirar `AGE` leva a razão a 0,7996, ainda logo abaixo de 0,8; a revisão humana continua até a regra passar.
 - **Rollback:** se o modelo novo for pior, voltar à versão anterior, identificada pelo
   `modelo_sha256` registrado em cada run do MLflow.

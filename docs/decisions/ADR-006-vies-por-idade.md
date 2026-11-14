@@ -20,14 +20,14 @@ Contrafactuais (mesmo modelo, mesma Referência, medidos na Produção-base):
 | Modelo | AUC | Paridade por idade | Razão por idade | Paridade por sexo |
 |---|---|---|---|---|
 | Atual (ADR-004, opção B) | 0,7149 | 0,228 | 0,663 | 0,051 |
-| Sem `AGE` (opção C do ADR-004) | 0,7137 | 0,134 | 0,800 | 0,047 |
+| Sem `AGE` (opção C do ADR-004) | 0,7137 | 0,134 | 0,7996 | 0,047 |
 | Com `SEX` e `MARRIAGE` (opção A) | 0,7173 | 0,169 | 0,745 | 0,125 |
 
 ## Opções
 | Opção | Prós | Contras |
 |---|---|---|
 | A. Manter o modelo e documentar | nenhuma mudança; a evidência de drift continua valendo | reprova a regra dos 4/5 por idade; difícil de defender numa revisão (art. 20) |
-| B. Tirar `AGE` do modelo | custo de AUC de 0,0012 (menor que o ruído entre seeds); razão sobe para 0,800 | fica no limite da regra; o viés muda de lado (menores de 29 passam a ser os menos aprovados, via proxies como o limite) |
+| B. Tirar `AGE` do modelo | custo de AUC de 0,0012 (menor que o ruído entre seeds); razão sobe para 0,7996 | fica logo abaixo do limite da regra (ainda reprova); o viés muda de lado (menores de 29 passam a ser os menos aprovados, via proxies como o limite) |
 | C. Manter `AGE` e ajustar o limiar por grupo | controla a paridade diretamente | decisão diferente por idade é tratamento explícito pelo atributo: pior juridicamente |
 | D. Revisão humana para os grupos com disparidade | não mexe no modelo; atende ao direito de revisão | custo operacional; não corrige a causa |
 
@@ -40,7 +40,7 @@ com o primeiro retreino previsto no plano de ação (GOV-004).
 Opção **B com D como rede de segurança**, aplicada no **próximo retreino**, e não agora.
 
 - **B:** `AGE` sai das features do modelo. A razão da regra dos 4/5 por idade sobe de 0,663 para
-  0,800, a um custo de 0,0012 de AUC, menor que o ruído entre seeds (0,714 a 0,732 na validação).
+  0,7996 (ainda logo abaixo de 0,8), a um custo de 0,0012 de AUC, menor que o ruído entre seeds (0,714 a 0,732 na validação).
 - **D:** até o retreino, e depois dele, as negativas dos grupos com disparidade vão para revisão
   humana. O art. 20 da LGPD garante a revisão, mas não exige que seja feita por pessoa; aqui, a
   revisão humana é uma escolha do projeto.

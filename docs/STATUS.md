@@ -16,7 +16,7 @@ Decisões em `docs/REPASSE.md` (1 a 53), revisadas com o Akira depois da entrega
 - CI (ruff, pytest, portão de contrato com dados reais) e CD (pipeline a cada merge) verdes na `main`.
 - DRIFT-003 em revisão: `psi()` feita pelo Claude por decisão do Akira; ele refaz à mão no repasse.
 - DOC-001 concluído (PR #21): README final reestruturado; "como rodar" testado do zero (2min46, Linux).
-- VID-001 em revisão: roteiro v3 em `docs/video/roteiro.md`, números conferidos (4min10 de fala, 9 telas).
+- VID-001 em revisão: roteiro e guia de gravação mantidos fora do repositório (material privado).
 - DOC-002 (PMF4-40) concluído (PR #24): Model Card, ML Canvas, Roadmap, README reestruturado, Makefile, pre-commit
   e cobertura de 93%; ADR-006 decidido (B + D no próximo retreino).
 - 141 testes passando; ruff limpo.
