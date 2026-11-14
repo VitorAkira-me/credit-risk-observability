@@ -8,7 +8,7 @@
 ![uv](https://img.shields.io/badge/uv-DE5FE9?logo=uv&logoColor=white)
 ![Ruff](https://img.shields.io/badge/lint-ruff-D7FF64?logo=ruff&logoColor=black)
 ![pre-commit](https://img.shields.io/badge/pre--commit-ativo-FAB040?logo=precommit&logoColor=white)
-![coverage](https://img.shields.io/badge/cobertura-93%25-brightgreen)
+![coverage](https://img.shields.io/badge/cobertura-94%25-brightgreen)
 [![CI](https://github.com/VitorAkira-me/credit-risk-observability/actions/workflows/ci.yml/badge.svg)](https://github.com/VitorAkira-me/credit-risk-observability/actions/workflows/ci.yml)
 [![Pipeline de monitoramento](https://github.com/VitorAkira-me/credit-risk-observability/actions/workflows/pipeline.yml/badge.svg)](https://github.com/VitorAkira-me/credit-risk-observability/actions/workflows/pipeline.yml)
 ![license](https://img.shields.io/github/license/VitorAkira-me/credit-risk-observability)
@@ -25,7 +25,7 @@ Desenvolvido para o Tech Challenge da Fase 4 da Pós Tech em Machine Learning En
 
 🎥 Vídeo explicativo em até 5 min: *link adicionado após a gravação*
 
-🔗 [XERJ Corpus Hub](https://hub.xerj.org/contributors/VitorAkira-me): commit selecionado como implementação de referência.
+🔗 Material complementar, fora dos requisitos da entrega: [XERJ Corpus Hub](https://hub.xerj.org/contributors/VitorAkira-me), onde um commit deste projeto foi selecionado como implementação de referência.
 
 ## Resultados em um minuto
 | Etapa | O que o projeto entrega | Resultado real |
@@ -38,8 +38,7 @@ Desenvolvido para o Tech Challenge da Fase 4 da Pós Tech em Machine Learning En
 Tudo se reproduz do zero: numa pasta limpa, a sequência de [Como rodar](#2-como-rodar) levou 2min46
 no Linux e cerca de 3min10 no Windows (PowerShell), sem contar os testes, e regerou todos os
 números acima; só `run_id`, datas e a versão do Python mudaram.
-Andamento e decisões em [`docs/STATUS.md`](docs/STATUS.md), [`docs/KANBAN.md`](docs/KANBAN.md) e
-[`docs/REPASSE.md`](docs/REPASSE.md).
+As decisões técnicas estão nas [specs](docs/specs/), nos [ADRs](docs/decisions/) e no [ROADMAP](docs/ROADMAP.md).
 
 ## Requisitos
 
@@ -127,7 +126,7 @@ todos). Testado no Linux (WSL, Ubuntu 24.04) em 09/11/2026.
 | `make restore-evidence` | desfaz as regravações da evidência feitas por uma execução |
 
 ### Qualidade do código
-- **Testes:** 130 testes com pytest e 93% de cobertura do pacote `src/` (os scripts de entrada
+- **Testes:** 141 testes com pytest e 94% de cobertura do pacote `src/` (os scripts de entrada
   são testados de ponta a ponta, mas ficam fora da conta). O CI mostra a cobertura em todo PR.
 - **pre-commit:** ruff, formatação e checagens de arquivo antes de cada commit; `reports/` e
   `models/` ficam de fora, porque são gerados pelos scripts.
@@ -180,6 +179,12 @@ Dois cenários aplicados à Produção-base, cada um com a "resposta certa" conh
 | Data drift | faturas +25%, limite -25% | `LIMIT_BAL` (0,27) | `LIMIT_BAL` e as 6 faturas | 0,714 | data drift sem impacto no modelo | [HTML](reports/drift/drift_report_batch_data_drift_i100.html) |
 | Concept drift | rótulos: default dobra no quartil de fatura alta | nenhuma | nenhuma | **0,665** | suspeita de concept drift | [HTML](reports/drift/drift_report_batch_concept_drift_i100.html) |
 
+**Predições:** em cada lote, o modelo pontua todos os clientes. O score entra no relatório do Evidently
+(distribuição do score contra a Referência, com PSI e KS) e no JSON do lote (`target_and_score`,
+com o score médio), e a performance medida sobre essas predições (AUC, recall, precisão) aparece no
+resumo do topo do HTML. O score só existe em memória: nenhum arquivo com a predição por cliente é
+gravado (minimização, ADR-005).
+
 **Leitura:** o detector acertou as duas "respostas certas". As faturas subiram 25% e o PSI ficou
 entre 0,03 e 0,05 (abaixo da régua), mas o KS acusou: por isso o projeto usa os dois testes. E o
 concept drift é invisível para os testes de distribuição (as entradas não mudaram): só aparece na
@@ -219,7 +224,7 @@ de alerta, e vira um run do MLflow com o mesmo `run_id` do `logs/pipeline.jsonl`
 | Régua | Dispara quando | Por quê | Alarme falso medido* |
 |---|---|---|---|
 | `drift_alert` (PSI) | PSI > 0,25 em alguma feature | mudança grande na distribuição (limite usual em crédito) | (não calibrado) |
-| `alerta_ks` | p < 0,0025 (0,05 / 20, Bonferroni) e D > D mínimo | 20 testes por lote: com p < 0,05 a régua antiga alarmava em 24,5% das semanas sem drift | 1,5% |
+| `alerta_ks` | p < 0,0025 (0,05 / 20, Bonferroni); o D mínimo calibrado saiu 0, então na prática vale só o Bonferroni | 20 testes por lote: com p < 0,05 a régua antiga alarmava em 24,5% das semanas sem drift | 1,5% |
 | `alerta_auc` | AUC < 0,687 | piso do bootstrap da Produção-base com n = 2.000 (percentil 2,5) | 3,5% |
 | `alerta_taxa_default` | taxa fora de 20,6% a 23,6% | o PSI do alvo não vê 22% virar 27% (concept drift) | 7,0% |
 
@@ -348,9 +353,10 @@ regulatória (inciso I).
 tomada só por tratamento automatizado que afete seus interesses, e tem direito a informação clara
 sobre os critérios usados, respeitado o segredo comercial. O que isso exige do projeto:
 - **Explicabilidade:** o modelo é uma regressão logística; o peso de cada feature é legível, e dá
-  para dizer ao cliente quais fatores mais pesaram. Os maiores pesos são o atraso no mês mais
-  recente (`PAY_0`), os valores pagos nos dois últimos meses (`PAY_AMT1` e `PAY_AMT2`, que reduzem o
-  risco) e a escolaridade. A escolaridade pesar tanto é um ponto de atenção: é feature com risco
+  para dizer ao cliente quais fatores mais pesaram. Os maiores pesos são a escolaridade
+  (o maior de todos é a categoria dos códigos raros e sem documentação de `EDUCATION`), o atraso no
+  mês mais recente (`PAY_0`), a fatura mais recente (`BILL_AMT1`) e os valores pagos nos dois últimos
+  meses (`PAY_AMT1` e `PAY_AMT2`, que reduzem o risco). A escolaridade pesar tanto é um ponto de atenção: é feature com risco
   discriminatório (inventário acima) e precisa entrar na auditoria de viés do próximo retreino.
 - **Critérios declaráveis:** `SEX` e `MARRIAGE` fora do modelo (ADR-004) tornam a explicação
   defensável; a auditoria do GOV-003 mostra o que ainda pesa por grupo.
@@ -406,7 +412,7 @@ Números em [`reports/fairness/fairness_report.json`](reports/fairness/fairness_
 (0,5 seria nada): há proxy, mas fraco. O contrafactual com `SEX` e `MARRIAGE` de volta dobraria a
 disparidade por sexo (0,051 para 0,125). Então retirar ajudou, mas a diferença que sobra vem do
 proxy e da diferença real de default. Para idade, o mesmo teste mostra que tirar `AGE` reduz a
-disparidade (0,228 para 0,134; razão 0,800) a um custo de 0,0012 de AUC, mas os menores de 29
+disparidade (0,228 para 0,134; razão de 0,663 para 0,7996, ainda logo abaixo do 0,8 da regra) a um custo de 0,0012 de AUC, mas os menores de 29
 passam a ser os menos aprovados: o limite de crédito funciona como proxy de idade.
 
 **Mitigação decidida ([ADR-006](docs/decisions/ADR-006-vies-por-idade.md), aceito em 09/11/2026):**
@@ -430,7 +436,7 @@ flowchart LR
 
 | Elo | Evidência no projeto |
 |---|---|
-| Mundo → data drift | Semana 4: PSI de `LIMIT_BAL` 0,30 e KS acusando o limite e as 6 faturas ([relatório](reports/drift/drift_report_batch_data_drift_i100.html)) |
+| Mundo → data drift | Lote de data drift do DRIFT-002: PSI de `LIMIT_BAL` 0,27 e KS acusando o limite e as 6 faturas ([relatório](reports/drift/drift_report_batch_data_drift_i100.html)); na semana 4 do painel, 0,30 |
 | Mundo → concept drift | Taxa de default de 22,1% para 27,2%, concentrada nos clientes de fatura alta ([relatório](reports/drift/drift_report_batch_concept_drift_i100.html)) |
 | Data drift → modelo | **Nenhum efeito:** AUC de 0,7149 para 0,7144 com a dose cheia (diferença menor que o ruído) |
 | Concept drift → modelo | AUC cai em linha reta com a dose: 0,715, 0,701, 0,688, 0,676, 0,665 |
@@ -466,9 +472,10 @@ Cada escolha com trade-off virou um ADR, com contexto, opções, decisão e cons
 | [ADR-001](docs/decisions/ADR-001-dataset.md) | dataset UCI de Taiwan: 30.000 clientes e atributos sensíveis reais | aceita |
 | [ADR-002](docs/decisions/ADR-002-pandera.md) | contratos de dados com Pandera, e não Great Expectations | aceita |
 | [ADR-003](docs/decisions/ADR-003-mlflow.md) | observabilidade com MLflow local primeiro | aceita |
-| [ADR-004](docs/decisions/ADR-004-features-sensiveis.md) | `SEX` e `MARRIAGE` fora do modelo, mas nos dados para auditar viés | aceita por delegação em 10/11; revisar no repasse |
+| [ADR-004](docs/decisions/ADR-004-features-sensiveis.md) | `SEX` e `MARRIAGE` fora do modelo, mas nos dados para auditar viés | aceita em 10/11/2026 |
 | [ADR-005](docs/decisions/ADR-005-minimizacao-failure-cases.md) | relatórios de validação sem valores de cliente | aceita e implementada |
 | [ADR-006](docs/decisions/ADR-006-vies-por-idade.md) | `AGE` fora do modelo no próximo retreino, com revisão humana até lá | aceita em 09/11/2026 |
+| [ADR-007](docs/decisions/ADR-007-arquitetura-aws.md) | pipeline na AWS (Lambda com imagem, S3, CloudWatch), descrito em CDK | proposta: código pronto e testado, **não implantado**; opcional |
 
 ## 9. Lições aprendidas
 - **Validação real, não visual.** O portão do CI compara as falhas regra a regra: afrouxar a idade
@@ -492,9 +499,7 @@ Cada escolha com trade-off virou um ADR, com contexto, opções, decisão e cons
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | a ordem de construção, cada passo com o porquê |
 | [`docs/specs/`](docs/specs/) | uma spec por card, com critérios de aceite e o resultado medido |
 | [`docs/decisions/`](docs/decisions/) | ADRs: dataset, Pandera, MLflow, atributos sensíveis, minimização, viés por idade |
-| [`docs/REPASSE.md`](docs/REPASSE.md) | 44 decisões com o porquê, a alternativa descartada e uma pergunta |
 | [`docs/GLOSSARIO.md`](docs/GLOSSARIO.md) | conceitos da fase em linguagem simples |
-| [`docs/video/roteiro.md`](docs/video/roteiro.md) | roteiro do vídeo STAR, com a lista de telas |
 | [Jira PMF4](https://akiravkax.atlassian.net/issues?jql=project%20%3D%20PMF4%20ORDER%20BY%20key%20ASC) | cards, prazos e status |
 
 ## 11. Estrutura
@@ -505,7 +510,8 @@ tests/                           # pytest (unitários e de ponta a ponta com dad
 reports/                         # evidências versionadas: EDA, validação, drift, monitoramento, viés, causal, figuras
 models/                          # métricas versionadas; o modelo .joblib é regerável
 .github/workflows/               # CI (qualidade e contrato) e CD (pipeline de monitoramento)
-docs/                            # MODEL_CARD, ML_CANVAS, ROADMAP, STATUS, KANBAN, GLOSSARIO, REPASSE, specs/, decisions/
+infra/, Dockerfile               # opcional: pipeline na AWS em CDK (ADR-007), não implantado; nada da avaliação depende dele
+docs/                            # MODEL_CARD, ML_CANVAS, ROADMAP, GLOSSARIO, specs/, decisions/
 Makefile, .pre-commit-config.yaml  # atalhos e hooks de qualidade
 data/, outputs/, logs/           # fora do git: regeráveis pelos scripts
 ```

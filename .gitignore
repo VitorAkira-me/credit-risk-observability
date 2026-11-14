@@ -202,3 +202,13 @@ logs/
 
 # Saídas das execuções do pipeline (relatórios de drift regerados; evidência fica em reports/)
 outputs/
+
+# Material privado da apresentação (roteiro de narração, guia de gravação): fica fora do repositório
+docs/video/
+
+# Materiais internos de organização da entrega: ficam só na máquina local
+CLAUDE.md
+.claude/
+docs/STATUS.md
+docs/KANBAN.md
+docs/REPASSE.md

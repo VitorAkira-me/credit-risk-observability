@@ -59,11 +59,11 @@ prazos ficam no [Jira PMF4](https://akiravkax.atlassian.net/issues?jql=project%2
 - **STEP 17 · README final** ✅ 08/11 ([DOC-001](specs/DOC-001.md))
 - **STEP 18 · Documentação no padrão da Fase 3** ✅ 09/11 (DOC-002)
   Model Card, ML Canvas, este roadmap, README reestruturado, Makefile, pre-commit e cobertura.
-- **STEP 19 · Roteiro do vídeo STAR** 🔄 ([`docs/video/roteiro.md`](video/roteiro.md))
+- **STEP 19 · Roteiro do vídeo STAR** 🔄 (roteiro mantido fora do repositório)
 - **STEP 20 · Gravação e submissão** ⏳ até 16/11, com 17/11 de folga
 
 ## Depois da entrega
 
-- Sessão de repasse das decisões do [`REPASSE.md`](REPASSE.md) (REPASSE-001).
+- Sessão de repasse das decisões do projeto (REPASSE-001).
 - Refazer o PSI à mão (DRIFT-003) e revisar o ADR-004.
 - Retreino com `AGE` fora das features (ADR-006).
