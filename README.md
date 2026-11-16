@@ -23,7 +23,7 @@ Desenvolvido para o Tech Challenge da Fase 4 da Pós Tech em Machine Learning En
 |---|---|---|
 | Vitor Akira Ucha Ito | RM371483 | [GitHub](https://github.com/VitorAkira-me) · [LinkedIn](https://www.linkedin.com/in/vitor-akira/) |
 
-🎥 Vídeo explicativo em até 5 min: *link adicionado após a gravação*
+🎥 Vídeo explicativo em até 5 min: [Tech Challenge Fase 4 · Credit Risk Observability (YouTube)](https://youtu.be/QxebfwN-0fw)
 
 🔗 Material complementar, fora dos requisitos da entrega: [XERJ Corpus Hub](https://hub.xerj.org/contributors/VitorAkira-me), onde um commit deste projeto foi selecionado como implementação de referência.
 
