@@ -47,9 +47,13 @@ help:
 	@echo "  restore-evidence  Desfaz as regravações da evidência versionada feitas por uma execução"
 
 ## Instala as dependências fixadas e o hook do pre-commit
+# O hook só existe num clone do Git. Numa cópia sem .git (o zip da entrega, por exemplo), o
+# pre-commit falharia e derrubaria o install; ali o hook não tem utilidade (não há commit), então
+# o alvo instala só as dependências e avisa.
 install:
 	uv sync
-	uv run pre-commit install
+	@if [ -e .git ]; then uv run pre-commit install; \
+	else echo "Sem repositório Git (cópia do zip): dependências instaladas; o hook do pre-commit só vale num clone."; fi
 
 ## Etapa 0: download, EDA e split Referência / Produção
 data:
@@ -116,8 +120,12 @@ format:
 
 ## Roda os hooks do pre-commit em todos os arquivos
 precommit:
-	uv run pre-commit run --all-files
+	@if [ -e .git ]; then uv run pre-commit run --all-files; \
+	else echo "Sem repositório Git (cópia do zip): o pre-commit precisa de um clone. Use make lint."; fi
 
 ## Desfaz as regravações da evidência versionada feitas por uma execução
+# Sem .git não há versão guardada para restaurar: a saída é extrair o zip de novo (as regravações
+# mudam só run_id, data e o desenho das figuras, nunca os números).
 restore-evidence:
-	git restore reports
+	@if [ -e .git ]; then git restore reports; \
+	else echo "Sem repositório Git (cópia do zip): para voltar à evidência original, extraia o zip de novo."; exit 1; fi

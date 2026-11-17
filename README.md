@@ -42,11 +42,38 @@ As decisões técnicas estão nas [specs](docs/specs/), nos [ADRs](docs/decision
 
 ## Requisitos
 
-- [uv](https://docs.astral.sh/uv/): instala o Python 3.12 e as versões fixadas no `uv.lock`.
+- [uv](https://docs.astral.sh/uv/getting-started/installation/): instala o Python 3.12 e as
+  versões fixadas no `uv.lock`. Não é preciso instalar Python antes. Instalação em uma linha:
+  - Linux e macOS: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+  - Windows (PowerShell): `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
 - Internet na primeira execução, para baixar o dataset do UCI (sem login, sem token, sem `.env`).
-- Git, para clonar o repositório.
+- O código: um clone do Git (`git clone`) ou o zip da entrega extraído. Os dois rodam igual; só
+  os atalhos que dependem do Git (hook do pre-commit e `make restore-evidence`) avisam e param
+  numa cópia sem `.git`.
 - Opcional: `make`, para os atalhos da seção 2. Ele vem no Linux, no macOS e no WSL; no Windows
   sem `make`, os mesmos comandos `uv run` funcionam direto no PowerShell.
+
+### Onde já foi testado (do zero, a partir do zip da entrega, em 16/11/2026)
+
+| Sistema | Shell | Sequência da seção 2 | Testes e lint | Tempo |
+|---|---|---|---|---|
+| Windows 11 | PowerShell 5.1 | 17 passos, exit 0 (só a validação do lote corrompido sai com 1, de propósito) | 141 passaram, ruff ok | ~3,5 min |
+| Windows 11 | Git Bash | idem | 141 passaram, ruff ok | ~3,5 min |
+| Ubuntu 24.04 (WSL) | bash, também com `make pipeline` | idem | 141 passaram, ruff ok | ~3 min |
+
+Os números gerados nos três casos são os mesmos da evidência versionada e do vídeo (o portão
+`check_evidence.py` confere isso sozinho). Só `run_id`, datas e o desenho das figuras mudam.
+
+### Se algo der errado
+- **Windows, `ModuleNotFoundError` dentro do `sklearn`:** o caminho da pasta ficou longo demais.
+  O Windows, por padrão, não abre arquivos com caminho acima de 260 caracteres, e a `.venv` do
+  scikit-learn chega perto disso. Extraia o projeto numa pasta curta (por exemplo `C:\projetos\`
+  ou direto em Downloads), apague a `.venv` e rode `uv sync` de novo. Extraído em
+  `Downloads\credit-risk-observability_RM371483\`, o caminho mais longo fica em 203 caracteres.
+- **Sem internet ou UCI fora do ar:** o download do dataset falha no primeiro passo. Toda a
+  evidência já gerada continua versionada em `reports/` (relatórios HTML do Evidently, figuras,
+  JSON com os números) e pode ser lida sem rodar nada.
+- **`make` não existe no Windows:** use os comandos `uv run` da seção 2 no PowerShell.
 
 ## 1. Visão geral
 
@@ -87,7 +114,7 @@ sair com exit 1 (é o bloqueio funcionando). Os comandos são os mesmos nos dois
 Rodar a sequência regrava 5 arquivos versionados: os 2 manifestos de `reports/drift/` e o resumo de
 `reports/validation/` mudam só no `run_id` e na data; as 2 figuras de `reports/figures/` mudam só no
 desenho (fontes do sistema), não nos números. Os relatórios HTML da evidência não são tocados. Para
-voltar ao estado versionado: `git restore reports`.
+voltar ao estado versionado: `git restore reports` num clone, ou extrair o zip de novo.
 
 ```
 uv sync                                   # ambiente com versões fixadas pelo uv.lock
@@ -118,7 +145,7 @@ todos). Testado no Linux (WSL, Ubuntu 24.04) em 09/11/2026.
 
 | Comando | O que faz |
 |---|---|
-| `make install` | instala as dependências e o hook do pre-commit |
+| `make install` | instala as dependências e o hook do pre-commit (o hook só num clone do Git) |
 | `make pipeline` | roda tudo do zero: dados, modelo e as 4 etapas, terminando no portão do CI |
 | `make contract`, `make drift`, `make monitor`, `make governance` | uma etapa por vez |
 | `make test`, `make coverage`, `make lint`, `make precommit` | qualidade do código |
